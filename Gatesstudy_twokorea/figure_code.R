@@ -78,6 +78,35 @@ trend.tb2<-data.frame(sen    =ss2$estimates,
 
 rbind(trend.tb1,trend.tb2)
 
+
+setwd("D:\\EUMC\\논문\\연구논문\\게이츠재단연구\\data\\자료정리\\Final")
+dat<-read_excel("Gates_north_south_korea.xlsx",sheet=2) %>% filter(year!=2018)
+
+describe(dat) %>% dplyr::select(mean,sd) %>% t %>% round(1)
+
+trend.func<-function(var){
+  
+  input<-var
+  ss <-sens.slope(input)
+  mk <-mk.test(input)
+  fit<-lm(input~year,dat)
+  
+  trend.tb<-data.frame(sen    =ss$estimates,
+                       sen_lci=ss$conf.int[1],
+                       sen_uci=ss$conf.int[2],
+                       mk     =mk$statistic,
+                       mk_p   =round(mk$p.value,3),
+                       lm     =fit$coefficients[2],
+                       lm_lci =fit$coeff[2]-1.96*summary(fit)$coeff[2,2],
+                       lm_uci =fit$coeff[2]+1.96*summary(fit)$coeff[2,2]) %>% round(3)
+  trend.tb
+}
+names(dat)
+trend.func(dat$TPR_SK)
+trend.func(dat$TPR_NK)
+trend.func(dat$Life_expectancy_NK_Female)
+
+
 #---------------------------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------------------------#
 format(1000000, big.mark = " ", scientific = FALSE)
