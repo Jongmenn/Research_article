@@ -1,16 +1,16 @@
-/*¿Ã»≠ø©¥Î ¡˜æ˜»Ø∞Ê¿««–±≥Ω«  ø¿¡æπŒ */
-/*PM AOM  ∏¬√„«¸  DB*/ 
-/*≥Î√‚¿⁄∑· : CMAQ PM2.5*/
+/*Ïù¥ÌôîÏó¨ÎåÄ ÏßÅÏóÖÌôòÍ≤ΩÏùòÌïôÍµêÏã§  Ïò§Ï¢ÖÎØº */
+/*PM AOM  ÎßûÏ∂§Ìòï  DB*/ 
+/*ÎÖ∏Ï∂úÏûêÎ£å : CMAQ PM2.5*/
 /**********************************************************************************************************************************************************/
-/*data ∂Û¿Ã∫Í∑Ø∏Æ */
-libname dat '/userdata06/room206/data_source/user_data'; /*ø¯ µ•¿Ã≈Õ*/
-libname a '/userdata06/room206/data_source/ø‹∑°¿‘ø¯';    
-libname b '/userdata06/room206/data_source/¿‘ø¯'; 
+/*data ÎùºÏù¥Î∏åÎü¨Î¶¨ */
+libname dat '/userdata06/room206/data_source/user_data'; /*Ïõê Îç∞Ïù¥ÌÑ∞*/
+libname a '/userdata06/room206/data_source/Ïô∏ÎûòÏûÖÏõê';    
+libname b '/userdata06/room206/data_source/ÏûÖÏõê'; 
 /**********************************************************************************************************************************************************/
 /**********************************************************************************************************************************************************/
 
 /**********************************************************************************************************************************************************/
-/*ø¨∑…∫∞ ±∏∫–  */ 
+/*Ïó∞Î†πÎ≥Ñ Íµ¨Î∂Ñ  */ 
 %MACRO STEP5(T2,T1,OUT,K);
 DATA A.&T2; SET A.&T1;
 
@@ -55,7 +55,7 @@ CREATE TABLE A.&OUT AS SELECT START_DATE AS DATE, SIDO, SUM(AGE0) AS AGE0, SUM(A
 
 PROC SORT DATA= A.&OUT NODUPKEY; BY DATE; RUN;
 %MEND STEP5;
-/*Ω√µµ ±∏∫–«œø© ¡˙»Ø∫∞ ƒ´øÓ∆Æ ¿⁄∑· √ﬂ√‚ */
+/*ÏãúÎèÑ Íµ¨Î∂ÑÌïòÏó¨ ÏßàÌôòÎ≥Ñ Ïπ¥Ïö¥Ìä∏ ÏûêÎ£å Ï∂îÏ∂ú */
 %STEP5 (AOM_W11,AOM_W1,S1_W1_COUNT,11); 
 %STEP5 (AOM_W11,AOM_W1,S2_W1_COUNT,26); 
 %STEP5 (AOM_W11,AOM_W1,S3_W1_COUNT,27); 
@@ -122,7 +122,7 @@ proc freq data=count4 ;tables count;
 /*************************************************************************************************************/
 /*************************************************************************************************************/
 /*************************************************************************************************************/
-/*AOM »Ø¿⁄ ¡ﬂø°º≠ Allergic rihinitis∏¶ ∞ﬁ¿∫ ¿˚¿Ã ¿÷¥¬ »Ø¿⁄  ∏Ó ∆€ºæ∆Æ ¿Œ¡ˆ ? */
+/*AOM ÌôòÏûê Ï§ëÏóêÏÑú Allergic rihinitisÎ•º Í≤™ÏùÄ Ï†ÅÏù¥ ÏûàÎäî ÌôòÏûê  Î™á ÌçºÏÑºÌä∏ Ïù∏ÏßÄ ? */
 proc sort data=a.s4 out=A.id nodupkey ; by indi_dscm_no; run;
 
 %STEP5 (a1,AOM_W4,S1_W4_COUNT,11); 
@@ -135,9 +135,9 @@ proc sort data=a.s4 out=A.id nodupkey ; by indi_dscm_no; run;
 
 %Macro AR(TABLE1,TABLE2);
 data A.&table1 ; set A.&table2;
-IF FORM_CD IN("02","03") AND SUBSTR(SICK_SYM1,1,4) IN ("J301","J302","J305","J308","J309") THEN K1=2; ELSE K1=0; /*¿‘ø¯ ¿Ã∏Èº≠ ¡÷ªÛ∫¥ IHD ƒ⁄µÂ, K1¿∫ ¡÷ªÛ∫¥ø° ¡∏¿Á«œ∏È 2*/
-IF FORM_CD IN("02","03") AND SUBSTR(SICK_SYM2,1,4) IN ("J301","J302","J305","J308","J309") THEN K2=1; ELSE K2=0; /*¿‘ø¯ ¿Ã∏Èº≠ ∫ŒªÛ∫¥ IHD ƒ⁄µÂ, K2¿∫ ∫ŒªÛ∫¥ø° ¡∏¿Á«œ∏È 1*/
-ICD_RANK=K1+K2; IF ICD_RANK>0; RUN; /*ICD_RANK ¡÷+∫ŒªÛ∫¥ ¡ﬂø‰µµ º¯¿ß ≥™≈∏≥ø*/
+IF FORM_CD IN("02","03") AND SUBSTR(SICK_SYM1,1,4) IN ("J301","J302","J305","J308","J309") THEN K1=2; ELSE K1=0; /*ÏûÖÏõê Ïù¥Î©¥ÏÑú Ï£ºÏÉÅÎ≥ë IHD ÏΩîÎìú, K1ÏùÄ Ï£ºÏÉÅÎ≥ëÏóê Ï°¥Ïû¨ÌïòÎ©¥ 2*/
+IF FORM_CD IN("02","03") AND SUBSTR(SICK_SYM2,1,4) IN ("J301","J302","J305","J308","J309") THEN K2=1; ELSE K2=0; /*ÏûÖÏõê Ïù¥Î©¥ÏÑú Î∂ÄÏÉÅÎ≥ë IHD ÏΩîÎìú, K2ÏùÄ Î∂ÄÏÉÅÎ≥ëÏóê Ï°¥Ïû¨ÌïòÎ©¥ 1*/
+ICD_RANK=K1+K2; IF ICD_RANK>0; RUN; /*ICD_RANK Ï£º+Î∂ÄÏÉÅÎ≥ë Ï§ëÏöîÎèÑ ÏàúÏúÑ ÎÇòÌÉÄÎÉÑ*/
 %MEND AR;
 %AR(TOTAL_AR_08,T20_2008) %AR(TOTAL_AR_09,T20_2009)
 %AR(TOTAL_AR_10,T20_2010) %AR(TOTAL_AR_11,T20_2011)
@@ -145,9 +145,9 @@ ICD_RANK=K1+K2; IF ICD_RANK>0; RUN; /*ICD_RANK ¡÷+∫ŒªÛ∫¥ ¡ﬂø‰µµ º¯¿ß ≥™≈∏≥ø*/
 %AR(TOTAL_AR_14,T20_2014) %AR(TOTAL_AR_15,T20_2015)
 %AR(TOTAL_AR_16,T20_2016) %AR(TOTAL_AR_17,T20_2017)
 %T_append (TOTAL_AR);
-/*¿⁄∞›¿Ã∂˚ MERGE KEY ª˝º∫ : PKEY*/
+/*ÏûêÍ≤©Ïù¥Îûë MERGE KEY ÏÉùÏÑ± : PKEY*/
 DATA  A.TOTAL_AR ; SET A.TOTAL_AR;   PKEY=COMPRESS(SUBSTR(MDCARE_STRT_DT,1,4)) || COMPRESS("-") || COMPRESS(INDI_DSCM_NO);RUN;
-/*¿⁄∞›¿Ã∂˚  MERGE BY : PKEY*/
+/*ÏûêÍ≤©Ïù¥Îûë  MERGE BY : PKEY*/
 PROC SQL; CREATE TABLE A.TOTAL_AR      AS SELECT * FROM B.TOTAL_AR, A.JK WHERE TOTAL_AR.PKEY =JK.PKEY;QUIT;
 /**********************************************************************************************************************************************************/
 %STEP1(TOTAL,_AR);
@@ -205,8 +205,8 @@ PROC SORT DATA=A.AR_M ; BY INDI_DSCM_NO MDCARE_STRT_DT;RUN;
 DATA A.AR_M2; SET A.AR_M;
 IF substr(MDCARE_STRT_DT,1,4)<2017;
 DAY=MDY(SUBSTR(MDCARE_STRT_DT,5,2),SUBSTR(MDCARE_STRT_DT,7,2),SUBSTR(MDCARE_STRT_DT,1,4));
-IF LAG(INDI_DSCM_NO)=INDI_DSCM_NO THEN N1="T" ; ELSE N1="F";  /*¿Ã¿¸ Ω√¡°ø° ID∞° ∞∞¿∫¡ˆ*/
-IF LAG(KEY)=0 & KEY=1 THEN N2="T" ; ELSE N2="F";                        /*¿Ã¿¸ Ω√¡°ø° allergic rihinitis ¿÷¥¬ ∞ÊøÏ */
+IF LAG(INDI_DSCM_NO)=INDI_DSCM_NO THEN N1="T" ; ELSE N1="F";  /*Ïù¥Ï†Ñ ÏãúÏ†êÏóê IDÍ∞Ä Í∞ôÏùÄÏßÄ*/
+IF LAG(KEY)=0 & KEY=1 THEN N2="T" ; ELSE N2="F";                        /*Ïù¥Ï†Ñ ÏãúÏ†êÏóê allergic rihinitis ÏûàÎäî Í≤ΩÏö∞ */
 DF1=DAY-LAG(DAY);
 DF2=DAY-LAG2(DAY);
 DF3=DAY-LAG3(DAY);
@@ -245,7 +245,7 @@ IF DF9>28 THEN DF9=".";IF DF10>28 THEN DF10=".";
 MAX_DF=MAX(OF DF1-DF10);
 RUN; 
 
-/*uriø° µ˚∂Û aom ¿÷¥¬±∫ (1)*/
+/*uriÏóê Îî∞Îùº aom ÏûàÎäîÍµ∞ (1)*/
 data a.AR_M3; set a.AR_M2; 
 if key=1;
 IF MAX_DF>=0 & MAX_DF<=7 THEN OUT=1; 
@@ -263,7 +263,7 @@ data a.AR_MM2; set a.AR_M3; if key=1; if out<=2 ;AR2="Y";keep cmn_key AR2;run;
 data a.AR_MM3; set a.AR_M3; if key=1; if out<=3 ;AR3="Y";keep cmn_key AR3;run;
 data a.AR_MM4; set a.AR_M3; if key=1; if out<=4 ;AR4="Y";keep cmn_key AR4;run;
 
-/*±‚¡∏¿Ã∂˚ MERGE«ÿº≠ AR º±«‡ø° ¥Î«ÿ   Y/N ±∏∫– */
+/*Í∏∞Ï°¥Ïù¥Îûë MERGEÌï¥ÏÑú AR ÏÑ†ÌñâÏóê ÎåÄÌï¥   Y/N Íµ¨Î∂Ñ */
 proc sql; create table a.AR_aom1 as select * from a.aom_w4 left join a.AR_MM1 on aom_w4.cmn_key = AR_MM1.cmn_key; quit;
 proc sql; create table a.AR_aom2 as select * from a.aom_w4 left join a.AR_MM2 on aom_w4.cmn_key = AR_MM2.cmn_key; quit;
 proc sql; create table a.AR_aom3 as select * from a.aom_w4 left join a.AR_MM3 on aom_w4.cmn_key = AR_MM3.cmn_key; quit;
@@ -284,7 +284,7 @@ data a.ar_aom2; set a.ar_aom2; ar=ar2;run;
 data a.ar_aom3; set a.ar_aom3; ar=ar3;run;
 data a.ar_aom4; set a.ar_aom4; ar=ar4;run;
 
-/*ARº±«‡ø° µ˚∂Û ±∏∫– */
+/*ARÏÑ†ÌñâÏóê Îî∞Îùº Íµ¨Î∂Ñ */
 %MACRO STEP6(T2,T1,OUT,K);
 DATA A.&T2; SET A.&T1;
 
@@ -323,7 +323,7 @@ DATA A.AR4_COUNT ; SET A.AR4_COUNT; TOTAL=TOT_Y+TOT_N; RUN;
 /************************************************************************************************************************************************************/
 
 
-/*uriø° µ˚∂Û aom ¿÷¥¬±∫ (1)*/
+/*uriÏóê Îî∞Îùº aom ÏûàÎäîÍµ∞ (1)*/
 data a.AR_M3; set a.AR_M2; 
 if key=1;
 IF MAX_DF>=0 & MAX_DF<=7 THEN OUT=1; 
@@ -341,7 +341,7 @@ data a.AR_MM2; set a.AR_M3; if key=1; if out=2 ;AR2="Y";keep cmn_key AR2;run;
 data a.AR_MM3; set a.AR_M3; if key=1; if out=3 ;AR3="Y";keep cmn_key AR3;run;
 data a.AR_MM4; set a.AR_M3; if key=1; if out=4 ;AR4="Y";keep cmn_key AR4;run;
 data a.AR_MM5; set a.AR_M3; if key=1; if out<=4 ;keep cmn_key AR1 AR2 AR3 AR4 OUT;run;
-/*±‚¡∏¿Ã∂˚ MERGE«ÿº≠ AR º±«‡ø° ¥Î«ÿ   Y/N ±∏∫– */
+/*Í∏∞Ï°¥Ïù¥Îûë MERGEÌï¥ÏÑú AR ÏÑ†ÌñâÏóê ÎåÄÌï¥   Y/N Íµ¨Î∂Ñ */
 proc sql; create table a.AR_aom1 as select * from a.aom_w4 left join a.AR_MM1 on aom_w4.cmn_key = AR_MM1.cmn_key; quit;
 proc sql; create table a.AR_aom2 as select * from a.aom_w4 left join a.AR_MM2 on aom_w4.cmn_key = AR_MM2.cmn_key; quit;
 proc sql; create table a.AR_aom3 as select * from a.aom_w4 left join a.AR_MM3 on aom_w4.cmn_key = AR_MM3.cmn_key; quit;
@@ -365,8 +365,8 @@ data a.ar_aom2; set a.ar_aom2; ar=ar2;run;
 data a.ar_aom3; set a.ar_aom3; ar=ar3;run;
 data a.ar_aom4; set a.ar_aom4; ar=ar4;run;
 
-/*ARº±«‡ø° µ˚∂Û ±∏∫– */
-/*uriº±«‡ø° µ˚∂Û ±∏∫– */
+/*ARÏÑ†ÌñâÏóê Îî∞Îùº Íµ¨Î∂Ñ */
+/*uriÏÑ†ÌñâÏóê Îî∞Îùº Íµ¨Î∂Ñ */
 %MACRO STEP6(T2,T1,OUT,K);
 DATA A.&T2; SET A.&T1;
 
