@@ -1,25 +1,25 @@
 /**********************************************************************************************************************************************************/
-/*¿øÀÚ·á data ¶óÀÌºê·¯¸® (append  ÀÚ·á) */
-libname   RAW   '/userdata01/room009/data_source/user_data/181130B_¼­¿ï´ë_¹Ì¼¼¸ÕÁö ÀÎÃ¼°Ç°­¿µÇâÆò°¡_È«À±Ã¶(¿ÀÁ¾¹Î)_E8542/analysis';  
-libname   RAW2 '/userdata01/room009/data_source/user_data/181130B_¼­¿ï´ë_¹Ì¼¼¸ÕÁö ÀÎÃ¼°Ç°­¿µÇâÆò°¡_È«À±Ã¶(¿ÀÁ¾¹Î)_E8542';  
-libname   H1      '/userdata01/room009/°¡¼³1';      /*¿¹Àü ÀÚ·á ¶óÀÌºê·¯¸®*/
-libname   H2      '/userdata01/room009/°¡¼³2';       /*¿¹Àü ÀÚ·á ¶óÀÌºê·¯¸®*/
-libname   H3      '/userdata01/room009/°¡¼³3';       /*¿¹Àü ÀÚ·á ¶óÀÌºê·¯¸®*/
-libname   A        '/userdata01/room009/¿ÀÁ¾¹Î/IHDÅð¿øÈÄ»ç¸Á'; 
+/*ì›ìžë£Œ data ë¼ì´ë¸ŒëŸ¬ë¦¬ (append  ìžë£Œ) */
+libname   RAW   '/userdata01/room009/data_source/user_data/181130B_ì„œìš¸ëŒ€_ë¯¸ì„¸ë¨¼ì§€ ì¸ì²´ê±´ê°•ì˜í–¥í‰ê°€_í™ìœ¤ì² (ì˜¤ì¢…ë¯¼)_E8542/analysis';  
+libname   RAW2 '/userdata01/room009/data_source/user_data/181130B_ì„œìš¸ëŒ€_ë¯¸ì„¸ë¨¼ì§€ ì¸ì²´ê±´ê°•ì˜í–¥í‰ê°€_í™ìœ¤ì² (ì˜¤ì¢…ë¯¼)_E8542';  
+libname   H1      '/userdata01/room009/ê°€ì„¤1';      /*ì˜ˆì „ ìžë£Œ ë¼ì´ë¸ŒëŸ¬ë¦¬*/
+libname   H2      '/userdata01/room009/ê°€ì„¤2';       /*ì˜ˆì „ ìžë£Œ ë¼ì´ë¸ŒëŸ¬ë¦¬*/
+libname   H3      '/userdata01/room009/ê°€ì„¤3';       /*ì˜ˆì „ ìžë£Œ ë¼ì´ë¸ŒëŸ¬ë¦¬*/
+libname   A        '/userdata01/room009/ì˜¤ì¢…ë¯¼/IHDí‡´ì›í›„ì‚¬ë§'; 
 /**********************************************************************************************************************************************************/
 
 /****************************************/
-/********IHD È¯ÀÚ Åð¿ø ÈÄ »ç¸Á***********/
+/********IHD í™˜ìž í‡´ì› í›„ ì‚¬ë§***********/
 /****************************************/
 
-/*ÄÚµå »õ·Î ÀÛ¼º */
+/*ì½”ë“œ ìƒˆë¡œ ìž‘ì„± */
 
-*IHD È¯ÀÚ Á¤ÀÇ ;
+*IHD í™˜ìž ì •ì˜ ;
 %Macro IHD(TABLE1,TABLE2);
 data A.&table1 ; set RAW.&table2;
-IF FORM_CD IN("02","03") AND "I20" <= SUBSTR(SICK_SYM1,1,3)<="I25" THEN K1=2; ELSE K1=0; /*ÀÔ¿ø ÀÌ¸é¼­ ÁÖ»óº´ STROKE ÄÚµå, K1Àº ÁÖ»óº´¿¡ Á¸ÀçÇÏ¸é 2*/
-IF FORM_CD IN("02","03") AND "I20" <= SUBSTR(SICK_SYM2,1,3)<="I25" THEN K2=1; ELSE K2=0; /*ÀÔ¿ø ÀÌ¸é¼­ ºÎ»óº´ STROKE ÄÚµå, K2Àº ºÎ»óº´¿¡ Á¸ÀçÇÏ¸é 1*/
-ICD_RANK=K1+K2; IF ICD_RANK>0; /*ICD_RANK ÁÖ+ºÎ»óº´ Áß¿äµµ ¼øÀ§ ³ªÅ¸³¿*/
+IF FORM_CD IN("02","03") AND "I20" <= SUBSTR(SICK_SYM1,1,3)<="I25" THEN K1=2; ELSE K1=0; /*ìž…ì› ì´ë©´ì„œ ì£¼ìƒë³‘ STROKE ì½”ë“œ, K1ì€ ì£¼ìƒë³‘ì— ì¡´ìž¬í•˜ë©´ 2*/
+IF FORM_CD IN("02","03") AND "I20" <= SUBSTR(SICK_SYM2,1,3)<="I25" THEN K2=1; ELSE K2=0; /*ìž…ì› ì´ë©´ì„œ ë¶€ìƒë³‘ STROKE ì½”ë“œ, K2ì€ ë¶€ìƒë³‘ì— ì¡´ìž¬í•˜ë©´ 1*/
+ICD_RANK=K1+K2; IF ICD_RANK>0; /*ICD_RANK ì£¼+ë¶€ìƒë³‘ ì¤‘ìš”ë„ ìˆœìœ„ ë‚˜íƒ€ëƒ„*/
 DROP MCARE_SUBJ_CD HSPTZ_PATH_TYPE ED_RC_TOT_AMT EDC_SBA EDC_INSUR_BRDN_AMT DISP_SUBJ_TYPE SICK_SYM4 SICK_SYM5;
 RUN;
 %MEND IHD;
@@ -29,15 +29,15 @@ RUN;
 %IHD(TOTAL_IHD_14,T20_2014); %IHD(TOTAL_IHD_15,T20_2015)
 %IHD(TOTAL_IHD_16,T20_2016); %IHD(TOTAL_IHD_17,T20_2017)
 
-/*ÀÚ°ÝÀÌ¶û MERGE KEY »ý¼º : PKEY*/
+/*ìžê²©ì´ëž‘ MERGE KEY ìƒì„± : PKEY*/
 DATA A.Total_IHD; SET A.TOTAL_IHD_08 A.TOTAL_IHD_09 A.TOTAL_IHD_10 A.TOTAL_IHD_11 A.TOTAL_IHD_12 A.TOTAL_IHD_13 A.TOTAL_IHD_14
                      A.TOTAL_IHD_15 A.TOTAL_IHD_16 A.TOTAL_IHD_17; RUN;
 DATA A.TOTAL_IHD;SET A.TOTAL_IHD;  PKEY=COMPRESS(SUBSTR(MDCARE_STRT_DT,1,4)) || COMPRESS("-") || COMPRESS(INDI_DSCM_NO);RUN;
 /**********************************************************************************************************************************************************/
 
-/*ÀÚ°Ý »õ·Î Á¤ÀÇ 2008~2017*/
-/*7´ë µµ½Ã ½Ã±º±¸, 65¼¼ ÀÌ»ó ¿¬·É, º¸Çèºñ ºÐ·ù 1~4 */
-/*¼ºº°, º¸Çèºñ, ½Ãµµ °áÃø Á¦¿Ü */
+/*ìžê²© ìƒˆë¡œ ì •ì˜ 2008~2017*/
+/*7ëŒ€ ë„ì‹œ ì‹œêµ°êµ¬, 65ì„¸ ì´ìƒ ì—°ë ¹, ë³´í—˜ë¹„ ë¶„ë¥˜ 1~4 */
+/*ì„±ë³„, ë³´í—˜ë¹„, ì‹œë„ ê²°ì¸¡ ì œì™¸ */
 DATA A.BFC_REV;
 SET RAW.BFC;
 IF WKPLC_RVSN_CTRB_PT_TYPE_CD ^=".";
@@ -60,8 +60,8 @@ PROC SORT DATA= A.BFC_REV; BY INDI_DSCM_NO;RUN;
 PROC FREQ DATA= A.BFC_REV; TABLES INCOME   ;RUN;
 /**********************************************************************************************************************************************************/
 
-/*2008³âºÎÅÍ 65¼¼ ÀÌ»ó ÀÌ¸é¼­ 7´ë µµ½Ã °ÅÁÖ¿¡ ÇØ´çÇÏÁö ¾Ê´Â »ç¶÷  */
-/*Áß°£¿¡  Å¸Áö¿ª ÀÌ»ç´Â ¹èÁ¦ÇÏ±â À§ÇØ (ÀÚ·á°¡ 7´ë µµ½Ã Á¤º¸·Î ÃßÃâÇØ¼­)*/
+/*2008ë…„ë¶€í„° 65ì„¸ ì´ìƒ ì´ë©´ì„œ 7ëŒ€ ë„ì‹œ ê±°ì£¼ì— í•´ë‹¹í•˜ì§€ ì•ŠëŠ” ì‚¬ëžŒ  */
+/*ì¤‘ê°„ì—  íƒ€ì§€ì—­ ì´ì‚¬ëŠ” ë°°ì œí•˜ê¸° ìœ„í•´ (ìžë£Œê°€ 7ëŒ€ ë„ì‹œ ì •ë³´ë¡œ ì¶”ì¶œí•´ì„œ)*/
 DATA A.BASE_NOT_ID; SET RAW.BFC;
 SIDO=SUBSTR(RVSN_ADDR_CD,1,2);
 IF SIDO NOT IN (11,26,27,28,29,30,31); 
@@ -73,61 +73,61 @@ PROC SORT DATA= A.BASE_NOT_ID NODUPKEY OUT=A.BASE_NOT_ID; BY INDI_DSCM_NO; RUN;
 DATA A.BASE_NOT_ID; SET A.BASE_NOT_ID;
 K=0; KEEP INDI_DSCM_NO K; RUN;
 
-/*7´ë µµ½Ã ¿Ü¿¡ ½Ãµµ ÀÌµ¿ÇÑ °æ¿ì Á¦¿Ü */
+/*7ëŒ€ ë„ì‹œ ì™¸ì— ì‹œë„ ì´ë™í•œ ê²½ìš° ì œì™¸ */
 PROC SQL; CREATE TABLE A.TOTAL_IHD  AS SELECT * FROM A.TOTAL_IHD AS A LEFT JOIN A.BASE_NOT_ID AS B ON A.INDI_DSCM_NO = B.INDI_DSCM_NO; QUIT;
 DATA A.TOTAL_IHD2; SET A.TOTAL_IHD; IF K^=0;  DROP K; RUN;
 
-/*ÀÚ°ÝÀÌ¶û  MERGE BY : PKEY*/
+/*ìžê²©ì´ëž‘  MERGE BY : PKEY*/
 PROC SQL; CREATE TABLE A.TOTAL_IHD3  AS SELECT * FROM A.TOTAL_IHD2,  A.BFC_REV   WHERE TOTAL_IHD2.PKEY   = BFC_REV.PKEY;QUIT;
 PROC FREQ DATA=A.TOTAL_IHD3; TABLES STD_YYYY/LIST; RUN;
 
 /**********************************************************************************************************************************************************/
-/*STEP 1 : µ¥ÀÌÅÍ Å¬¸®´× */
+/*STEP 1 : ë°ì´í„° í´ë¦¬ë‹ */
 DATA A.TOTAL_IHD4; SET A.TOTAL_IHD3;
-IF INDI_DSCM_NO="" THEN DELETE;     /*ID ¹«È¿ Á¦¿Ü*/
-IF FORM_CD IN ("02","03");                 /*¹«È¿ÇÑ Áø·á ÇüÅÂ Á¦¿Ü*/ 
-/*¹«È¿ÇÑ Áø·áÀÏÀÚ Á¦¿Ü*/
+IF INDI_DSCM_NO="" THEN DELETE;     /*ID ë¬´íš¨ ì œì™¸*/
+IF FORM_CD IN ("02","03");                 /*ë¬´íš¨í•œ ì§„ë£Œ í˜•íƒœ ì œì™¸*/ 
+/*ë¬´íš¨í•œ ì§„ë£Œì¼ìž ì œì™¸*/
 IF "2008" <= SUBSTR(MDCARE_STRT_DT,1,4) <="2017" AND "01" <=SUBSTR(MDCARE_STRT_DT,5,2) <="12" AND "01" <= SUBSTR(MDCARE_STRT_DT,7,2) <="31"; 
-/*¹«È¿ÇÑ ÃÖÃÊ Áø·áÀÏÀÚ Á¦¿Ü*/
+/*ë¬´íš¨í•œ ìµœì´ˆ ì§„ë£Œì¼ìž ì œì™¸*/
 IF "1899" <= SUBSTR(FST_HSPTZ_DT,1,4)     <="2017" AND "01" <=SUBSTR(FST_HSPTZ_DT,5,2)      <="12" AND "01" <= SUBSTR(FST_HSPTZ_DT,7,2) <="31"      
-THEN FST_HSPTZ_DT=FST_HSPTZ_DT; ELSE FST_HSPTZ_DT=""; /*¹«È¿ÇÑ ÀÔ³»¿ø ÀÏ¼ö Á¦¿Ü*/
+THEN FST_HSPTZ_DT=FST_HSPTZ_DT; ELSE FST_HSPTZ_DT=""; /*ë¬´íš¨í•œ ìž…ë‚´ì› ì¼ìˆ˜ ì œì™¸*/
 IF VSHSP_DD_CNT="" THEN DELETE;
-IF VSHSP_DD_CNT=0 THEN VSHSP_DD_CNT=1; /*ÀÔ³»¿ø ÀÏ¼ö 0ÀÎ °æ¿ì ÀÔ¿øÀ» Çß´Ù°¡ °ËÁø Áø·á·Î ¸¶Ä§ 0=>1 ÄÚµù*/
-IF 0 <=AGE <=130 ;                      /*¹«È¿ ³ªÀÌ Á¦¿Ü*/
-IF SEX IN ("1","2");                         /*¼ºº° ¹«È¿ Á¦¿Ü*/
-IF SGG="" THEN DELETE; RUN;       /*½Ã±º±¸ ¹«È¿ Á¦¿Ü*/
+IF VSHSP_DD_CNT=0 THEN VSHSP_DD_CNT=1; /*ìž…ë‚´ì› ì¼ìˆ˜ 0ì¸ ê²½ìš° ìž…ì›ì„ í–ˆë‹¤ê°€ ê²€ì§„ ì§„ë£Œë¡œ ë§ˆì¹¨ 0=>1 ì½”ë”©*/
+IF 0 <=AGE <=130 ;                      /*ë¬´íš¨ ë‚˜ì´ ì œì™¸*/
+IF SEX IN ("1","2");                         /*ì„±ë³„ ë¬´íš¨ ì œì™¸*/
+IF SGG="" THEN DELETE; RUN;       /*ì‹œêµ°êµ¬ ë¬´íš¨ ì œì™¸*/
 /**********************************************************************************************************************************************************/
 
-/*STEP 2 : ÇÊ¿äº¯¼ö ÃßÃâ ,Áø·á°³½ÃÀÏÀÚ °è»ê  */
+/*STEP 2 : í•„ìš”ë³€ìˆ˜ ì¶”ì¶œ ,ì§„ë£Œê°œì‹œì¼ìž ê³„ì‚°  */
 DATA A.TOTAL_IHD4; SET A.TOTAL_IHD4;
 FORMAT MDCARE FST MDCARE_DATE FST_DATE DATE1 YYMMDD10.;
 
 MDCARE=MDY(SUBSTR(MDCARE_STRT_DT,5,2),SUBSTR(MDCARE_STRT_DT,7,2),SUBSTR(MDCARE_STRT_DT,1,4));
 FST      =MDY(SUBSTR(FST_HSPTZ_DT,5,2),SUBSTR(FST_HSPTZ_DT,7,2),SUBSTR(FST_HSPTZ_DT,1,4));
 IF FST^="" THEN FST_STATUS=1; ELSE FST_STATUS=0;
-/*Áø·á°³½ÃÀÏÀÚ °è»ê*/
+/*ì§„ë£Œê°œì‹œì¼ìž ê³„ì‚°*/
 IF MDCARE="" THEN MDCARE_DATE=FST; ELSE MDCARE_DATE=MDCARE;
 IF FST^=""      THEN FST_DATE=FST;        ELSE FST_DATE=MDCARE;
 
-DATE1=MIN(FST_DATE,MDCARE_DATE);         /*Áø·á °³½ÃÀÏÀÚ*/
-DIFF_PLUS=MDCARE_DATE-DATE1;               /*ÃÖÃÊ·Î Áø·á ¹ÞÀº ÀÏ - ÀÔ¿øÀÏ*/
-CNT_DD=DIFF_PLUS+VSHSP_DD_CNT; RUN; /*¿ä¾çÀÏ °è»ê*/
+DATE1=MIN(FST_DATE,MDCARE_DATE);         /*ì§„ë£Œ ê°œì‹œì¼ìž*/
+DIFF_PLUS=MDCARE_DATE-DATE1;               /*ìµœì´ˆë¡œ ì§„ë£Œ ë°›ì€ ì¼ - ìž…ì›ì¼*/
+CNT_DD=DIFF_PLUS+VSHSP_DD_CNT; RUN; /*ìš”ì–‘ì¼ ê³„ì‚°*/
 /**********************************************************************************************************************************************************/
 
-/*STEP3 : ÀÔ³»¿ø ÀÏ¼ö °è»ê /  µ¥ÀÌÅÍ Á¤·Ä */
+/*STEP3 : ìž…ë‚´ì› ì¼ìˆ˜ ê³„ì‚° /  ë°ì´í„° ì •ë ¬ */
 PROC SORT DATA=A.TOTAL_IHD4 ; BY INDI_DSCM_NO MDCARE_DATE CNT_DD SICK_SYM1; RUN; 
 
-/*Áø·áÀÏ°ú °³ÀÎ¾ÆÀÌµð·Î »õ·Î¿î KEY ¸¸µë(Áßº¹Á¦°ÅÀ§ÇØ)*/
+/*ì§„ë£Œì¼ê³¼ ê°œì¸ì•„ì´ë””ë¡œ ìƒˆë¡œìš´ KEY ë§Œë“¬(ì¤‘ë³µì œê±°ìœ„í•´)*/
 DATA A.TOTAL_IHD4 ; SET A.TOTAL_IHD4; DKEY=COMPRESS(MDCARE_DATE) || COMPRESS("-") || COMPRESS(INDI_DSCM_NO); RUN;
-/*µ¥ÀÌÅÍ Á¤·Ä : 1) ³¯Â¥+°³º° ID °í·Á 2) ÀÔ³»¿ø ÀÏ¼ö ³»¸² Â÷¼ø , 3) ÁÖ+ºÎ»óº´ ¼øÀ§ ³»¸² Â÷¼ø*/
+/*ë°ì´í„° ì •ë ¬ : 1) ë‚ ì§œ+ê°œë³„ ID ê³ ë ¤ 2) ìž…ë‚´ì› ì¼ìˆ˜ ë‚´ë¦¼ ì°¨ìˆœ , 3) ì£¼+ë¶€ìƒë³‘ ìˆœìœ„ ë‚´ë¦¼ ì°¨ìˆœ*/
 PROC SORT DATA=A.TOTAL_IHD4; BY DKEY DESCENDING CNT_DD DESCENDING ICD_RANK; RUN; 
 
-/*À§ Á¤·ÄÇÑ µ¥ÀÌÅÍ ¿¡¼­ ³¯Â¥+°³º° ¾ÆÀÌµð ±âÁØÀ¸·Î Ã¹ÇàÀÌ ¾Æ´Ï¸é Á¦¿Ü*/
+/*ìœ„ ì •ë ¬í•œ ë°ì´í„° ì—ì„œ ë‚ ì§œ+ê°œë³„ ì•„ì´ë”” ê¸°ì¤€ìœ¼ë¡œ ì²«í–‰ì´ ì•„ë‹ˆë©´ ì œì™¸*/
 DATA A.TOTAL_IHD5; SET A.TOTAL_IHD4; BY DKEY; IF FIRST.DKEY^=1 THEN DELETE; DROP DKEY ICD_RANK; RUN;
-proc sort data=A.TOTAL_IHD5; by indi_dscm_no MDCARE_DATE ;run; /*µ¥ÀÌÅÍ Á¤·Ä  ID, Áø·á °³½ÃÀÏ ¼ø*/
+proc sort data=A.TOTAL_IHD5; by indi_dscm_no MDCARE_DATE ;run; /*ë°ì´í„° ì •ë ¬  ID, ì§„ë£Œ ê°œì‹œì¼ ìˆœ*/
 
 /**********************************************************************************************************************************************************/
-/*STEP4 : EPISODE °è»ê */
+/*STEP4 : EPISODE ê³„ì‚° */
 DATA A.TOTAL_IHD6; 
 FORMAT R START_DATE DATE1_DISCHARGE YYMMDD10.;
 RETAIN R D START_DATE MONEY; SET A.TOTAL_IHD5; BY INDI_DSCM_NO;
@@ -135,7 +135,7 @@ IF FIRST.INDI_DSCM_NO=1 AND LAST.INDI_DSCM_NO=1 THEN DO;
 IKEEP=1; R=DATE1+CNT_DD-1; D=CNT_DD; START_DATE=DATE1; MONEY=ED_RC_TOT_AMT; END; ELSE DO;
 IF FIRST.INDI_DSCM_NO=1 AND LAST.INDI_DSCM_NO^=1 THEN DO;
 IKEEP=1;  R=DATE1+CNT_DD-1; D=CNT_DD; START_DATE=DATE1; MONEY=ED_RC_TOT_AMT; END; ELSE DO;
-K=DATE1-R;  /*¿¬¼ÓµÈ ÀÔ³»¿ø ÀÏ¼ö¸¦ ¸¶Áö¸· Åð¿øÇÑ ³¯Â¥-ÃÖÃÊ ÀÔ¿ø ³¯Â¥·Î °è»ê*/
+K=DATE1-R;  /*ì—°ì†ëœ ìž…ë‚´ì› ì¼ìˆ˜ë¥¼ ë§ˆì§€ë§‰ í‡´ì›í•œ ë‚ ì§œ-ìµœì´ˆ ìž…ì› ë‚ ì§œë¡œ ê³„ì‚°*/
 IF K<=2 THEN DO; IKEEP=0; 
 IF DATE1+CNT_DD-1 <R THEN D=D;
 IF DATE1+CNT_DD-1 <R THEN MONEY=MONEY+ED_RC_TOT_AMT; ELSE DO;
@@ -166,9 +166,9 @@ DISCHARGEDATE=START_DATE+D-1;
 DROP R MAXD IKEEP IKEEP2 ILOGKEEP D2 K CNT_DD D DATE1_DISCHARGE ;RUN;
 /**********************************************************************************************************************************************************/
 
-/*STEP 5 »ç¸ÁÀÏÀÚ ºÙÈ÷±â */
-/*¿¬±¸±â°£ 2008-2017 ·Î »êÃâÇÏ°í ³ëÃâ °ª ºÙÈú¶§´Â(2008-2016±îÁö¸¸ ºÙÀÌ±â)*/
-/*°¡Àå ¸¶Áö¸· Åð¿øÀÏÀÇ ÇÏ³ª¸¸ ³²±â±â */
+/*STEP 5 ì‚¬ë§ì¼ìž ë¶™ížˆê¸° */
+/*ì—°êµ¬ê¸°ê°„ 2008-2017 ë¡œ ì‚°ì¶œí•˜ê³  ë…¸ì¶œ ê°’ ë¶™ížë•ŒëŠ”(2008-2016ê¹Œì§€ë§Œ ë¶™ì´ê¸°)*/
+/*ê°€ìž¥ ë§ˆì§€ë§‰ í‡´ì›ì¼ì˜ í•˜ë‚˜ë§Œ ë‚¨ê¸°ê¸° */
 
 PROC SORT DATA=A.TOTAL_IHD7; BY INDI_DSCM_NO START_DATE; RUN;
 
@@ -176,7 +176,7 @@ DATA A.TOTAL_IHD7; SET A.TOTAL_IHD7;
 YEAR=YEAR(DISCHARGEDATE); 
 drop ED_RC_TOT_AMT money; run;
 
-/*2008³â ±âÁØÀ¸·Î ¿¬·ÉÀÌ 65¼¼ ÀÌ»óÀÎÀÚ°Ý */
+/*2008ë…„ ê¸°ì¤€ìœ¼ë¡œ ì—°ë ¹ì´ 65ì„¸ ì´ìƒì¸ìžê²© */
 DATA B_AG_ID08 ; SET A.BFC_REV; IF STD_YYYY=2008 & AGE>=65 ;KEEP INDI_DSCM_NO AGE STD_YYYY; RUN;
 DATA B_AG_ID09 ; SET A.BFC_REV; IF STD_YYYY=2009 & AGE>=66 ;KEEP INDI_DSCM_NO AGE STD_YYYY; RUN;
 DATA B_AG_ID10 ; SET A.BFC_REV; IF STD_YYYY=2010 & AGE>=67 ;KEEP INDI_DSCM_NO AGE STD_YYYY; RUN;
@@ -196,12 +196,12 @@ PROC FREQ DATA=A.B_AG_ID; TABLES AGE; RUN;
 
 proc sql; create table a.total_IHD8 as select * from a.total_ihd7 where indi_dscm_no in (select INDI_DSCM_NO FROM B_AG_ID); quit;
 
-/*ID ¼øÀ¸·Î, ¸¶Áö¸· Åð¿øÀÏ ³»¸²Â÷¼ø (¸¶Áö¸· Åð¿ø) */
+/*ID ìˆœìœ¼ë¡œ, ë§ˆì§€ë§‰ í‡´ì›ì¼ ë‚´ë¦¼ì°¨ìˆœ (ë§ˆì§€ë§‰ í‡´ì›) */
 PROC SORT DATA=A.TOTAL_IHD8; BY INDI_DSCM_NO DESCENDING DISCHARGEDATE;RUN; 
 
 DATA A.TOTAL_IHD9; SET A.TOTAL_IHD8;
 BY INDI_DSCM_NO; IF FIRST.INDI_DSCM_NO=1;
-DROP SICK_SYM3  K1 K2 MDCARE_DATE FST_DATE  FST_STATUS DIFF_PLUS ;RUN; /*º¯¼ö Á¦°Å */
+DROP SICK_SYM3  K1 K2 MDCARE_DATE FST_DATE  FST_STATUS DIFF_PLUS ;RUN; /*ë³€ìˆ˜ ì œê±° */
 
 PROC SQL;  CREATE TABLE A.TOTAL_IHD10 AS SELECT * FROM A.TOTAL_IHD9 as A LEFT JOIN RAW.TG_DTH AS B ON A.INDI_DSCM_NO = B.INDI_DSCM_NO; QUIT;
 
@@ -210,25 +210,25 @@ proc freq data=a.total_ihd10; tables year; run;
 
 PROC SQL; CREATE TABLE A.TOTAL_IHD11 AS SELECT * FROM A.TOTAL_IHD10 as A LEFT JOIN RAW.final_cod_db AS B ON A.INDI_DSCM_NO = B.INDI_DSCM_NO; QUIT;
 
-/*2008~2016±îÁö¸¸ */
+/*2008~2016ê¹Œì§€ë§Œ */
 DATA A.TOTAL_IHD12; SET A.TOTAL_IHD11;
 IF DTH_CODE_NEW2="";
 IF  SUBSTR(PUT(DISCHARGEDATE,yymmddn8.),1,4)<=2016; RUN;
 
 /***********************************************************************************************************/
 
-/*STEP6 EVENT ALL-cause mortality(»ç¸Á¿øÀÎ ¿¬°èÀü)*/
+/*STEP6 EVENT ALL-cause mortality(ì‚¬ë§ì›ì¸ ì—°ê³„ì „)*/
 
-/**»ýÁ¸ : Åð¿ø ~ 2016-12-31 , »ç¸Á : Åð¿ø~»ç¸Á½ÃÁ¡ **/
+/**ìƒì¡´ : í‡´ì› ~ 2016-12-31 , ì‚¬ë§ : í‡´ì›~ì‚¬ë§ì‹œì  **/
 
-/*2017³â  ÀÌÈÄ ¶Ç´Â 2007³â ¹Ì¸¸ »ç¸ÁÀÏÀÚ ¹Ì½Ì°ª, EVENT´Â 1 ,Non-event ´Â 0 */
+/*2017ë…„  ì´í›„ ë˜ëŠ” 2007ë…„ ë¯¸ë§Œ ì‚¬ë§ì¼ìž ë¯¸ì‹±ê°’, EVENTëŠ” 1 ,Non-event ëŠ” 0 */
 DATA TOTAL_IHD13; SET A.TOTAL_IHD12;
-CD=PUT(DISCHARGEDATE,yymmddn8.);  /*Åð¿øÇÑ ³â¿ùÀÏ ¸í½Ã */
-DTH_Y     =SUBSTR(DTH_ASSMD_DT,1,4); /*³â¿ù¸¸ °è»êÇÏ±âÀ§ÇÑ º¯¼ö ¸¸µë */
-IF DTH_Y^=" " THEN EVENT=1; ELSE EVENT=0; /*»ç¸ÁÀÌ¸é 1, ¾Æ´Ï¸é 0*/
-IF DTH_ASSMD_DT^=. THEN EVENT=1; ELSE EVENT=0; /* ¸ðµç¿øÀÎ »ç¸ÁÀÌ¸é 1, ¾Æ´Ï¸é 0*/
+CD=PUT(DISCHARGEDATE,yymmddn8.);  /*í‡´ì›í•œ ë…„ì›”ì¼ ëª…ì‹œ */
+DTH_Y     =SUBSTR(DTH_ASSMD_DT,1,4); /*ë…„ì›”ë§Œ ê³„ì‚°í•˜ê¸°ìœ„í•œ ë³€ìˆ˜ ë§Œë“¬ */
+IF DTH_Y^=" " THEN EVENT=1; ELSE EVENT=0; /*ì‚¬ë§ì´ë©´ 1, ì•„ë‹ˆë©´ 0*/
+IF DTH_ASSMD_DT^=. THEN EVENT=1; ELSE EVENT=0; /* ëª¨ë“ ì›ì¸ ì‚¬ë§ì´ë©´ 1, ì•„ë‹ˆë©´ 0*/
 IF DTH_Y   =2017   THEN DTH_ASSMD_DT=. ; ELSE DTH_ASSMD_DT=EVENT;
-IF DTH_Y >=2017   THEN EVENT=0; ELSE EVENT=EVENT; /*»ç¸Á³â¿ùÀÌ ¿¬±¸±â°£³»¿¡ ÇØ´çÇÏÁö ¾ÊÀ¸¸é Àý´Ü => EVENT=0*/
+IF DTH_Y >=2017   THEN EVENT=0; ELSE EVENT=EVENT; /*ì‚¬ë§ë…„ì›”ì´ ì—°êµ¬ê¸°ê°„ë‚´ì— í•´ë‹¹í•˜ì§€ ì•Šìœ¼ë©´ ì ˆë‹¨ => EVENT=0*/
 
 IF EVENT=1 AND SUBSTR(DTH_CODE_NEW1,1,1)="I"                                                                       THEN CVD_death=1; ELSE CVD_death=0;
 IF EVENT=1 AND SUBSTR(DTH_CODE_NEW1,1,3) IN ('I60','I61','I62','I63','I64','I65','I66','I67','I68','I69') THEN Stroke_death=1; ELSE Stroke_death=0;
@@ -236,43 +236,43 @@ IF EVENT=1 AND SUBSTR(DTH_CODE_NEW1,1,3) IN ('I60','I61','I62')                 
 IF EVENT=1 AND SUBSTR(DTH_CODE_NEW1,1,3) IN ('I63','I64','I65','I66')                                          THEN I_stroke_death=1;ELSE I_stroke_death=0;
 IF EVENT=1 AND SUBSTR(DTH_CODE_NEW1,1,3) IN ('I20','I21','I22','I23','I24','I25')                            THEN IHD_death=1; ELSE IHD_death=0;
 
-/*»ç¸Á³¯Â¥°¡ Åð¿ø³¯Â¥º¸´Ù ºü¸¥°æ¿ì (Áï, »ç¸ÁÇÏ°í³ª¼­ Åð¿øÇÏ´Â °æ¿ì)-> ÀÌ·± °æ¿ì¿¡´Â Åð¿ø³¯Â¥¸¦ »ç¸Á³¯Â¥·Î º¯°æ*/
-CAL_YM=SUBSTR(DTH_ASSMD_DT,1,6); /*»ç¸Á ³â¿ù*/
+/*ì‚¬ë§ë‚ ì§œê°€ í‡´ì›ë‚ ì§œë³´ë‹¤ ë¹ ë¥¸ê²½ìš° (ì¦‰, ì‚¬ë§í•˜ê³ ë‚˜ì„œ í‡´ì›í•˜ëŠ” ê²½ìš°)-> ì´ëŸ° ê²½ìš°ì—ëŠ” í‡´ì›ë‚ ì§œë¥¼ ì‚¬ë§ë‚ ì§œë¡œ ë³€ê²½*/
+CAL_YM=SUBSTR(DTH_ASSMD_DT,1,6); /*ì‚¬ë§ ë…„ì›”*/
 IF EVENT=1 & CAL_YM<SUBSTR(CD,1,6) THEN CD=DTH_ASSMD_DT; ELSE CD=CD;
 
-/*ADJ_YMD º¯¼ö »ý¼º ; Åð¿ø½ÃÁ¡ ºÎÅÍ »ýÁ¸ ½Ã°£ °è»ê */
-ADJ_Y=SUBSTR(CD,1,4);  /*Åð¿øÇÑ ³â*/
-ADJ_M=SUBSTR(CD,5,2); /*Åð¿øÇÑ ¿ù*/
-CAL_Y =SUBSTR(CAL_YM,1,4);  /*»ç¸ÁÇÑ ³â*/
-CAL_M=SUBSTR(CAL_YM,5,2); /*»ç¸ÁÇÑ ¿ù*/
+/*ADJ_YMD ë³€ìˆ˜ ìƒì„± ; í‡´ì›ì‹œì  ë¶€í„° ìƒì¡´ ì‹œê°„ ê³„ì‚° */
+ADJ_Y=SUBSTR(CD,1,4);  /*í‡´ì›í•œ ë…„*/
+ADJ_M=SUBSTR(CD,5,2); /*í‡´ì›í•œ ì›”*/
+CAL_Y =SUBSTR(CAL_YM,1,4);  /*ì‚¬ë§í•œ ë…„*/
+CAL_M=SUBSTR(CAL_YM,5,2); /*ì‚¬ë§í•œ ì›”*/
 
 IF EVENT=1 & CAL_YM <SUBSTR(CD,1,6) THEN ADJ_Y =CAL_Y ; ELSE ADJ_Y=ADJ_Y;
 IF EVENT=1 & CAL_YM <SUBSTR(CD,1,6) THEN ADJ_M=CAL_M; ELSE ADJ_M=ADJ_M;
 
-IF EVENT=0 THEN T_Y=2016-ADJ_Y ;  /*EVENT 0 ÀÌ¸é ¿¬±¸±â°£ ¸¶Áö¸·³âµµ¿¡¼­ Åð¿ø³âµµ »©ÁÜ*/
-IF EVENT=0 THEN T_M=12-ADJ_M+1; /*EVENT 0 ÀÌ¸é ¿¬±¸±â°£ ¸¶Áö¸· ¿ù¿¡¼­ Åð¿ø³â¿ù »©ÁÜ +1 (°°Àº ¿ù¿¡ Åð¿øÀº 1)*/
+IF EVENT=0 THEN T_Y=2016-ADJ_Y ;  /*EVENT 0 ì´ë©´ ì—°êµ¬ê¸°ê°„ ë§ˆì§€ë§‰ë…„ë„ì—ì„œ í‡´ì›ë…„ë„ ë¹¼ì¤Œ*/
+IF EVENT=0 THEN T_M=12-ADJ_M+1; /*EVENT 0 ì´ë©´ ì—°êµ¬ê¸°ê°„ ë§ˆì§€ë§‰ ì›”ì—ì„œ í‡´ì›ë…„ì›” ë¹¼ì¤Œ +1 (ê°™ì€ ì›”ì— í‡´ì›ì€ 1)*/
 
-IF EVENT=1 & ADJ_M-CAL_M <=0 THEN T_Y=CAL_Y-ADJ_Y;                    /*EVENT 1 ÀÌ°í Åð¿øÇÑ ¿ù ÀÌ »ç¸Á ¿ù º¸´Ù °°°Å³ª ÀÛÀ¸¸é »ç¸Á³âµµ - Åð¿ø³âµµ »©ÁÜ*/
-IF EVENT=1 & ADJ_M-CAL_M <=0 THEN T_M=CAL_M-ADJ_M+1;             /*EVENT 1 ÀÌ°í Åð¿øÇÑ ¿ù ÀÌ »ç¸Á ¿ù º¸´Ù °°°Å³ª ÀÛ°Å³ª °°À¸¸é »ç¸Á³â¿ù - Åð¿ø³â¿ù + 1*/
-IF EVENT=1 & ADJ_M-CAL_M   >0 THEN T_Y=CAL_Y-ADJ_Y;                    /*EVENT 1 ÀÌ°í Åð¿øÇÑ ¿ù ÀÌ »ç¸Á ¿ù º¸´Ù Å©¸é »ç¸Á³âµµ- Åð¿ø³âµµ »©ÁÜ*/
-IF EVENT=1 & ADJ_M-CAL_M   >0 THEN T_M=12+CAL_M-ADJ_M+1;         /*EVENT 1 ÀÌ°í Åð¿øÇÑ ¿ù ÀÌ »ç¸Á ¿ù º¸´Ù Å©¸é »ç¸Á³â¿ù+12 - Åð¿ø³â¿ù +1*/
+IF EVENT=1 & ADJ_M-CAL_M <=0 THEN T_Y=CAL_Y-ADJ_Y;                    /*EVENT 1 ì´ê³  í‡´ì›í•œ ì›” ì´ ì‚¬ë§ ì›” ë³´ë‹¤ ê°™ê±°ë‚˜ ìž‘ìœ¼ë©´ ì‚¬ë§ë…„ë„ - í‡´ì›ë…„ë„ ë¹¼ì¤Œ*/
+IF EVENT=1 & ADJ_M-CAL_M <=0 THEN T_M=CAL_M-ADJ_M+1;             /*EVENT 1 ì´ê³  í‡´ì›í•œ ì›” ì´ ì‚¬ë§ ì›” ë³´ë‹¤ ê°™ê±°ë‚˜ ìž‘ê±°ë‚˜ ê°™ìœ¼ë©´ ì‚¬ë§ë…„ì›” - í‡´ì›ë…„ì›” + 1*/
+IF EVENT=1 & ADJ_M-CAL_M   >0 THEN T_Y=CAL_Y-ADJ_Y;                    /*EVENT 1 ì´ê³  í‡´ì›í•œ ì›” ì´ ì‚¬ë§ ì›” ë³´ë‹¤ í¬ë©´ ì‚¬ë§ë…„ë„- í‡´ì›ë…„ë„ ë¹¼ì¤Œ*/
+IF EVENT=1 & ADJ_M-CAL_M   >0 THEN T_M=12+CAL_M-ADJ_M+1;         /*EVENT 1 ì´ê³  í‡´ì›í•œ ì›” ì´ ì‚¬ë§ ì›” ë³´ë‹¤ í¬ë©´ ì‚¬ë§ë…„ì›”+12 - í‡´ì›ë…„ì›” +1*/
 
 TIME=T_Y*12+T_M; /*TIME ; MIN-MAX (1-120)*/
 
 IF EVENT=1 THEN  KEY=COMPRESS(SUBSTR(DTH_ASSMD_DT,1,6))|| COMPRESS("-") || COMPRESS(SGG);
-IF EVENT=0 THEN  KEY=COMPRESS("201612-")||COMPRESS(SGG) ; /*³ëÃâ °ª¿¡ ¸ÂÃç¼­ Àý´Ü ½ÃÁ¡ ºÙÀÓ*/
+IF EVENT=0 THEN  KEY=COMPRESS("201612-")||COMPRESS(SGG) ; /*ë…¸ì¶œ ê°’ì— ë§žì¶°ì„œ ì ˆë‹¨ ì‹œì  ë¶™ìž„*/
 
-TKEY=COMPRESS(SUBSTR(CD,1,6)) || COMPRESS("-") || COMPRESS(SGG); /* Time varying ³ëÃâ°ªÀÌ¶û ¿¬°èÇÒ KEY ; ³â¿ù+½Ã±º±¸*/RUN;
+TKEY=COMPRESS(SUBSTR(CD,1,6)) || COMPRESS("-") || COMPRESS(SGG); /* Time varying ë…¸ì¶œê°’ì´ëž‘ ì—°ê³„í•  KEY ; ë…„ì›”+ì‹œêµ°êµ¬*/RUN;
 
 PROC FREQ DATA= A.TOTAL_IHD13; TABLES TIME; RUN;
-PROC FREQ DATA=A.TOTAL_IHD13; TABLES EVENT; RUN; /*ÀüÃ¼ »ç¸Á ½ÃÁ¡¿¡´ëÇØ¼­ ±¸ÇØÁÜ */
+PROC FREQ DATA=A.TOTAL_IHD13; TABLES EVENT; RUN; /*ì „ì²´ ì‚¬ë§ ì‹œì ì—ëŒ€í•´ì„œ êµ¬í•´ì¤Œ */
 
 PROC FREQ DATA=A.TOTAL_IHD13; TABLES EVENT;RUN;
 PROC FREQ DATA=A.TOTAL_IHD13; TABLES CVD_DEATH;RUN;
 PROC FREQ DATA=A.TOTAL_IHD13; TABLES STROKE_DEATH;RUN;
 PROC FREQ DATA=A.TOTAL_IHD13; TABLES IHD_DEATH;RUN;
 
-/*EVENT  ¿¡ µû¶ó  º¯°æ */
+/*EVENT  ì— ë”°ë¼  ë³€ê²½ */
 DATA A.TOT_ALL; SET A.TOTAL_IHD13; RUN;
 DATA A.TOT_CVD; SET A.TOTAL_IHD13;
 IF event=1 & cvd_death=1 THEN EVENT=1; ELSE EVENT=0; RUN;
@@ -285,10 +285,10 @@ PROC FREQ DATA= A.TOT_CVD; TABLES EVENT; RUN;
 PROC FREQ DATA= A.TOT_STROKE; TABLES EVENT; RUN;
 PROC FREQ DATA= A.TOT_IHD; TABLES EVENT; RUN;
 
-/*½Ã±º±¸º° Åë°èÄ¡*/
+/*ì‹œêµ°êµ¬ë³„ í†µê³„ì¹˜*/
 DATA A.SGG_STAT; SET H1.SGG_STAT; RUN;
 
-/*ÀÚ°ÝÀº Á¦ÀÏ ºü¸¥ ³âµµ ±âÁØÀ¸·Î Á¤º¸ ¸¸µé±â */
+/*ìžê²©ì€ ì œì¼ ë¹ ë¥¸ ë…„ë„ ê¸°ì¤€ìœ¼ë¡œ ì •ë³´ ë§Œë“¤ê¸° */
  PROC SORT DATA=A.BFC_REV NODUPKEY OUT=A.BFC_REV2; BY INDI_DSCM_NO; QUIT;
 
 DATA A.BFC_REV3; SET A.BFC_REV2;
@@ -299,7 +299,7 @@ KEEP INDI_DSCM_NO SEX AGE_YY AGE INCOME GAIBJA_TYPE; RUN;
 DATA A.TOT_ALL; SET A.TOTAL_IHD13; RUN;
 
 /*-----------------------------------------------------------------------------------------------------------------------*/
-/*Competing risk , Fine & Grays models·Î º¼ ¶§ */
+/*Competing risk , Fine & Grays modelsë¡œ ë³¼ ë•Œ */
 data a.COM_all; set a.tot_all ;
 if event=1 & cvd_death=1    then c_event1=1; if event=1 & cvd_death=0    then c_event1=2; if event=0 then c_event1=0;
 if event=1 & stroke_death=1 then c_event2=1; if event=1 & stroke_death=0 then c_event2=2; if event=0 then c_event2=0;
@@ -313,13 +313,13 @@ proc freq data=a.COM_all; tables c_event3; run;
 /*SGG STATISTICS MERGE*/
 PROC SQL; CREATE TABLE A.COM_ALL AS SELECT * FROM A.COM_ALL , A.SGG_STAT WHERE COM_ALL.SGG = SGG_STAT.CODE; QUIT;
 
-/*»ç¸Á ½ÃÁ¡¿¡ ´ëÇØ¼­ ³ëÃâ ¿¬°è*/
+/*ì‚¬ë§ ì‹œì ì— ëŒ€í•´ì„œ ë…¸ì¶œ ì—°ê³„*/
 PROC SQL; CREATE TABLE A.COM_ALL2 AS SELECT * FROM A.COM_ALL, A.PM25 WHERE COM_ALL.KEY =PM25.KEY; QUIT;
 DATA A.COM_ALL2; SET A.COM_ALL2;
 WKEY=SUBSTR(TKEY,1,9); RUN;
 PROC SQL; CREATE TABLE A.COM_ALL2 AS SELECT * FROM A.COM_ALL2, A.WEA WHERE COM_ALL2.WKEY=WEA.KEY; QUIT;
 
-/*Åð¿ø ½ÃÁ¡¿¡ ´ëÇØ¼­ ³ëÃâ ¿¬°è*/
+/*í‡´ì› ì‹œì ì— ëŒ€í•´ì„œ ë…¸ì¶œ ì—°ê³„*/
 PROC SQL; CREATE TABLE A.COM_ALL3 AS SELECT * FROM A.COM_ALL, A.PM25 WHERE COM_ALL.TKEY =PM25.KEY; QUIT;
 
 DATA A.COM_ALL3; SET A.COM_ALL3;
@@ -344,7 +344,7 @@ CLASS SEX INCOME SIDO /PARAM=REF REF=FIRST;
 MODEL TIME*EVENT(0)= PM25 SEX AGE INCOME SIDO SMOKING high_edu  income_month Lag0_mtemp Lag0_mhumi  ; RUN;
 
 /****************************************************************************/
-/*»ç¸Á ½ÃÁ¡¿¡ ´ëÇØ¼­ modeling*/
+/*ì‚¬ë§ ì‹œì ì— ëŒ€í•´ì„œ modeling*/
 /*Competing risk model event CVD*/
 PROC PHREG DATA=a.COM_ALL3 plots(overlay=stratum)=cif;
 CLASS SEX INCOME SIDO /PARAM=REF REF=FIRST;
@@ -495,7 +495,7 @@ IF MOD(T,12)=0 THEN VAR_M=12 ; ELSE  VAR_M=MOD(T,12);
 IF VAR_M<10 THEN VAR_M2=COMPRESS("0") || COMPRESS(VAR_M) ; ELSE VAR_M2=VAR_M;
 TIME=TIME1;  RUN;
 
-/*ÀÚ°Ý MERGE*/
+/*ìžê²© MERGE*/
 PROC SQL ; CREATE TABLE A.VAR_DF2 AS SELECT * FROM A.VAR_DF, A.BFC_REV3 WHERE VAR_DF.INDI_DSCM_NO =BFC_REV3.INDI_DSCM_NO;QUIT;
 
 DATA A.VAR_DF3; SET A.VAR_DF2;
@@ -530,7 +530,7 @@ DATA A.TOT_CVD      ; SET A.TOT_CVD; IF AGE<74 THEN AGE_GROUP=0; else AGE_GROUP=
 DATA A.TOT_STROKE; SET A.TOT_STROKE; IF AGE<74 THEN AGE_GROUP=0; else AGE_GROUP=1; RUN;
 DATA A.TOT_IHD       ; SET A.TOT_IHD; IF AGE<74 THEN AGE_GROUP=0; else AGE_GROUP=1; RUN;
 
-/*¿¬·É±×·ìº° event*/
+/*ì—°ë ¹ê·¸ë£¹ë³„ event*/
 PROC FREQ DATA=A.TOT_ALL; TABLES AGE_GROUP; RUN;
 PROC FREQ DATA=A.TOT_ALL; TABLES AGE_GROUP*EVENT/LIST; RUN;
 PROC FREQ DATA=A.TOT_CVD; TABLES AGE_GROUP*EVENT/LIST; RUN;
@@ -546,31 +546,31 @@ PROC FREQ DATA=A.TOT_IHD; TABLES AGE_GROUP*EVENT/LIST; RUN;
 DATA A.TV_ALL; SET A.TV_ALL;
 DROP SIGUNGUDATE income_month CODE pop_65 code2 high_edu smoking standard_death_65 ; RUN;
 
-/*½Ã±º±¸ º¯¼ö ¸¸µé¾îÁÖ±â*/
+/*ì‹œêµ°êµ¬ ë³€ìˆ˜ ë§Œë“¤ì–´ì£¼ê¸°*/
 DATA A.TV_ALL       ; SET A.TV_ALL; SGG=SUBSTR(TKEY,8,5)      ; RUN;
 DATA A.TV_CVD      ; SET A.TV_CVD; SGG=SUBSTR(TKEY,8,5)      ; RUN;
 DATA A.TV_STROKE; SET A.TV_STROKE; SGG=SUBSTR(TKEY,8,5); RUN;
 DATA A.TV_IHD       ; SET A.TV_IHD; SGG=SUBSTR(TKEY,8,5)       ; RUN;
 
-/*½Ã±º±¸ Åë°èÄ¡  MERGE*/
+/*ì‹œêµ°êµ¬ í†µê³„ì¹˜  MERGE*/
 proc sql; create table  A.TV_ALL        AS SELECT * FROM A.TV_ALL       AS A LEFT JOIN A.SGG_STAT AS B ON A.SGG = B.CODE; QUIT;
 proc sql; create table  A.TV_CVD       AS SELECT * FROM A.TV_CVD       AS A LEFT JOIN A.SGG_STAT AS B ON A.SGG = B.CODE; QUIT;
 proc sql; create table  A.TV_STROKE AS SELECT * FROM A.TV_STROKE AS A LEFT JOIN A.SGG_STAT AS B ON A.SGG = B.CODE; QUIT;
 proc sql; create table  A.TV_IHD        AS SELECT * FROM A.TV_IHD        AS A LEFT JOIN A.SGG_STAT AS B ON A.SGG = B.CODE; QUIT;
 
-/*TIME-VARYING AGE °è»ê*/
+/*TIME-VARYING AGE ê³„ì‚°*/
 DATA A.TV_ALL       ; SET A.TV_ALL      ; DIFF_YY=SUBSTR(TKEY,1,4)-AGE_YY; TAGE=AGE+DIFF_YY; WKEY=SUBSTR(TKEY,1,9); RUN;
 DATA A.TV_CVD      ; SET A.TV_CVD      ; DIFF_YY=SUBSTR(TKEY,1,4)-AGE_YY; TAGE=AGE+DIFF_YY; WKEY=SUBSTR(TKEY,1,9); RUN;
 DATA A.TV_STROKE; SET A.TV_STROKE; DIFF_YY=SUBSTR(TKEY,1,4)-AGE_YY; TAGE=AGE+DIFF_YY; WKEY=SUBSTR(TKEY,1,9); RUN;
 DATA A.TV_IHD       ; SET A.TV_IHD       ; DIFF_YY=SUBSTR(TKEY,1,4)-AGE_YY; TAGE=AGE+DIFF_YY; WKEY=SUBSTR(TKEY,1,9); RUN;
 
-/*TIME-VARYING Á¤·Ä */
+/*TIME-VARYING ì •ë ¬ */
 proc sort data=a.tv_all         ; by indi_dscm_no tkey; run;
 proc sort data=a.tv_CVD      ; by indi_dscm_no tkey; run;
 proc sort data=a.tv_STROKE; by indi_dscm_no tkey; run;
 proc sort data=a.tv_IHD       ; by indi_dscm_no tkey; run;
 
-/*TIME-VARYING ±â»óº¯¼ö */
+/*TIME-VARYING ê¸°ìƒë³€ìˆ˜ */
 PROC SQL; CREATE TABLE A.TV_ALL        AS SELECT * FROM A.TV_ALL       AS A LEFT JOIN A.WEA AS B ON A.WKEY=B.KEY;QUIT;
 PROC SQL; CREATE TABLE A.TV_CVD       AS SELECT * FROM A.TV_CVD       AS A LEFT JOIN A.WEA AS B ON A.WKEY=B.KEY;QUIT;
 PROC SQL; CREATE TABLE A.TV_STROKE AS SELECT * FROM A.TV_STROKE AS A LEFT JOIN A.WEA AS B ON A.WKEY=B.KEY;QUIT;
@@ -606,7 +606,7 @@ PROC SORT DATA=a.TV_STROKE; BY INDI_DSCM_NO STD_YYYY; RUN;
 PROC SORT DATA=a.TV_IHD       ; BY INDI_DSCM_NO STD_YYYY; RUN;
 
 /*******************************************************************************************************/
-/**Crude model  ¹Ý´ë·Î À¯ÀÇÇÔ  HR 0.9´ë **/
+/**Crude model  ë°˜ëŒ€ë¡œ ìœ ì˜í•¨  HR 0.9ëŒ€ **/
 %MACRO result0(table,M);
 PROC PHREG DATA=a.&table.;
 CLASS SEX INCOME SIDO /PARAM=REF REF=FIRST;
@@ -727,7 +727,7 @@ DATA A.C_CVD ; SET A.R0 A.R1 A.R2 A.R3 A.R4 A.R5 A.R6 A.R11 A.R23 A.R35;
 LABEL="CVD-cause"; model="Crude"; RUN;
 
 /*******************************************************************************************************/
-/*º¸Á¤º¯¼ö: ¼ºº°, ¿¬·É, º¸Çè·á, ½Ãµµ, ½Ã±º±¸ Åë°èÄ¡(Èí¿¬À², ±³À° ¼öÁØ, ¿ùº° ¼öÀÔ) + ±â»óº¯¼ö (±â¿Â, ½Àµµ)*/
+/*ë³´ì •ë³€ìˆ˜: ì„±ë³„, ì—°ë ¹, ë³´í—˜ë£Œ, ì‹œë„, ì‹œêµ°êµ¬ í†µê³„ì¹˜(í¡ì—°ìœ¨, êµìœ¡ ìˆ˜ì¤€, ì›”ë³„ ìˆ˜ìž…) + ê¸°ìƒë³€ìˆ˜ (ê¸°ì˜¨, ìŠµë„)*/
 %MACRO result0(table,M);
 PROC PHREG DATA=a.&table.;
 CLASS SEX INCOME SIDO /PARAM=REF REF=FIRST;
@@ -865,7 +865,7 @@ DATA A.IHD ; SET A.R0 A.R1 A.R2 A.R3 A.R4 A.R5 A.R6 A.R11 A.R23 A.R35;
 LABEL="IHD"; RUN;
 
 /************************************************************************************************/
-/*¼ºº° ÃþÈ­ */
+/*ì„±ë³„ ì¸µí™” */
 DATA A.TV_ALL_SEX_M      ; SET A.TV_ALL       ; IF SEX IN (1); RUN;
 DATA A.TV_ALL_SEX_F       ; SET A.TV_ALL       ; IF SEX IN (2); RUN;
 DATA A.tv_CVD_SEX_M      ; SET A.TV_CVD      ; IF SEX IN (1); RUN;
@@ -940,7 +940,7 @@ DATA A.IHD_SEX_F ; SET A.R0 A.R1 A.R2 A.R3 A.R4 A.R5 A.R6 A.R11 A.R23 A.R35;
 LABEL="IHD_SEX_F"; RUN;
 
 /************************************************************************************************/
-/*¿¬·É ÃþÈ­ */
+/*ì—°ë ¹ ì¸µí™” */
 DATA A.TV_ALL_AG0; SET A.TV_ALL; IF  AGE_GROUP=0;RUN; 
 DATA A.TV_ALL_AG1; SET A.TV_ALL; IF  AGE_GROUP=1;RUN;
 
@@ -1019,7 +1019,7 @@ PROC SORT DATA=A.TV_STROKE; BY INDI_DSCM_NO STD_YYYY;RUN;
 PROC SORT DATA=A.TV_IHD       ; BY INDI_DSCM_NO STD_YYYY;RUN;
 
 
-/*Exposure-response curve , ³ëÃâ°ª(6-month, 12-month,24-month °í·Á)*/
+/*Exposure-response curve , ë…¸ì¶œê°’(6-month, 12-month,24-month ê³ ë ¤)*/
 PROC SORT DATA=A.TV_ALL NODUPKEY OUT=TEMP1 ; BY Lag05_PM25; RUN;
 PROC SORT DATA=A.TV_ALL NODUPKEY OUT=TEMP2 ; BY Lag011_PM25; RUN;
 PROC SORT DATA=A.TV_ALL NODUPKEY OUT=TEMP3 ; BY Lag023_PM25; RUN;
@@ -1032,7 +1032,7 @@ PROC SORT DATA=A.TV_stroke NODUPKEY OUT=TEMP1 ; BY Lag05_PM25; RUN;
 PROC SORT DATA=A.TV_stroke NODUPKEY OUT=TEMP2 ; BY Lag011_PM25; RUN;
 PROC SORT DATA=A.TV_stroke NODUPKEY OUT=TEMP3 ; BY Lag023_PM25; RUN;
 
-/*³ëÃâ °ª¸¸ °¡Á®¿À±â*/
+/*ë…¸ì¶œ ê°’ë§Œ ê°€ì ¸ì˜¤ê¸°*/
 data temp1; set temp1;  keep Lag05_PM25; run;
 data temp2; set temp2;  keep Lag011_PM25; run;
 data temp3; set temp3;  keep Lag023_PM25; run;
@@ -1041,7 +1041,7 @@ PROC MEANS DATA=temp1 N MEAN MEDIAN STDDEV P1 P5 P10 P25 P50 P75 P90 P95 P99  MI
 PROC MEANS DATA=temp2 N MEAN MEDIAN STDDEV P1 P5 P10 P25 P50 P75 P90 P95 P99  MIN MAX; VAR LAG011_PM25 ; RUN;
 PROC MEANS DATA=temp3 N MEAN MEDIAN STDDEV P1 P5 P10 P25 P50 P75 P90 P95 P99  MIN MAX; VAR LAG023_PM25 ; RUN;
 
-/*ÇÊ¿äÇÑ  */
+/*í•„ìš”í•œ  */
 data A.all_p; set a.tv_all; 
 keep indi_dscm_no time0 time event Lag05_PM25 LAG011_PM25 LAG023_PM25 SEX TAGE INCOME SIDO SMOKING high_edu  
 income_month Lag05_mtemp Lag011_mtemp Lag023_mtemp Lag05_mhumi Lag011_mhumi Lag023_mhumi; run;
