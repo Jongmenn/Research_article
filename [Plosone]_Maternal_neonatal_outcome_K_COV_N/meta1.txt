@@ -1,0 +1,63 @@
+
+# install.packages("forestplot")
+library(forestplot)
+library(readxl)
+#자료불러오기 
+setwd("D:\\EUMC\\코로나19공단연구\\result")
+d1<-read_excel("COVID19_Table_Figure.xlsx",sheet="Sen_외국인제외") #Sheet별로 변경 
+
+#테이블 정렬 하기위해 제목 아래 한칸씩 띄어쓸 부분 지정 
+subgps <- c(2:4,6:8,10:12,14:16,18:20,22:24)
+d1$value[subgps] <- paste("  ",d1$value[subgps]) 
+
+d1$OR_text=paste0(round(d1$OR,2),", 95% CI:",round(d1$LCI,2),", ",round(d1$UCI,2))
+d1$OR_text=paste0(round(d1$OR,2))
+d1$CI95   =paste0(as.character(round(d1$LCI,2)),", ",as.character(round(d1$UCI,2)))
+
+#제목에 쓰인 부분은 지우기 
+d1[is.na(d1$beta),]$OR_text=NA
+d1[is.na(d1$beta),]$CI95   =NA
+
+#그림에 표현할 텍스트
+tabletext <- cbind(c("Outcome","\n",d1$value),
+                   c("OR","\n",d1$OR_text),
+                   c("95% CI","\n",d1$CI95))
+
+
+#forestplot() 내에 옵션 fpColors은 열로 묶인 자료에 대해서(그룹별 자료) 일괄적으로 색깔지정
+#유의한 그룹/ 유의하지 않은 그룹으로 지정해서 열로 묶기
+est<-as.data.frame(cbind(OR=c(NA,NA,d1$OR),lci=c(NA,NA,d1$LCI),uci=c(NA,NA,d1$UCI)))
+signi<-ifelse(est$lci>1,1,0)
+signi[is.na(signi)]<-0
+est$signi=signi
+
+est1<-est;est2<-est
+
+est1$OR =with(est1,ifelse(signi==0,NA,OR))
+est1$lci=with(est1,ifelse(signi==0,NA,lci))
+est1$uci=with(est1,ifelse(signi==0,NA,uci))
+
+est2$OR =with(est2,ifelse(signi==1 ,NA,OR))
+est2$lci=with(est2,ifelse(signi==1,NA,lci))
+est2$uci=with(est2,ifelse(signi==1,NA,uci))
+
+
+x11();forestplot(labeltext=tabletext, graph.pos=4, 
+                 mean =cbind(est1$OR,est2$OR), 
+                 lower=cbind(est1$lci,est2$lci),
+                 upper=cbind(est1$uci,est2$uci),
+                 title="",
+                 xlab="Odds ratio (95% CI)",
+                 txt_gp=fpTxtGp(label=gpar(cex=1.2),
+                                ticks=gpar(cex=1.4),
+                                xlab=gpar(cex = 1.2),
+                                title=gpar(cex = 1.4)),
+                 is.summary=c(T,F,T,rep(F,3),T,rep(F,3),T,rep(F,3),T,rep(F,3),T,rep(F,3),T,rep(F,3)),
+                 col=fpColors(box=c("red","black"), lines=c("red","black"), zero = "gray50"),
+                 xticks=c(0.4,1,4),
+                 zero=1, cex=1, lineheight = "auto", boxsize=0.4, colgap=unit(5,"mm"),
+                 lwd.ci=2, ci.vertices=TRUE, ci.vertices.height = 0.2,)
+
+
+
+

@@ -1,0 +1,291 @@
+
+
+/**********************************************************************************************/
+/**********************************************************************************************/
+
+/*연구 대상자 정의
+(1) 국민행복카드 DB 있는 임신부 중에서
+(2) 엄마-아이 DB랑 연계 가능
+(3) 임신 시점을 분만예정일-280일로 계산하고
+(4) 자격연계는 임신 시점(3)으로 연계
+*/
+/**********************************************************************************************/
+/**********************************************************************************************/
+/*HANA DB SQL 추출 기본 형태*/
+/*자료 추출 기본 형태*/
+PROC SQL; 
+&CONNECT.;
+CREATE TABLE T_NAME AS SELECT * FROM CONNECTION TO X1(
+--
+);DISCONNECT FROM X1;
+QUIT; 
+/*중복 테이블 있을시 DROP하고 추출*/
+PROC SQL; DROP TABLE SAPTMP.T_NAME; 
+&CONNECT.;
+EXECUTE(
+CREATE TABLE T_NAME AS (
+--
+))BY X1; DISCONNECT FROM X1;
+QUIT;
+
+/**********************************************************************************************/
+/**********************************************************************************************/
+/**상위 10개 자료 확인**/
+PROC SQL; 
+&CONNECT.;
+CREATE TABLE WORK AS SELECT * FROM CONNECTION TO X1(
+    SELECT TOP 10*
+    FROM NHISBDA.COVID_PT_OPEN_SPC  /**확진자 DB**/
+);DISCONNECT FROM X1;
+QUIT; 
+/**********************************************************************************************/
+PROC SQL; 
+&CONNECT.;
+CREATE TABLE WORK AS SELECT * FROM CONNECTION TO X1(
+    SELECT TOP 10*
+    FROM NHIS_220051.EXP_DLY_DT  /**임신주수 & 임신부 전수**/
+);DISCONNECT FROM X1;
+QUIT; 
+/**********************************************************************************************/
+PROC SQL; 
+&CONNECT.;
+CREATE TABLE WORK AS SELECT * FROM CONNECTION TO X1(
+    SELECT count(INDI_DSCM_NO) as cnt, count(distInct indi_dscm_no) as unique_cnt ,min(MTNT_SCD_DT) AS MIN_DT,
+	MAX(MTNT_SCD_DT) AS MAX_DT 
+    FROM NHIS_220051.EXP_DLY_DT  /**임신주수 & 임신부 전수**/
+);DISCONNECT FROM X1;
+QUIT; 
+/**********************************************************************************************/
+
+/*국민행복카드 DB 분만예정일자 대상자*/
+PROC SQL; 
+&CONNECT.;
+CREATE TABLE TARGET AS SELECT * FROM CONNECTION TO X1(
+    SELECT * FROM NHIS_220051.EXP_DLY_DT  /**임신주수 & 임신부 전수**/
+);DISCONNECT FROM X1;
+QUIT; 
+
+data aa.target ; set target; run;
+
+/*국민행복카드에서 대상자수 파악*/
+PROC SQL; 
+&CONNECT.;
+CREATE TABLE WORK AS SELECT * FROM CONNECTION TO X1(
+    SELECT count(INDI_DSCM_NO) as cnt, count(distInct indi_dscm_no) as unique_cnt ,min(MTNT_SCD_DT) AS MIN_DT,
+	MAX(MTNT_SCD_DT) AS MAX_DT 
+    FROM NHIS_220051.EXP_DLY_DT  /**임신주수 & 임신부 전수**/
+);DISCONNECT FROM X1;
+QUIT; 
+
+PROC SQL; 
+&CONNECT.;
+CREATE TABLE WORK AS SELECT * FROM CONNECTION TO X1(
+    SELECT TOP 10*
+    FROM NHISBDA.HHDV_MOTHER_CHILD_LINK  /**확진자 DB**/
+);DISCONNECT FROM X1;
+QUIT; 
+
+/*엄마-아이 연계 DB 대상자 수 파악 2002~2022.05*/
+PROC SQL; 
+&CONNECT.;
+CREATE TABLE WORK AS SELECT * FROM CONNECTION TO X1(
+    SELECT count(CHILD_ID) as CHD_cnt, count(distInct CHILD_ID) as unique_CHD_cnt,
+           count(MOTHER_ID) as MTH_cnt, count(distInct MOTHER_ID) as unique_MTH_cnt,
+           min(DLV_DT) AS MIN_DLV_DT, MAX(DLV_DT) AS MAX_DLV_DT 
+    FROM NHISBDA.HHDV_MOTHER_CHILD_LINK  /**임신주수 & 임신부 전수**/
+);DISCONNECT FROM X1;
+QUIT; 
+
+/*2020~2022년까지 분만 이력 있는 산모만 추리기*/
+PROC SQL; 
+&CONNECT.;
+CREATE TABLE MC AS SELECT * FROM CONNECTION TO X1(
+SELECT * FROM NHISBDA.HHDV_MOTHER_CHILD_LINK   /**임신주수 & 임신부 전수**/
+WHERE SUBSTR(DLV_DT,1,4) IN (2020,2021,2022)   /*2020~2022.05*/
+);DISCONNECT FROM X1;
+QUIT; 
+
+DATA AA.MC     ; SET MC  ; DLV_YYYY=SUBSTR(DLV_DT,1,4); DLV_MONTH=SUBSTR(DLV_DT,5,2); RUN;
+DATA SAPTMP.MC; SET AA.MC; DLV_YYYY=SUBSTR(DLV_DT,1,4); DLV_MONTH=SUBSTR(DLV_DT,5,2); RUN;
+
+PROC FREQ DATA=AA.MC; TABLES DLV_YYYY*DLV_MONTH/LIST; RUN;
+
+PROC SQL; DROP TABLE SAPTMP.WORK; 
+&CONNECT.;
+CREATE TABLE WORK AS SELECT * FROM CONNECTION TO X1(
+    SELECT count(CHILD_ID) as CHD_cnt, count(distInct CHILD_ID) as unique_CHD_cnt,
+           count(MOTHER_ID) as MTH_cnt, count(distInct MOTHER_ID) as unique_MTH_cnt,
+           min(DLV_DT) AS MIN_DLV_DT, MAX(DLV_DT) AS MAX_DLV_DT 
+    FROM MC  /**임신주수 & 임신부 전수**/
+);DISCONNECT FROM X1;
+QUIT; 
+
+/**********************************************************************************************/
+/*엄마-아이 대상자와 국민행복카드 임신주수 있는 대상자 연계*/
+PROC SQL; DROP TABLE SAPTMP.JOIN1;
+&CONNECT.;
+EXECUTE(
+CREATE TABLE JOIN1 AS
+
+(SELECT A.*,B.MTNT_SCD_DT
+FROM MC A left join NHIS_220051.EXP_DLY_DT B  
+ON A.MOTHER_ID=B.INDI_DSCM_NO AND A.DLV_YYYY BETWEEN '2020' AND '2022'
+)
+)BY X1; DISCONNECT FROM X1;QUIT;
+
+PROC SQL; DROP TABLE SAPTMP.WORK; 
+&CONNECT.;
+CREATE TABLE WORK AS SELECT * FROM CONNECTION TO X1(
+    SELECT count(MOTHER_ID) as MTH_cnt, count(distInct MOTHER_ID) as unique_MTH_cnt 
+    FROM JOIN1  /**임신주수 & 임신부 전수**/
+);DISCONNECT FROM X1;
+QUIT; 
+
+/*분만예정일 없는 경우 제외*/
+/*분만일-분만예정일 날짜 차이 많이나는 경우 제외(코챈스 기준 적용)-150~+50*/
+DATA AA.Z; 
+RETAIN CHILD_ID SEX_TYPE MOTHER_ID DLV_DT MTNT_SCD_DT DIFF_DATE;
+SET SAPTMP.JOIN1;  
+if MTNT_SCD_DT^="";
+DATE1=MDY(SUBSTR(DLV_DT,5,2),SUBSTR(DLV_DT,7,2),SUBSTR(DLV_DT,1,4));               /*분만일(분만코드로 입원한 날짜)*/
+DATE2=MDY(SUBSTR(MTNT_SCD_DT,5,2),SUBSTR(MTNT_SCD_DT,7,2),SUBSTR(MTNT_SCD_DT,1,4));/*분만예정일*/
+DIFF_DATE=DATE1-DATE2;
+IF DIFF_DATE>=-150 & DIFF_DATE <=50; /*-150~+50*/
+FORMAT DATE1 DATE10. DATE2 DATE10.;
+DROP DATE1 DATE2;
+RUN;
+
+PROC FREQ DATA=AA.Z; TABLES DIFF_DATE; RUN;
+
+proc sort data=aa.z; by CHILD_ID MOTHER_ID  descending diff_date; RUN;
+/*한 엄마가 분만예정일 여러번 붙은 경우*/
+PROC SQL; CREATE TABLE ZZ
+AS SELECT MOTHER_ID AS ID, COUNT(MOTHER_ID) AS CNT FROM AA.Z GROUP BY MOTHER_ID; QUIT;
+PROC FREQ DATA=ZZ; TABLES CNT; RUN;
+
+/*산모 1명만 붙은 경우: 분만예정일 변수*/
+DATA Z_CNT1; SET ZZ; IF CNT=1; RUN;
+/*산모 2명 이상 붙은 경우: 분만예정일 변수*/
+DATA Z_CNT2; SET ZZ; IF CNT>=2; RUN;
+
+proc sort data=z_cnt2; by CHILD_ID MOTHER_ID DATE_DIFF; RUN;
+proc sort data=aa.z; by MOTHER_ID MTNT_SCD_DT; RUN;
+
+/*연구기간동안 한 산모당 분만예정일 1번 연계되는 경우 */
+PROC SQL;CREATE TABLE Z_DUP1 AS SELECT * FROM AA.Z WHERE MOTHER_ID IN(SELECT ID FROM Z_CNT1); QUIT;
+/*연구기간동안 한 산모당 분만예정일 2번 이상 연계되는 경우 */
+PROC SQL;CREATE TABLE Z_DUP2 AS SELECT * FROM AA.Z WHERE MOTHER_ID IN(SELECT ID FROM Z_CNT2); QUIT;
+
+/*엄마-아이쌍 킷값 중복인 대상자 찾기*/
+DATA Z_DUP2; SET Z_DUP2;
+KEY=COMPRESS(LEFT(CHILD_ID))||("-")||COMPRESS(LEFT(MOTHER_ID)); RUN;
+
+PROC SQL;CREATE TABLE MC_DUPKEY AS SELECT KEY, COUNT(KEY) AS CNT FROM Z_DUP2 GROUP BY KEY; QUIT;
+DATA MC_DUPKEY; SET MC_DUPKEY; IF CNT>=2; RUN;
+
+/*엄마-아이쌍 키 값에서 중복있는 경우*/
+PROC SQL; CREATE TABLE Z_DUP2_REV1 AS SELECT * FROM Z_DUP2 WHERE KEY IN (SELECT KEY FROM MC_DUPKEY); QUIT;
+/*엄마-아이쌍 키 값에서 중복없는 경우*/
+PROC SQL; CREATE TABLE Z_DUP2_REV2 AS SELECT * FROM Z_DUP2 WHERE KEY NOT IN (SELECT KEY FROM MC_DUPKEY); QUIT;
+
+/*(1)엄마-아이쌍 중복 제거 (2) 날짜 우선순위로 분만예정일 뒷날인애 먼저 살리기*/
+PROC SORT DATA=Z_DUP2_REV1 NODUPKEY; BY KEY; RUN;
+PROC SORT DATA=Z_DUP2_REV2 NODUPKEY; BY KEY; RUN;
+/*변수정리*/
+DATA Z_DUP2_REV1; SET Z_DUP2_REV1; DROP KEY; RUN;
+DATA Z_DUP2_REV2; SET Z_DUP2_REV2; DROP KEY; RUN;
+
+DATA Z_DUP2_F; SET Z_DUP2_REV1 Z_DUP2_REV2; RUN;
+
+PROC FREQ DATA=Z_DUP2_F; TABLES DLV_YYYY*DLV_MONTH/LIST; RUN;
+
+DATA TARGET; SET Z_DUP1 Z_DUP2_F; 
+DATE1=MDY(SUBSTR(DLV_DT,5,2),SUBSTR(DLV_DT,7,2),SUBSTR(DLV_DT,1,4));               /*분만일(분만코드로 입원한 날짜)*/
+DATE2=MDY(SUBSTR(MTNT_SCD_DT,5,2),SUBSTR(MTNT_SCD_DT,7,2),SUBSTR(MTNT_SCD_DT,1,4));/*분만예정일*/
+
+preg_date=date2-280; /*임신 시작일(추정):분만예정일- 280*/
+GA       =date1-preg_date; /*Gestational age*/
+GA_wk    =GA/7;
+preg_ddate=put(preg_date,yymmddn8.);
+FORMAT DATE1 DATE10. DATE2 DATE10. preg_date date10.;
+DROP DATE1 DATE2;
+drop diff_date;
+RUN;
+
+proc freq data=target; tables ga; run;
+
+proc sql; create table z as select mother_id as id, count(mother_id) as cnt from target group by mother_id; quit;
+proc freq data=z;tables cnt; run;
+
+/*분만-출산DB& 임신주수 연계한 최종 자료 -> AA, SAPTMP에 옮김*/
+data saptmp.TARGET; set AA.TARGET;
+rename sex_type=CHD_sex;
+PREG_YEAR=SUBSTR(PREG_DDATE,1,4);  run;
+
+
+/**********************************************************************************************/
+/**********************************************************************************************/
+/*JOIN*/
+/*HANA DB내에서 자료 merge할 때 앞에 위치 안붙여줘도 알아서 SAPTMP 자료씀 근데, SAPTMP에 자료있는지 확인 필요*/
+PROC SQL; 
+&CONNECT.;
+EXECUTE(
+CREATE TABLE JK_TARGET AS
+(SELECT * FROM TARGET A left join NHISBDA.HHDV_DSES_YY B  
+ON A.MOTHER_ID=B.INDI_DSCM_NO WHERE A.PREG_YEAR=B.STD_YYYY
+)
+)BY X1; DISCONNECT FROM X1;QUIT;
+
+/*데이터 대상자별 건수(중복 허용), 고유 대상자*/
+PROC SQL;
+CREATE TABLE ZZ AS SELECT COUNT(INDI_DSCM_NO) AS CNT, 
+count(distInct indi_dscm_no) as unique_cnt FROM SAPTMP.JK_TARGET; RUN;
+/**********************************************************************************************/
+/*자격 연계후에 거주지 지역 변수 만들고 거주지 지역 MISSING 있는지 검토*/
+/*1st data cleaning*/
+DATA AA.JK_TARGET; set saptmp.JK_TARGET;
+
+/*거주지 변수 만들기 시도/시군구*/
+MTH_SIDO=SUBSTR(RVSN_ADDR_CD,1,2);
+MTH_SGG =SUBSTR(RVSN_ADDR_CD,1,5);
+/*출생아 성별 무효 제외*/
+/*엄마 성별 무효 제외*/
+/*연령 결측 없음: 확인함*/
+if CHD_SEX IN (1,2);
+IF SEX_TYPE=2;
+IF MTH_SIDO^="";
+IF FOREIGNER_Y="Y" THEN FOREIGNER_YN=1; ELSE FOREIGNER_YN=0;  /*엄마 외국인 유무*/
+DROP INDI_DSCM_NO;
+RUN;
+
+/*자격 연계 후 몇몇 변수들 빈도 검토, 결측 있나 없나*/
+PROC FREQ DATA=AA.JK_TARGET; TABLES MTH_sido; RUN;
+PROC FREQ DATA=AA.JK_TARGET; TABLES FOREIGNER_YN; RUN;
+PROC FREQ DATA=AA.JK_TARGET; TABLES YEND_STD_AGE; RUN;
+PROC FREQ DATA=AA.JK_TARGET; TABLES PREG_YEAR; RUN;
+PROC FREQ DATA=AA.JK_TARGET; TABLES DLV_YYYY; RUN;
+
+/*AA 테이블에서 데이터 클리닝 및 변수 추가함*/
+/*기존 자격& 대상자 연계한 자료 (JK_TARGET) SAPTMP에서 삭제후 덮어씌우기 */
+DATA AA.JK_TARGET; SET AA.JK_TARGET; DROP INDI_DSCM_NO; RUN;
+DATA SAPTMP.JK_TARGET; SET AA.JK_TARGET; RUN;
+
+/**********************************************************************************************/
+/**코로나 확진자 (감염 대상자) DB 조회: 상위 10개 자료 확인**/
+PROC SQL; 
+&CONNECT.;
+CREATE TABLE WORK AS SELECT * FROM CONNECTION TO X1(
+    SELECT TOP 10*
+    FROM NHISBDA.COVID_PT_OPEN_SPC  /**확진자 DB**/
+);DISCONNECT FROM X1;
+QUIT; 
+
+/**코로나 확진자 빈도 **/
+PROC SQL; 
+&CONNECT.;
+CREATE TABLE WORK AS SELECT * FROM CONNECTION TO X1(
+    SELECT count(INDI_DSCM_NO) as cnt, count(distInct indi_dscm_no) as unique_cnt ,min(CDX_DT) AS MIN_CDXDT,
+	MAX(CDX_DT) AS MAX_CDXDT 
+    FROM NHISBDA.COVID_PT_OPEN_SPC   /**확진자 DB**/
+);DISCONNECT FROM X1;
+QUIT; 
