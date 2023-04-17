@@ -13,30 +13,30 @@ hn.age2<-subset(hn.r,age_group==2)
 
 summary(hn.age1$age)
 
-#º¹ÇÕÇ¥º»ºĞ¼® ÁØºñ
-com.svy.sex1<-svydesign(ids    =~psu,       #Áı¶ô
-                        strata =~kstrata,   #Ãş
-                        weights=~T_wt_itvex,#°¡ÁßÄ¡
+#ë³µí•©í‘œë³¸ë¶„ì„ ì¤€ë¹„
+com.svy.sex1<-svydesign(ids    =~psu,       #ì§‘ë½
+                        strata =~kstrata,   #ì¸µ
+                        weights=~T_wt_itvex,#ê°€ì¤‘ì¹˜
                         data   =hn.sex1)
-com.svy.sex2<-svydesign(ids    =~psu,       #Áı¶ô
-                        strata =~kstrata,   #Ãş
-                        weights=~T_wt_itvex,#°¡ÁßÄ¡
+com.svy.sex2<-svydesign(ids    =~psu,       #ì§‘ë½
+                        strata =~kstrata,   #ì¸µ
+                        weights=~T_wt_itvex,#ê°€ì¤‘ì¹˜
                         data   =hn.sex2)
-#º¹ÇÕÇ¥º»ºĞ¼® ÁØºñ
-com.svy.age1<-svydesign(ids    =~psu,       #Áı¶ô
-                        strata =~kstrata,   #Ãş
-                        weights=~T_wt_itvex,#°¡ÁßÄ¡
+#ë³µí•©í‘œë³¸ë¶„ì„ ì¤€ë¹„
+com.svy.age1<-svydesign(ids    =~psu,       #ì§‘ë½
+                        strata =~kstrata,   #ì¸µ
+                        weights=~T_wt_itvex,#ê°€ì¤‘ì¹˜
                         data   =hn.age1)
-com.svy.age2<-svydesign(ids    =~psu,       #Áı¶ô
-                        strata =~kstrata,   #Ãş
-                        weights=~T_wt_itvex,#°¡ÁßÄ¡
+com.svy.age2<-svydesign(ids    =~psu,       #ì§‘ë½
+                        strata =~kstrata,   #ì¸µ
+                        weights=~T_wt_itvex,#ê°€ì¤‘ì¹˜
                         data   =hn.age2)
 
 #-----------------------------------------------------------------------------------------------------------#
 #Men -linear
 library(splines)
 
-#º¹ÇÕÇ¥º»ºĞ¼®-¼±Çü È¸±Í
+#ë³µí•©í‘œë³¸ë¶„ì„-ì„ í˜• íšŒê·€
 svy.fita1<-svyglm(eGFR~PM25,data=hn.r,com.svy.sex1);svy.fita2<-svyglm(eGFR~PM10,data=hn.r,com.svy.sex1)
 svy.fita3<-svyglm(eGFR~SO2,data=hn.r,com.svy.sex1) ;svy.fita4<-svyglm(eGFR~NO2,data=hn.r,com.svy.sex1)
 svy.fita5<-svyglm(eGFR~CO,data=hn.r,com.svy.sex1)  ;svy.fita6<-svyglm(eGFR~O3,data=hn.r,com.svy.sex1)
@@ -95,7 +95,7 @@ View(s.result)
 
 #-----------------------------------------------------------------------------------------------------------#
 #Men -linear lag1
-#º¹ÇÕÇ¥º»ºĞ¼®-¼±Çü È¸±Í
+#ë³µí•©í‘œë³¸ë¶„ì„-ì„ í˜• íšŒê·€
 svy.fita1<-svyglm(eGFR~lag1_PM25,data=hn.r,com.svy.sex1);svy.fita2<-svyglm(eGFR~lag1_PM10,data=hn.r,com.svy.sex1)
 svy.fita3<-svyglm(eGFR~lag1_SO2,data=hn.r,com.svy.sex1) ;svy.fita4<-svyglm(eGFR~lag1_NO2,data=hn.r,com.svy.sex1)
 svy.fita5<-svyglm(eGFR~lag1_CO,data=hn.r,com.svy.sex1)  ;svy.fita6<-svyglm(eGFR~lag1_O3,data=hn.r,com.svy.sex1)
@@ -154,7 +154,7 @@ View(s.result)
 
 #-----------------------------------------------------------------------------------------------------------#
 #Men -linear lag01
-#º¹ÇÕÇ¥º»ºĞ¼®-¼±Çü È¸±Í
+#ë³µí•©í‘œë³¸ë¶„ì„-ì„ í˜• íšŒê·€
 svy.fita1<-svyglm(eGFR~lag01_PM25,data=hn.r,com.svy.sex1);svy.fita2<-svyglm(eGFR~lag01_PM10,data=hn.r,com.svy.sex1)
 svy.fita3<-svyglm(eGFR~lag01_SO2,data=hn.r,com.svy.sex1) ;svy.fita4<-svyglm(eGFR~lag01_NO2,data=hn.r,com.svy.sex1)
 svy.fita5<-svyglm(eGFR~lag01_CO,data=hn.r,com.svy.sex1)  ;svy.fita6<-svyglm(eGFR~lag01_O3,data=hn.r,com.svy.sex1)
@@ -215,7 +215,7 @@ View(s.result)
 
 #-------------------------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------------------------#
-#°¡ÁßÄ¡ Àû¿ë, ½ÅÀå±â´É ÁöÇ¥,eGFR ·ÎÁö½ºÆ½È¸±Í
+#ê°€ì¤‘ì¹˜ ì ìš©, ì‹ ì¥ê¸°ëŠ¥ ì§€í‘œ,eGFR ë¡œì§€ìŠ¤í‹±íšŒê·€
 #Men logistic
 svy.fita1<-svyglm(eGFR_g~PM25,data=hn.r,com.svy.sex1,family="quasibinomial")
 svy.fita2<-svyglm(eGFR_g~PM10,data=hn.r,com.svy.sex1,family="quasibinomial")
@@ -281,7 +281,7 @@ View(s.result)
 
 #-------------------------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------------------------#
-#°¡ÁßÄ¡ Àû¿ë, ½ÅÀå±â´É ÁöÇ¥,eGFR ·ÎÁö½ºÆ½È¸±Í
+#ê°€ì¤‘ì¹˜ ì ìš©, ì‹ ì¥ê¸°ëŠ¥ ì§€í‘œ,eGFR ë¡œì§€ìŠ¤í‹±íšŒê·€
 #Men logistic
 svy.fita1<-svyglm(eGFR_g~lag1_PM25,data=hn.r,com.svy.sex1,family="quasibinomial")
 svy.fita2<-svyglm(eGFR_g~lag1_PM10,data=hn.r,com.svy.sex1,family="quasibinomial")
@@ -346,7 +346,7 @@ View(s.result)
 
 #-------------------------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------------------------#
-#°¡ÁßÄ¡ Àû¿ë, ½ÅÀå±â´É ÁöÇ¥,eGFR ·ÎÁö½ºÆ½È¸±Í
+#ê°€ì¤‘ì¹˜ ì ìš©, ì‹ ì¥ê¸°ëŠ¥ ì§€í‘œ,eGFR ë¡œì§€ìŠ¤í‹±íšŒê·€
 #Men logistic
 svy.fita1<-svyglm(eGFR_g~lag01_PM25,data=hn.r,com.svy.sex1,family="quasibinomial")
 svy.fita2<-svyglm(eGFR_g~lag01_PM10,data=hn.r,com.svy.sex1,family="quasibinomial")
@@ -416,9 +416,9 @@ View(s.result)
 #-----------------------------------------------------------------------------------------------------------#
 #-----------------------------------------------------------------------------------------------------------#
 #-----------------------------------------------------------------------------------------------------------#
-#¼­ºê±×·ì ¿¬·É 
+#ì„œë¸Œê·¸ë£¹ ì—°ë ¹ 
 #Age 20-64
-#º¹ÇÕÇ¥º»ºĞ¼®-¼±Çü È¸±Í
+#ë³µí•©í‘œë³¸ë¶„ì„-ì„ í˜• íšŒê·€
 svy.fita1<-svyglm(eGFR~PM25,data=hn.r,com.svy.age1);svy.fita2<-svyglm(eGFR~PM10,data=hn.r,com.svy.age1)
 svy.fita3<-svyglm(eGFR~SO2,data=hn.r,com.svy.age1) ;svy.fita4<-svyglm(eGFR~NO2,data=hn.r,com.svy.age1)
 svy.fita5<-svyglm(eGFR~CO,data=hn.r,com.svy.age1)  ;svy.fita6<-svyglm(eGFR~O3,data=hn.r,com.svy.age1)
@@ -477,7 +477,7 @@ View(s.result)
 
 #-----------------------------------------------------------------------------------------------------------#
 #Age 20-64 -linear lag1
-#º¹ÇÕÇ¥º»ºĞ¼®-¼±Çü È¸±Í
+#ë³µí•©í‘œë³¸ë¶„ì„-ì„ í˜• íšŒê·€
 svy.fita1<-svyglm(eGFR~lag1_PM25,data=hn.r,com.svy.age1);svy.fita2<-svyglm(eGFR~lag1_PM10,data=hn.r,com.svy.age1)
 svy.fita3<-svyglm(eGFR~lag1_SO2,data=hn.r,com.svy.age1) ;svy.fita4<-svyglm(eGFR~lag1_NO2,data=hn.r,com.svy.age1)
 svy.fita5<-svyglm(eGFR~lag1_CO,data=hn.r,com.svy.age1)  ;svy.fita6<-svyglm(eGFR~lag1_O3,data=hn.r,com.svy.age1)
@@ -536,7 +536,7 @@ View(s.result)
 
 #-----------------------------------------------------------------------------------------------------------#
 #Age 20-64 -linear lag01
-#º¹ÇÕÇ¥º»ºĞ¼®-¼±Çü È¸±Í
+#ë³µí•©í‘œë³¸ë¶„ì„-ì„ í˜• íšŒê·€
 svy.fita1<-svyglm(eGFR~lag01_PM25,data=hn.r,com.svy.age1);svy.fita2<-svyglm(eGFR~lag01_PM10,data=hn.r,com.svy.age1)
 svy.fita3<-svyglm(eGFR~lag01_SO2,data=hn.r,com.svy.age1) ;svy.fita4<-svyglm(eGFR~lag01_NO2,data=hn.r,com.svy.age1)
 svy.fita5<-svyglm(eGFR~lag01_CO,data=hn.r,com.svy.age1)  ;svy.fita6<-svyglm(eGFR~lag01_O3,data=hn.r,com.svy.age1)
@@ -597,7 +597,7 @@ View(s.result)
 
 #-------------------------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------------------------#
-#°¡ÁßÄ¡ Àû¿ë, ½ÅÀå±â´É ÁöÇ¥,eGFR ·ÎÁö½ºÆ½È¸±Í
+#ê°€ì¤‘ì¹˜ ì ìš©, ì‹ ì¥ê¸°ëŠ¥ ì§€í‘œ,eGFR ë¡œì§€ìŠ¤í‹±íšŒê·€
 #Age 20-64 logistic
 svy.fita1<-svyglm(eGFR_g~PM25,data=hn.r,com.svy.age1,family="quasibinomial")
 svy.fita2<-svyglm(eGFR_g~PM10,data=hn.r,com.svy.age1,family="quasibinomial")
@@ -663,7 +663,7 @@ View(s.result)
 
 #-------------------------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------------------------#
-#°¡ÁßÄ¡ Àû¿ë, ½ÅÀå±â´É ÁöÇ¥,eGFR ·ÎÁö½ºÆ½È¸±Í
+#ê°€ì¤‘ì¹˜ ì ìš©, ì‹ ì¥ê¸°ëŠ¥ ì§€í‘œ,eGFR ë¡œì§€ìŠ¤í‹±íšŒê·€
 #Age 20-64 logistic
 svy.fita1<-svyglm(eGFR_g~lag1_PM25,data=hn.r,com.svy.age1,family="quasibinomial")
 svy.fita2<-svyglm(eGFR_g~lag1_PM10,data=hn.r,com.svy.age1,family="quasibinomial")
@@ -728,7 +728,7 @@ View(s.result)
 
 #-------------------------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------------------------#
-#°¡ÁßÄ¡ Àû¿ë, ½ÅÀå±â´É ÁöÇ¥,eGFR ·ÎÁö½ºÆ½È¸±Í
+#ê°€ì¤‘ì¹˜ ì ìš©, ì‹ ì¥ê¸°ëŠ¥ ì§€í‘œ,eGFR ë¡œì§€ìŠ¤í‹±íšŒê·€
 #Age 20-64 logistic
 svy.fita1<-svyglm(eGFR_g~lag01_PM25,data=hn.r,com.svy.age1,family="quasibinomial")
 svy.fita2<-svyglm(eGFR_g~lag01_PM10,data=hn.r,com.svy.age1,family="quasibinomial")
