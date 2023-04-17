@@ -1,40 +1,40 @@
-/*ÀÌÈ­¿©´ë Á÷¾÷È¯°æÀÇÇÐ±³½Ç  ¿ÀÁ¾¹Î */
-/*PM AOM  ¸ÂÃãÇü  DB*/ 
-/*³ëÃâÀÚ·á : CMAQ PM2.5*/
+/*ì´í™”ì—¬ëŒ€ ì§ì—…í™˜ê²½ì˜í•™êµì‹¤  ì˜¤ì¢…ë¯¼ */
+/*PM AOM  ë§žì¶¤í˜•  DB*/ 
+/*ë…¸ì¶œìžë£Œ : CMAQ PM2.5*/
 /**********************************************************************************************************************************************************/
-/*data ¶óÀÌºê·¯¸® */
-libname dat '/userdata06/room206/data_source/user_data'; /*¿ø µ¥ÀÌÅÍ*/
-libname a '/userdata06/room206/data_source/¿Ü·¡ÀÔ¿ø';    
-libname b '/userdata06/room206/data_source/ÀÔ¿ø'; 
+/*data ë¼ì´ë¸ŒëŸ¬ë¦¬ */
+libname dat '/userdata06/room206/data_source/user_data'; /*ì› ë°ì´í„°*/
+libname a '/userdata06/room206/data_source/ì™¸ëž˜ìž…ì›';    
+libname b '/userdata06/room206/data_source/ìž…ì›'; 
 /**********************************************************************************************************************************************************/
 /**********************************************************************************************************************************************************/
 
-/*°íÀ¯ ´ë»ó ID (15¼¼ ÀÌÇÏ ³²³à ¼Ò¾Æ 08~17)*/
+/*ê³ ìœ  ëŒ€ìƒ ID (15ì„¸ ì´í•˜ ë‚¨ë…€ ì†Œì•„ 08~17)*/
 DATA B.TG; SET DAT.TG; RUN;
 
-/*¿¬µµº° ÀÚ°Ý ÀÚ·á¸¦ ÇÏ³ª·Î merge*/
+/*ì—°ë„ë³„ ìžê²© ìžë£Œë¥¼ í•˜ë‚˜ë¡œ merge*/
 DATA B.BFC; SET DAT.BFC_2008 DAT.BFC_2009 DAT.BFC_2010 DAT.BFC_2011 DAT.BFC_2012 
                           DAT.BFC_2013 DAT.BFC_2014 DAT.BFC_2015 DAT.BFC_2016 DAT.BFC_2017; RUN;
 
-/*ÀÚ°Ý¿¡ PKEY Ãß°¡*/
+/*ìžê²©ì— PKEY ì¶”ê°€*/
 DATA B.BFC ; SET B.BFC;  PKEY=COMPRESS(STD_YYYY) || COMPRESS("-") ||COMPRESS(INDI_DSCM_NO);RUN;
 
-/*¿¬·É ½Ãµµ Ãß°¡*/
+/*ì—°ë ¹ ì‹œë„ ì¶”ê°€*/
 DATA B.BFC ; SET B.BFC;
 AGE= STD_YYYY-BYEAR;
 SIDO=SUBSTR(RVSN_ADDR_CD,1,2);RUN;
 
-/*ÀÚ°Ý ÀÌ¿ëÇÒ Å×ÀÌºí*/
+/*ìžê²© ì´ìš©í•  í…Œì´ë¸”*/
 data B.JK ; SET B.BFC;  KEEP PKEY STD_YYYY INDI_DSCM_NO SEX_TYPE BYEAR AGE RVSN_ADDR_CD SIDO; RUN;
 
 /**********************************************************************************************************************************************************/
-/*´Ü±â¿µÇâÀÚ·áºÐ¼® ; Time-series */
-/*¿¬µµº°·Î ÁúÈ¯ ÃßÃâ  */
+/*ë‹¨ê¸°ì˜í–¥ìžë£Œë¶„ì„ ; Time-series */
+/*ì—°ë„ë³„ë¡œ ì§ˆí™˜ ì¶”ì¶œ  */
 %Macro AOM(TABLE1,TABLE2);
 data B.&table1 ; set A.&table2;
-IF FORM_CD IN("02") AND SUBSTR(SICK_SYM1,1,4) IN ("H650","H651","H660") THEN K1=2; ELSE K1=0; /*ÀÔ¿ø ÀÌ¸é¼­ ÁÖ»óº´ IHD ÄÚµå, K1Àº ÁÖ»óº´¿¡ Á¸ÀçÇÏ¸é 2*/
-IF FORM_CD IN("02") AND SUBSTR(SICK_SYM2,1,4) IN ("H650","H651","H660") THEN K2=1; ELSE K2=0; /*ÀÔ¿ø ÀÌ¸é¼­ ºÎ»óº´ IHD ÄÚµå, K2Àº ºÎ»óº´¿¡ Á¸ÀçÇÏ¸é 1*/
-ICD_RANK=K1+K2; IF ICD_RANK>0; RUN; /*ICD_RANK ÁÖ+ºÎ»óº´ Áß¿äµµ ¼øÀ§ ³ªÅ¸³¿*/
+IF FORM_CD IN("02") AND SUBSTR(SICK_SYM1,1,4) IN ("H650","H651","H660") THEN K1=2; ELSE K1=0; /*ìž…ì› ì´ë©´ì„œ ì£¼ìƒë³‘ IHD ì½”ë“œ, K1ì€ ì£¼ìƒë³‘ì— ì¡´ìž¬í•˜ë©´ 2*/
+IF FORM_CD IN("02") AND SUBSTR(SICK_SYM2,1,4) IN ("H650","H651","H660") THEN K2=1; ELSE K2=0; /*ìž…ì› ì´ë©´ì„œ ë¶€ìƒë³‘ IHD ì½”ë“œ, K2ì€ ë¶€ìƒë³‘ì— ì¡´ìž¬í•˜ë©´ 1*/
+ICD_RANK=K1+K2; IF ICD_RANK>0; RUN; /*ICD_RANK ì£¼+ë¶€ìƒë³‘ ì¤‘ìš”ë„ ìˆœìœ„ ë‚˜íƒ€ëƒ„*/
 %MEND IHD;
 %AOM(TOTAL_AOM_08,T20_2008) %AOM(TOTAL_AOM_09,T20_2009)
 %AOM(TOTAL_AOM_10,T20_2010) %AOM(TOTAL_AOM_11,T20_2011)
@@ -42,8 +42,8 @@ ICD_RANK=K1+K2; IF ICD_RANK>0; RUN; /*ICD_RANK ÁÖ+ºÎ»óº´ Áß¿äµµ ¼øÀ§ ³ªÅ¸³¿*/
 %AOM(TOTAL_AOM_14,T20_2014) %AOM(TOTAL_AOM_15,T20_2015)
 %AOM(TOTAL_AOM_16,T20_2016) %AOM(TOTAL_AOM_17,T20_2017)
 
-/*ÀüÃ¼  ÁúÈ¯ ¿¡ÇÇ¼Òµå  ¿¬µµº° Å×ÀÌºí MERGE*/
-%MACRO T_append( table ); /*ÀÚ°Ý ³âµµº° ÅëÇÕ ÀÚ·á·Î ¸¸µå´Â  ¸ÅÅ©·Î*/
+/*ì „ì²´  ì§ˆí™˜ ì—í”¼ì†Œë“œ  ì—°ë„ë³„ í…Œì´ë¸” MERGE*/
+%MACRO T_append( table ); /*ìžê²© ë…„ë„ë³„ í†µí•© ìžë£Œë¡œ ë§Œë“œëŠ”  ë§¤í¬ë¡œ*/
 %LET rep08 = _08; %LET rep09 = _09; %LET rep10 = _10; %LET rep11 = _11; %LET rep12 = _12; 
 %LET rep13 = _13; %LET rep14 = _14; %LET rep15 = _15; %LET rep16 = _16; %LET rep17 = _17; 
 DATA B.&table ; SET                            B.&table&rep08 ; RUN ;
@@ -60,31 +60,31 @@ DATA A.TOTAL_AOM ; SET A.TOTAL_AOM;RUN;
 %MEND T_append;
 %T_append (TOTAL_AOM);
 
-/*ÀÚ°ÝÀÌ¶û MERGE KEY »ý¼º : PKEY*/
+/*ìžê²©ì´ëž‘ MERGE KEY ìƒì„± : PKEY*/
 DATA  B.TOTAL_AOM ; SET B.TOTAL_AOM;   PKEY=COMPRESS(SUBSTR(MDCARE_STRT_DT,1,4)) || COMPRESS("-") || COMPRESS(INDI_DSCM_NO);RUN;
 
-/*ÀÚ°ÝÀÌ¶û  MERGE BY : PKEY*/
+/*ìžê²©ì´ëž‘  MERGE BY : PKEY*/
 PROC SQL; CREATE TABLE B.TOTAL_AOM       AS SELECT * FROM B.TOTAL_AOM, B.JK WHERE TOTAL_AOM.PKEY =JK.PKEY;QUIT;
 /**********************************************************************************************************************************************************/
 /**********************************************************************************************************************************************************/
-/*DATA CLEANING ; ´Ü±âÃøÁ¤*/
+/*DATA CLEANING ; ë‹¨ê¸°ì¸¡ì •*/
 %MACRO STEP1(TABLE,DISEASE);
 DATA B.&TABLE&DISEASE; SET B.&TABLE&DISEASE;
-IF INDI_DSCM_NO="" THEN DELETE; /*ID ¹«È¿ Á¦¿Ü*/
-IF FORM_CD IN ("02");                 /*¹«È¿ÇÑ Áø·á ÇüÅÂ Á¦¿Ü*/ 
-IF "2008" <= SUBSTR(MDCARE_STRT_DT,1,4) <="2017" AND "01" <=SUBSTR(MDCARE_STRT_DT,5,2) <="12" AND "01" <= SUBSTR(MDCARE_STRT_DT,7,2) <="31"; /*¹«È¿ÇÑ Áø·áÀÏÀÚ Á¦¿Ü*/
-IF "1899" <= SUBSTR(FST_HSPTZ_DT,1,4) <="2017" AND "01" <=SUBSTR(FST_HSPTZ_DT,5,2) <="12" AND "01" <= SUBSTR(FST_HSPTZ_DT,7,2) <="31"                /*¹«È¿ÇÑ ÃÖÃÊ Áø·áÀÏÀÚ Á¦¿Ü*/
-THEN FST_HSPTZ_DT=FST_HSPTZ_DT; ELSE FST_HSPTZ_DT=""; /*¹«È¿ÇÑ ÀÔ³»¿ø ÀÏ¼ö Á¦¿Ü*/
+IF INDI_DSCM_NO="" THEN DELETE; /*ID ë¬´íš¨ ì œì™¸*/
+IF FORM_CD IN ("02");                 /*ë¬´íš¨í•œ ì§„ë£Œ í˜•íƒœ ì œì™¸*/ 
+IF "2008" <= SUBSTR(MDCARE_STRT_DT,1,4) <="2017" AND "01" <=SUBSTR(MDCARE_STRT_DT,5,2) <="12" AND "01" <= SUBSTR(MDCARE_STRT_DT,7,2) <="31"; /*ë¬´íš¨í•œ ì§„ë£Œì¼ìž ì œì™¸*/
+IF "1899" <= SUBSTR(FST_HSPTZ_DT,1,4) <="2017" AND "01" <=SUBSTR(FST_HSPTZ_DT,5,2) <="12" AND "01" <= SUBSTR(FST_HSPTZ_DT,7,2) <="31"                /*ë¬´íš¨í•œ ìµœì´ˆ ì§„ë£Œì¼ìž ì œì™¸*/
+THEN FST_HSPTZ_DT=FST_HSPTZ_DT; ELSE FST_HSPTZ_DT=""; /*ë¬´íš¨í•œ ìž…ë‚´ì› ì¼ìˆ˜ ì œì™¸*/
 IF VSHSP_DD_CNT="" THEN DELETE;
-IF VSHSP_DD_CNT=0 THEN VSHSP_DD_CNT=1;                  /*ÀÔ³»¿ø ÀÏ¼ö 0ÀÎ °æ¿ì ÀÔ¿øÀ» Çß´Ù°¡ °ËÁø Áø·á·Î ¸¶Ä§ 0=>1 ÄÚµù*/
-IF 0 <=AGE <=25 ;                                                    /*¹«È¿ ³ªÀÌ Á¦¿Ü*/
-IF SEX_TYPE IN ("1","2");                                             /*¼ºº° ¹«È¿ Á¦¿Ü*/
-IF RVSN_ADDR_CD="" THEN DELETE; RUN;                      /*½Ã±º±¸ ¹«È¿ Á¦¿Ü*/
+IF VSHSP_DD_CNT=0 THEN VSHSP_DD_CNT=1;                  /*ìž…ë‚´ì› ì¼ìˆ˜ 0ì¸ ê²½ìš° ìž…ì›ì„ í–ˆë‹¤ê°€ ê²€ì§„ ì§„ë£Œë¡œ ë§ˆì¹¨ 0=>1 ì½”ë”©*/
+IF 0 <=AGE <=25 ;                                                    /*ë¬´íš¨ ë‚˜ì´ ì œì™¸*/
+IF SEX_TYPE IN ("1","2");                                             /*ì„±ë³„ ë¬´íš¨ ì œì™¸*/
+IF RVSN_ADDR_CD="" THEN DELETE; RUN;                      /*ì‹œêµ°êµ¬ ë¬´íš¨ ì œì™¸*/
 %MEND S_STEP1;
 %STEP1(TOTAL,_AOM);
 
 /**********************************************************************************************************************************************************/
-/*ÇÊ¿äº¯¼ö ÃßÃâ */
+/*í•„ìš”ë³€ìˆ˜ ì¶”ì¶œ */
 %MACRO STEP2(TABLE1,TABLE);
 DATA B.&TABLE1; SET B.&TABLE;
 FORMAT MDCARE FST MDCARE_DATE FST_DATE DATE1 YYMMDD10.;
@@ -92,42 +92,42 @@ FORMAT MDCARE FST MDCARE_DATE FST_DATE DATE1 YYMMDD10.;
 MDCARE=MDY(SUBSTR(MDCARE_STRT_DT,5,2),SUBSTR(MDCARE_STRT_DT,7,2),SUBSTR(MDCARE_STRT_DT,1,4));
 FST      =MDY(SUBSTR(FST_HSPTZ_DT,5,2),SUBSTR(FST_HSPTZ_DT,7,2),SUBSTR(FST_HSPTZ_DT,1,4));
 IF FST^="" THEN FST_STATUS=1; ELSE FST_STATUS=0;
-/*Áø·á°³½ÃÀÏÀÚ °è»ê*/
+/*ì§„ë£Œê°œì‹œì¼ìž ê³„ì‚°*/
 IF MDCARE="" THEN MDCARE_DATE=FST; ELSE MDCARE_DATE=MDCARE;
 IF FST^=""      THEN FST_DATE=FST;        ELSE FST_DATE=MDCARE;
 
-DATE1=MIN(FST_DATE,MDCARE_DATE); /*Áø·á °³½ÃÀÏÀÚ*/
-DIFF_PLUS=MDCARE_DATE-DATE1; /*ÃÖÃÊ·Î Áø·á ¹ÞÀº ÀÏ - ÀÔ¿øÀÏ*/
-CNT_DD=DIFF_PLUS+VSHSP_DD_CNT; RUN; /*¿ä¾çÀÏ °è»ê*/
+DATE1=MIN(FST_DATE,MDCARE_DATE); /*ì§„ë£Œ ê°œì‹œì¼ìž*/
+DIFF_PLUS=MDCARE_DATE-DATE1; /*ìµœì´ˆë¡œ ì§„ë£Œ ë°›ì€ ì¼ - ìž…ì›ì¼*/
+CNT_DD=DIFF_PLUS+VSHSP_DD_CNT; RUN; /*ìš”ì–‘ì¼ ê³„ì‚°*/
 %MEND S_STEP2;
 %STEP2(AOM1,TOTAL_AOM);
 
 /**********************************************************************************************************************************************************/
-/*Ã»±¸ °Ç¼ö°¡ ¿¬´Þ¾Æ ¹ß»ýÇÏ¸é ÇÏ³ªÀÇ ¹ß»ýÀ¸·Î °£ÁÖ ÇÏ¿© °è»ê*/
-/*Ã»±¸ °Ç´ç ³¯Â¥°¡ °°À¸¸é °¡Àå ±ä ÀÔ³»¿ø ÀÏ¼ö¸¸  KEEP*/
-/*¸¸¾à Ã»±¸ °Ç´ç ³¯Â¥¿Í °¡Àå±ä ÀÔ³»¿ø ÀÏ¼ö°¡ °°´Ù¸é ÁÖ»óº´ ÀÌ AOMÀÎ°Í¸¸ KEEP*/
-/*¸¸¾à Ã»±¸ °Ç´ç ³¯Â¥¿Í °¡Àå±ä ÀÔ³»¿ø ÀÏ¼ö°¡ °°°í ÁÖ»óº´ÀÌ °°À¸¸é ±×Áß ÇÏ³ª KEEP*/
+/*ì²­êµ¬ ê±´ìˆ˜ê°€ ì—°ë‹¬ì•„ ë°œìƒí•˜ë©´ í•˜ë‚˜ì˜ ë°œìƒìœ¼ë¡œ ê°„ì£¼ í•˜ì—¬ ê³„ì‚°*/
+/*ì²­êµ¬ ê±´ë‹¹ ë‚ ì§œê°€ ê°™ìœ¼ë©´ ê°€ìž¥ ê¸´ ìž…ë‚´ì› ì¼ìˆ˜ë§Œ  KEEP*/
+/*ë§Œì•½ ì²­êµ¬ ê±´ë‹¹ ë‚ ì§œì™€ ê°€ìž¥ê¸´ ìž…ë‚´ì› ì¼ìˆ˜ê°€ ê°™ë‹¤ë©´ ì£¼ìƒë³‘ ì´ AOMì¸ê²ƒë§Œ KEEP*/
+/*ë§Œì•½ ì²­êµ¬ ê±´ë‹¹ ë‚ ì§œì™€ ê°€ìž¥ê¸´ ìž…ë‚´ì› ì¼ìˆ˜ê°€ ê°™ê³  ì£¼ìƒë³‘ì´ ê°™ìœ¼ë©´ ê·¸ì¤‘ í•˜ë‚˜ KEEP*/
 
-/*ÀÔ³»¿ø ÀÏ¼ö °è»ê */
+/*ìž…ë‚´ì› ì¼ìˆ˜ ê³„ì‚° */
 %MACRO STEP3(TABLE2,TABLE1);
-PROC SORT DATA=B.&TABLE1 ; BY INDI_DSCM_NO MDCARE_DATE CNT_DD SICK_SYM1; RUN; /*µ¥ÀÌÅÍ Á¤·Ä*/
+PROC SORT DATA=B.&TABLE1 ; BY INDI_DSCM_NO MDCARE_DATE CNT_DD SICK_SYM1; RUN; /*ë°ì´í„° ì •ë ¬*/
 
 DATA B.&TABLE1 ; SET B.&TABLE1;
-DKEY=COMPRESS(MDCARE_DATE) || COMPRESS("-") || COMPRESS(INDI_DSCM_NO); RUN; /*Áø·áÀÏ°ú °³ÀÎ¾ÆÀÌµð·Î »õ·Î¿î KEY ¸¸µë(Áßº¹Á¦°ÅÀ§ÇØ)*/
+DKEY=COMPRESS(MDCARE_DATE) || COMPRESS("-") || COMPRESS(INDI_DSCM_NO); RUN; /*ì§„ë£Œì¼ê³¼ ê°œì¸ì•„ì´ë””ë¡œ ìƒˆë¡œìš´ KEY ë§Œë“¬(ì¤‘ë³µì œê±°ìœ„í•´)*/
 
-/*µ¥ÀÌÅÍ Á¤·Ä : 1) ³¯Â¥+°³º° ID °í·Á 2) ÀÔ³»¿ø ÀÏ¼ö ³»¸² Â÷¼ø , 3) ÁÖ+ºÎ»óº´ ¼øÀ§ ³»¸² Â÷¼ø*/
+/*ë°ì´í„° ì •ë ¬ : 1) ë‚ ì§œ+ê°œë³„ ID ê³ ë ¤ 2) ìž…ë‚´ì› ì¼ìˆ˜ ë‚´ë¦¼ ì°¨ìˆœ , 3) ì£¼+ë¶€ìƒë³‘ ìˆœìœ„ ë‚´ë¦¼ ì°¨ìˆœ*/
 PROC SORT DATA=B.&TABLE1; BY DKEY DESCENDING CNT_DD DESCENDING ICD_RANK; RUN; 
 
-/*À§ Á¤·ÄÇÑ µ¥ÀÌÅÍ ¿¡¼­ ³¯Â¥+°³º° ¾ÆÀÌµð ±âÁØÀ¸·Î Ã¹ÇàÀÌ ¾Æ´Ï¸é Á¦¿Ü*/
+/*ìœ„ ì •ë ¬í•œ ë°ì´í„° ì—ì„œ ë‚ ì§œ+ê°œë³„ ì•„ì´ë”” ê¸°ì¤€ìœ¼ë¡œ ì²«í–‰ì´ ì•„ë‹ˆë©´ ì œì™¸*/
 DATA B.&TABLE2; SET B.&TABLE1; BY DKEY; IF FIRST.DKEY^=1 THEN DELETE;
 DROP DKEY ICD_RANK; RUN;
 
-proc sort data=B.&TABLE2; by indi_dscm_no MDCARE_DATE ;run; /*µ¥ÀÌÅÍ Á¤·Ä  ID, Áø·á °³½ÃÀÏ ¼ø*/
+proc sort data=B.&TABLE2; by indi_dscm_no MDCARE_DATE ;run; /*ë°ì´í„° ì •ë ¬  ID, ì§„ë£Œ ê°œì‹œì¼ ìˆœ*/
 %MEND S1_STEP3;
 %STEP3(AOM2,AOM1);
 
 /**********************************************************************************************************************************************************/
-/*EPISODE °è»ê */
+/*EPISODE ê³„ì‚° */
 %MACRO STEP4(TABLE4,TABLE3,TABLE2,NUMBER);
 DATA B.&TABLE3; 
 FORMAT R START_DATE DATE1_DISCHARGE YYMMDD10.;
@@ -137,7 +137,7 @@ IKEEP=1; R=DATE1+CNT_DD-1; D=CNT_DD; START_DATE=DATE1; MONEY=ED_RC_TOT_AMT; END;
 IF FIRST.INDI_DSCM_NO=1 AND LAST.INDI_DSCM_NO^=1 THEN DO;
 IKEEP=1;  R=DATE1+CNT_DD-1; D=CNT_DD; START_DATE=DATE1; MONEY=ED_RC_TOT_AMT; END; ELSE DO;
 
-K=DATE1-R;  /*¿¬¼ÓµÈ ÀÔ³»¿ø ÀÏ¼ö¸¦ ¸¶Áö¸· Åð¿øÇÑ ³¯Â¥-ÃÖÃÊ ÀÔ¿ø ³¯Â¥·Î °è»ê*/
+K=DATE1-R;  /*ì—°ì†ëœ ìž…ë‚´ì› ì¼ìˆ˜ë¥¼ ë§ˆì§€ë§‰ í‡´ì›í•œ ë‚ ì§œ-ìµœì´ˆ ìž…ì› ë‚ ì§œë¡œ ê³„ì‚°*/
 IF K<=&NUMBER. THEN DO; IKEEP=0; 
 IF DATE1+CNT_DD-1 <R THEN D=D;
 IF DATE1+CNT_DD-1 <R THEN MONEY=MONEY+ED_RC_TOT_AMT; ELSE DO;
@@ -173,7 +173,7 @@ DROP R MAXD IKEEP IKEEP2 ILOGKEEP D2 K CNT_DD D DATE1_DISCHARGE ;RUN;
 %STEP4 (AOM_W4,AOM3,AOM2,28);
 
 /**********************************************************************************************************************************************************/
-/*¿¬·Éº° ±¸ºÐ  */ 
+/*ì—°ë ¹ë³„ êµ¬ë¶„  */ 
 %MACRO STEP5(T2,T1,OUT,K);
 DATA A.&T2; SET A.&T1;
 
@@ -218,7 +218,7 @@ CREATE TABLE A.&OUT AS SELECT START_DATE AS DATE, SIDO, SUM(AGE0) AS AGE0, SUM(A
 
 PROC SORT DATA= A.&OUT NODUPKEY; BY DATE; RUN;
 %MEND STEP5;
-/*½Ãµµ ±¸ºÐÇÏ¿© ÁúÈ¯º° Ä«¿îÆ® ÀÚ·á ÃßÃâ */
+/*ì‹œë„ êµ¬ë¶„í•˜ì—¬ ì§ˆí™˜ë³„ ì¹´ìš´íŠ¸ ìžë£Œ ì¶”ì¶œ */
 %STEP5 (AOM_W11,AOM_W1,S1_W1_COUNT,11); 
 %STEP5 (AOM_W11,AOM_W1,S2_W1_COUNT,26); 
 %STEP5 (AOM_W11,AOM_W1,S3_W1_COUNT,27); 
@@ -285,7 +285,7 @@ proc freq data=count4 ;tables count;
 /*************************************************************************************************************/
 /*************************************************************************************************************/
 /*************************************************************************************************************/
-/*AOM È¯ÀÚ Áß¿¡¼­ URI¸¦ °ÞÀº ÀûÀÌ ÀÖ´Â È¯ÀÚ  ¸î ÆÛ¼¾Æ® ÀÎÁö ? */
+/*AOM í™˜ìž ì¤‘ì—ì„œ URIë¥¼ ê²ªì€ ì ì´ ìžˆëŠ” í™˜ìž  ëª‡ í¼ì„¼íŠ¸ ì¸ì§€ ? */
 proc sort data=a.s4 out=A.id nodupkey ; by indi_dscm_no; run;
 
 %STEP5 (a1,AOM_W4,S1_W4_COUNT,11); 
@@ -298,9 +298,9 @@ proc sort data=a.s4 out=A.id nodupkey ; by indi_dscm_no; run;
 
 %Macro URI(TABLE1,TABLE2);
 data A.&table1 ; set A.&table2;
-IF FORM_CD IN("02","03") AND SUBSTR(SICK_SYM1,1,3) IN ("J00","J01","J02","J03","J04","J05","J06") THEN K1=2; ELSE K1=0; /*ÀÔ¿ø ÀÌ¸é¼­ ÁÖ»óº´ IHD ÄÚµå, K1Àº ÁÖ»óº´¿¡ Á¸ÀçÇÏ¸é 2*/
-IF FORM_CD IN("02","03") AND SUBSTR(SICK_SYM2,1,3) IN ("J00","J01","J02","J03","J04","J05","J06") THEN K2=1; ELSE K2=0; /*ÀÔ¿ø ÀÌ¸é¼­ ºÎ»óº´ IHD ÄÚµå, K2Àº ºÎ»óº´¿¡ Á¸ÀçÇÏ¸é 1*/
-ICD_RANK=K1+K2; IF ICD_RANK>0; RUN; /*ICD_RANK ÁÖ+ºÎ»óº´ Áß¿äµµ ¼øÀ§ ³ªÅ¸³¿*/
+IF FORM_CD IN("02","03") AND SUBSTR(SICK_SYM1,1,3) IN ("J00","J01","J02","J03","J04","J05","J06") THEN K1=2; ELSE K1=0; /*ìž…ì› ì´ë©´ì„œ ì£¼ìƒë³‘ IHD ì½”ë“œ, K1ì€ ì£¼ìƒë³‘ì— ì¡´ìž¬í•˜ë©´ 2*/
+IF FORM_CD IN("02","03") AND SUBSTR(SICK_SYM2,1,3) IN ("J00","J01","J02","J03","J04","J05","J06") THEN K2=1; ELSE K2=0; /*ìž…ì› ì´ë©´ì„œ ë¶€ìƒë³‘ IHD ì½”ë“œ, K2ì€ ë¶€ìƒë³‘ì— ì¡´ìž¬í•˜ë©´ 1*/
+ICD_RANK=K1+K2; IF ICD_RANK>0; RUN; /*ICD_RANK ì£¼+ë¶€ìƒë³‘ ì¤‘ìš”ë„ ìˆœìœ„ ë‚˜íƒ€ëƒ„*/
 %MEND URI;
 %URI(TOTAL_URI_08,T20_2008) %URI(TOTAL_URI_09,T20_2009)
 %URI(TOTAL_URI_10,T20_2010) %URI(TOTAL_URI_11,T20_2011)
@@ -308,9 +308,9 @@ ICD_RANK=K1+K2; IF ICD_RANK>0; RUN; /*ICD_RANK ÁÖ+ºÎ»óº´ Áß¿äµµ ¼øÀ§ ³ªÅ¸³¿*/
 %URI(TOTAL_URI_14,T20_2014) %URI(TOTAL_URI_15,T20_2015)
 %URI(TOTAL_URI_16,T20_2016) %URI(TOTAL_URI_17,T20_2017)
 %T_append (TOTAL_URI);
-/*ÀÚ°ÝÀÌ¶û MERGE KEY »ý¼º : PKEY*/
+/*ìžê²©ì´ëž‘ MERGE KEY ìƒì„± : PKEY*/
 DATA  A.TOTAL_URI ; SET A.TOTAL_URI;   PKEY=COMPRESS(SUBSTR(MDCARE_STRT_DT,1,4)) || COMPRESS("-") || COMPRESS(INDI_DSCM_NO);RUN;
-/*ÀÚ°ÝÀÌ¶û  MERGE BY : PKEY*/
+/*ìžê²©ì´ëž‘  MERGE BY : PKEY*/
 PROC SQL; CREATE TABLE A.TOTAL_URI      AS SELECT * FROM B.TOTAL_URI, A.JK WHERE TOTAL_URI.PKEY =JK.PKEY;QUIT;
 /**********************************************************************************************************************************************************/
 %STEP1(TOTAL,_URI);
@@ -368,34 +368,34 @@ PROC SORT DATA=A.DAT ; BY INDI_DSCM_NO MDCARE_STRT_DT;RUN;
 DATA A.DAT1; SET A.DAT;
 IF substr(MDCARE_STRT_DT,1,4)<2017;
 DAY=MDY(SUBSTR(MDCARE_STRT_DT,5,2),SUBSTR(MDCARE_STRT_DT,7,2),SUBSTR(MDCARE_STRT_DT,1,4));
-IF LAG(INDI_DSCM_NO)=INDI_DSCM_NO THEN N1="T" ; ELSE N1="F";  /*ÀÌÀü ½ÃÁ¡¿¡ ID°¡ °°ÀºÁö*/
-IF LAG(KEY)=0 & KEY=1 THEN N2="T" ; ELSE N2="F";                        /*ÀÌÀü ½ÃÁ¡¿¡ URI ÀÖ´Â °æ¿ì */
-IF DAY-LAG(DAY)>=0 & DAY-LAG(DAY)<=7 THEN N3="T" ; ELSE N3="F"; /*ÀÌÀü ½ÃÁ¡¿¡ uri ³¯Â¥¶û Â÷ÀÌ ¾ó¸¶³ª´ÂÁö*/
+IF LAG(INDI_DSCM_NO)=INDI_DSCM_NO THEN N1="T" ; ELSE N1="F";  /*ì´ì „ ì‹œì ì— IDê°€ ê°™ì€ì§€*/
+IF LAG(KEY)=0 & KEY=1 THEN N2="T" ; ELSE N2="F";                        /*ì´ì „ ì‹œì ì— URI ìžˆëŠ” ê²½ìš° */
+IF DAY-LAG(DAY)>=0 & DAY-LAG(DAY)<=7 THEN N3="T" ; ELSE N3="F"; /*ì´ì „ ì‹œì ì— uri ë‚ ì§œëž‘ ì°¨ì´ ì–¼ë§ˆë‚˜ëŠ”ì§€*/
 if KEY=1 & n1="T" & N2="T" & N3="T" THEN OUT=1 ; ELSE OUT=0; 
 RUN; 
 
 DATA A.DAT2; SET A.DAT;
 IF substr(MDCARE_STRT_DT,1,4)<2017;
 DAY=MDY(SUBSTR(MDCARE_STRT_DT,5,2),SUBSTR(MDCARE_STRT_DT,7,2),SUBSTR(MDCARE_STRT_DT,1,4));
-IF LAG(INDI_DSCM_NO)=INDI_DSCM_NO THEN N1="T" ; ELSE N1="F";  /*ÀÌÀü ½ÃÁ¡¿¡ ID°¡ °°ÀºÁö*/
-IF LAG(KEY)=0 & KEY=1 THEN N2="T" ; ELSE N2="F";                        /*ÀÌÀü ½ÃÁ¡¿¡ URI ÀÖ´Â °æ¿ì */
-IF DAY-LAG(DAY)>=8 & DAY-LAG(DAY)<=14 THEN N3="T" ; ELSE N3="F"; /*ÀÌÀü ½ÃÁ¡¿¡ uri ³¯Â¥¶û Â÷ÀÌ ¾ó¸¶³ª´ÂÁö*/
+IF LAG(INDI_DSCM_NO)=INDI_DSCM_NO THEN N1="T" ; ELSE N1="F";  /*ì´ì „ ì‹œì ì— IDê°€ ê°™ì€ì§€*/
+IF LAG(KEY)=0 & KEY=1 THEN N2="T" ; ELSE N2="F";                        /*ì´ì „ ì‹œì ì— URI ìžˆëŠ” ê²½ìš° */
+IF DAY-LAG(DAY)>=8 & DAY-LAG(DAY)<=14 THEN N3="T" ; ELSE N3="F"; /*ì´ì „ ì‹œì ì— uri ë‚ ì§œëž‘ ì°¨ì´ ì–¼ë§ˆë‚˜ëŠ”ì§€*/
 if KEY=1 & n1="T" & N2="T" & N3="T" THEN OUT=1 ; ELSE OUT=0; 
 RUN; 
 DATA A.DAT3; SET A.DAT;
 IF substr(MDCARE_STRT_DT,1,4)<2017;
 DAY=MDY(SUBSTR(MDCARE_STRT_DT,5,2),SUBSTR(MDCARE_STRT_DT,7,2),SUBSTR(MDCARE_STRT_DT,1,4));
-IF LAG(INDI_DSCM_NO)=INDI_DSCM_NO THEN N1="T" ; ELSE N1="F";  /*ÀÌÀü ½ÃÁ¡¿¡ ID°¡ °°ÀºÁö*/
-IF LAG(KEY)=0 & KEY=1 THEN N2="T" ; ELSE N2="F";                        /*ÀÌÀü ½ÃÁ¡¿¡ URI ÀÖ´Â °æ¿ì */
-IF DAY-LAG(DAY)>=15 & DAY-LAG(DAY)<=21 THEN N3="T" ; ELSE N3="F"; /*ÀÌÀü ½ÃÁ¡¿¡ uri ³¯Â¥¶û Â÷ÀÌ ¾ó¸¶³ª´ÂÁö*/
+IF LAG(INDI_DSCM_NO)=INDI_DSCM_NO THEN N1="T" ; ELSE N1="F";  /*ì´ì „ ì‹œì ì— IDê°€ ê°™ì€ì§€*/
+IF LAG(KEY)=0 & KEY=1 THEN N2="T" ; ELSE N2="F";                        /*ì´ì „ ì‹œì ì— URI ìžˆëŠ” ê²½ìš° */
+IF DAY-LAG(DAY)>=15 & DAY-LAG(DAY)<=21 THEN N3="T" ; ELSE N3="F"; /*ì´ì „ ì‹œì ì— uri ë‚ ì§œëž‘ ì°¨ì´ ì–¼ë§ˆë‚˜ëŠ”ì§€*/
 if KEY=1 & n1="T" & N2="T" & N3="T" THEN OUT=1 ; ELSE OUT=0; 
 RUN; 
 DATA A.DAT4; SET A.DAT;
 IF substr(MDCARE_STRT_DT,1,4)<2017;
 DAY=MDY(SUBSTR(MDCARE_STRT_DT,5,2),SUBSTR(MDCARE_STRT_DT,7,2),SUBSTR(MDCARE_STRT_DT,1,4));
-IF LAG(INDI_DSCM_NO)=INDI_DSCM_NO THEN N1="T" ; ELSE N1="F";  /*ÀÌÀü ½ÃÁ¡¿¡ ID°¡ °°ÀºÁö*/
-IF LAG(KEY)=0 & KEY=1 THEN N2="T" ; ELSE N2="F";                        /*ÀÌÀü ½ÃÁ¡¿¡ URI ÀÖ´Â °æ¿ì */
-IF DAY-LAG(DAY)>=22 & DAY-LAG(DAY)<=28 THEN N3="T" ; ELSE N3="F"; /*ÀÌÀü ½ÃÁ¡¿¡ uri ³¯Â¥¶û Â÷ÀÌ ¾ó¸¶³ª´ÂÁö*/
+IF LAG(INDI_DSCM_NO)=INDI_DSCM_NO THEN N1="T" ; ELSE N1="F";  /*ì´ì „ ì‹œì ì— IDê°€ ê°™ì€ì§€*/
+IF LAG(KEY)=0 & KEY=1 THEN N2="T" ; ELSE N2="F";                        /*ì´ì „ ì‹œì ì— URI ìžˆëŠ” ê²½ìš° */
+IF DAY-LAG(DAY)>=22 & DAY-LAG(DAY)<=28 THEN N3="T" ; ELSE N3="F"; /*ì´ì „ ì‹œì ì— uri ë‚ ì§œëž‘ ì°¨ì´ ì–¼ë§ˆë‚˜ëŠ”ì§€*/
 if KEY=1 & n1="T" & N2="T" & N3="T" THEN OUT=1 ; ELSE OUT=0; 
 RUN;
 
@@ -404,8 +404,8 @@ PROC SQL; CREATE TABLE Z AS SELECT INDI_DSCM_NO AS ID, COUNT(INDI_DSCM_NO) FROM 
 DATA A.DAT5; SET A.DAT;
 IF substr(MDCARE_STRT_DT,1,4)<2017;
 DAY=MDY(SUBSTR(MDCARE_STRT_DT,5,2),SUBSTR(MDCARE_STRT_DT,7,2),SUBSTR(MDCARE_STRT_DT,1,4));
-IF LAG(INDI_DSCM_NO)=INDI_DSCM_NO THEN N1="T" ; ELSE N1="F";  /*ÀÌÀü ½ÃÁ¡¿¡ ID°¡ °°ÀºÁö*/
-IF LAG(KEY)=0 & KEY=1 THEN N2="T" ; ELSE N2="F";                        /*ÀÌÀü ½ÃÁ¡¿¡ URI ÀÖ´Â °æ¿ì */
+IF LAG(INDI_DSCM_NO)=INDI_DSCM_NO THEN N1="T" ; ELSE N1="F";  /*ì´ì „ ì‹œì ì— IDê°€ ê°™ì€ì§€*/
+IF LAG(KEY)=0 & KEY=1 THEN N2="T" ; ELSE N2="F";                        /*ì´ì „ ì‹œì ì— URI ìžˆëŠ” ê²½ìš° */
 DF1=DAY-LAG(DAY);
 DF2=DAY-LAG2(DAY);
 DF3=DAY-LAG3(DAY);
@@ -446,7 +446,7 @@ RUN;
 
 PROC FREQ DATA=A.DAT5 ; TABLES OUT; RUN;
 
-/*uri¿¡ µû¶ó aom ÀÖ´Â±º (1)*/
+/*uriì— ë”°ë¼ aom ìžˆëŠ”êµ° (1)*/
 data a.URI_M; set a.DAT5; 
 if key=1;
 IF MAX_DF>=0 & MAX_DF<=7 THEN OUT=1; 
@@ -465,7 +465,7 @@ data a.URI_M2; set a.URI_M; if key=1; if out<=2 ;URI2="Y";keep cmn_key URI2;run;
 data a.URI_M3; set a.URI_M; if key=1; if out<=3 ;URI3="Y";keep cmn_key URI3;run;
 data a.URI_M4; set a.URI_M; if key=1; if out<=4 ;URI4="Y";keep cmn_key URI4;run;
 
-/*±âÁ¸ÀÌ¶û MERGEÇØ¼­ URI ¼±Çà¿¡ ´ëÇØ   Y/N ±¸ºÐ */
+/*ê¸°ì¡´ì´ëž‘ MERGEí•´ì„œ URI ì„ í–‰ì— ëŒ€í•´   Y/N êµ¬ë¶„ */
 proc sql; create table a.uri_aom1 as select * from a.aom_w4 left join a.URI_M1 on aom_w4.cmn_key = URI_M1.cmn_key; quit;
 proc sql; create table a.uri_aom2 as select * from a.aom_w4 left join a.URI_M2 on aom_w4.cmn_key = URI_M2.cmn_key; quit;
 proc sql; create table a.uri_aom3 as select * from a.aom_w4 left join a.URI_M3 on aom_w4.cmn_key = URI_M3.cmn_key; quit;
@@ -487,7 +487,7 @@ data a.uri_aom2; set a.uri_aom2; uri=uri2;run;
 data a.uri_aom3; set a.uri_aom3; uri=uri3;run;
 data a.uri_aom4; set a.uri_aom4; uri=uri4;run;
 
-/*uri¼±Çà¿¡ µû¶ó ±¸ºÐ */
+/*uriì„ í–‰ì— ë”°ë¼ êµ¬ë¶„ */
 %MACRO STEP6(T2,T1,OUT,K);
 DATA A.&T2; SET A.&T1;
 
@@ -523,7 +523,7 @@ DATA A.URI4_COUNT ; SET A.URI4_COUNT; TOTAL=TOT_Y+TOT_N; RUN;
 /*****************************************************************************************************************************************************************************************/
 /*****************************************************************************************************************************************************************************************/
 /*****************************************************************************************************************************************************************************************/
-/*uri¼±Çà¿¡ µû¶ó ±¸ºÐ */
+/*uriì„ í–‰ì— ë”°ë¼ êµ¬ë¶„ */
 %MACRO STEP6(T2,T1,OUT,K);
 DATA A.&T2; SET A.&T1;
 
