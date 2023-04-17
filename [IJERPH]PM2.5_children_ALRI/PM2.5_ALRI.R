@@ -6,7 +6,7 @@ library(tsModel);library(lubridate)
 library(dlnm)   ;library(metafor)
 library(mixmeta)
 
-setwd("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\SNU_PM2.5(¹Ì¼¼¸ÕÁö ÀÎÃ¼°Ç°­À¯ÇØÆò°¡)\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\analysis")
+setwd("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\SNU_PM2.5(ë¯¸ì„¸ë¨¼ì§€ ì¸ì²´ê±´ê°•ìœ í•´í‰ê°€)\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\analysis")
 
 dat<-read.csv("lri.csv",header=T)
 dat$date=as.Date(dat$date)
@@ -17,8 +17,8 @@ dat$SIDO=factor(dat$SIDO,levels=c("Seoul","Busan","Daegu","Incheon","Gwangju","D
 
 dat<-dat %>%  select(date,SIDO,AGE0005:SEX_F0005,pm:lag7,lag01:lag07,mtemp:month)
 
-#day of week ¹è¹Ú»ç´Ô ÀÚ·á´Â ÆòÀÏ, °øÈŞÀÏ 1~4 ±¸ºĞ, 
-dat$dow=weekdays(dat$date) #¿ùÈ­¼ö¸ñ±İÅäÀÏ 
+#day of week ë°°ë°•ì‚¬ë‹˜ ìë£ŒëŠ” í‰ì¼, ê³µíœ´ì¼ 1~4 êµ¬ë¶„, 
+dat$dow=weekdays(dat$date) #ì›”í™”ìˆ˜ëª©ê¸ˆí† ì¼ 
 # dat$dow=as.factor(dat$dow)
 
 dat$year_month=substr(dat$date,1,7)
@@ -31,7 +31,7 @@ dat.s3<-subset(dat,SIDO=="Daegu")   ;dat.s4<-subset(dat,SIDO=="Incheon")
 dat.s5<-subset(dat,SIDO=="Gwangju") ;dat.s6<-subset(dat,SIDO=="Daejeon")
 dat.s7<-subset(dat,SIDO=="Ulsan")
 
-#°èÀı ³ª´²¼­
+#ê³„ì ˆ ë‚˜ëˆ ì„œ
 dat.s1.w<-subset(dat.s1,month %in% c(4:9));dat.s1.s<-subset(dat.s1,month %in% c(1:3,10:12));
 dat.s2.w<-subset(dat.s2,month %in% c(4:9));dat.s2.s<-subset(dat.s2,month %in% c(1:3,10:12));
 dat.s3.w<-subset(dat.s3,month %in% c(4:9));dat.s3.s<-subset(dat.s3,month %in% c(1:3,10:12));
@@ -238,14 +238,14 @@ sido.fit$RR =with(sido.fit,round(exp(Estimate),4))
 sido.fit$lwl=with(sido.fit,round(exp(Estimate-1.96*`Std. Error`),4))
 sido.fit$uwl=with(sido.fit,round(exp(Estimate+1.96*`Std. Error`),4))
 
-setwd("C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\analysis\\result")
+setwd("C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\analysis\\result")
 # write.csv(sido.fit,file="lri.sido.fit.csv",row.names=F)
 
 #####################################################################################################################################################################
 #####################################################################################################################################################################
 #exposure-response GAM plot 
-#º¸°íÀÚ ÇÏ´Â ³ëÃâ ½ÃÁ¡ °ª¿¡ ´ëÇØ¼­ , ÃÊ±â¿¡ ³ëÃâ ´ÜÀ§¸¦ 10À¸·Î ³ª´³À½(10 Áõ°¡ ´ÜÀ§´ç º¸±âÀ§ÇØ¼­) 
-#´Ù½Ã 10 °öÇØÁÜ (¿øÀÚ·á·Î)
+#ë³´ê³ ì í•˜ëŠ” ë…¸ì¶œ ì‹œì  ê°’ì— ëŒ€í•´ì„œ , ì´ˆê¸°ì— ë…¸ì¶œ ë‹¨ìœ„ë¥¼ 10ìœ¼ë¡œ ë‚˜ëˆ´ìŒ(10 ì¦ê°€ ë‹¨ìœ„ë‹¹ ë³´ê¸°ìœ„í•´ì„œ) 
+#ë‹¤ì‹œ 10 ê³±í•´ì¤Œ (ì›ìë£Œë¡œ)
 dat.s1$exposure=dat.s1$lag06*10
 dat.s2$exposure=dat.s2$lag06*10
 dat.s3$exposure=dat.s3$lag06*10
@@ -254,7 +254,7 @@ dat.s5$exposure=dat.s5$lag06*10
 dat.s6$exposure=dat.s6$lag06*10
 dat.s7$exposure=dat.s7$lag06*10
 
-#µÚ¿¡ method´Â ubre, ML, REML µî ¿É¼ÇÀÓ Áö¿öµµ ¹«¹æ, RobustÇÏ°Ô º¸±âÀ§ÇØ Àû¿ë.
+#ë’¤ì— methodëŠ” ubre, ML, REML ë“± ì˜µì…˜ì„ ì§€ì›Œë„ ë¬´ë°©, Robustí•˜ê²Œ ë³´ê¸°ìœ„í•´ ì ìš©.
 g1<-gam(AGE0005~s(exposure)+s(as.numeric(date) ,k=7*9,fx=T)+s(AT,k=6,fx=T)+dow,family="poisson",data=dat.s1,method="ML")
 g2<-gam(AGE0005~s(exposure)+s(as.numeric(date) ,k=7*9,fx=T)+s(AT,k=6,fx=T)+dow,family="poisson",data=dat.s2,method="ML")
 g3<-gam(AGE0005~s(exposure)+s(as.numeric(date) ,k=7*9,fx=T)+s(AT,k=6,fx=T)+dow,family="poisson",data=dat.s3,method="ML")
@@ -274,22 +274,22 @@ plot(g7,select=1,scheme=1,cex.axis=1.45,cex.lab=1.4,ylim=c(-0.5,0.5),xlim=c(5,70
 
 ##################################################################################################################################
 ##################################################################################################################################
-#Single lag ´Ã·Á¼­ ÇÑ 14ÀÏ
-#CMAQ PM2.5 ÀÚ·á °¡Á®¿À±â ; ³ëÃâÀÚ·á  
-setwd("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\PM2.5_AOM\\analysis")
+#Single lag ëŠ˜ë ¤ì„œ í•œ 14ì¼
+#CMAQ PM2.5 ìë£Œ ê°€ì ¸ì˜¤ê¸° ; ë…¸ì¶œìë£Œ  
+setwd("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\PM2.5_AOM\\analysis")
 pm<-read.csv("CMAQ_PM2.5_short.csv",header=T)
 
-names(pm)[31]="mtemp" # ÀÏ Æò±Õ ±â¿Â
-names(pm)[48]="mwind" # ÀÏ Æò±Õ Ç³¼Ó
-names(pm)[50]="mdew"  # ÀÏ Æò±Õ ÀÌ½½Á¡ ¿Âµµ
-names(pm)[53]="mhum"  # ÀÏ Æò±Õ »ó´ë ½Àµµ
-names(pm)[54]="map"   # ÀÏ Æò±Õ Áõ±â¾Ğ
+names(pm)[31]="mtemp" # ì¼ í‰ê·  ê¸°ì˜¨
+names(pm)[48]="mwind" # ì¼ í‰ê·  í’ì†
+names(pm)[50]="mdew"  # ì¼ í‰ê·  ì´ìŠ¬ì  ì˜¨ë„
+names(pm)[53]="mhum"  # ì¼ í‰ê·  ìƒëŒ€ ìŠµë„
+names(pm)[54]="map"   # ì¼ í‰ê·  ì¦ê¸°ì••
 
 # pm<-pm %>%  select(date:mtemp,mwind,mdew,mhum,map)
 pm<-pm [,c(1:10,18:24,31,48,50,53,54)]
-pm[,3:17]<-pm[,3:17]/10 #PM 10À¸·Î ³ª´²ÁÜ, 1´ÜÀ§ Áõ°¡´ç 10ug/m3  À¸·Î º¸±â À§ÇØ 
+pm[,3:17]<-pm[,3:17]/10 #PM 10ìœ¼ë¡œ ë‚˜ëˆ ì¤Œ, 1ë‹¨ìœ„ ì¦ê°€ë‹¹ 10ug/m3  ìœ¼ë¡œ ë³´ê¸° ìœ„í•´ 
 
-#Apparent Temperature º¯¼ö Ãß°¡
+#Apparent Temperature ë³€ìˆ˜ ì¶”ê°€
 #Compute simple at (schwartz version)
 pm$AT=-2.653+(0.994*pm$mtemp)+(0.0153*pm$mdew*pm$mdew)
 pm <- subset(pm,SIDO %in% c("Seoul","Busan","Daegu","Incheon","Gwangju","Daejeon","Ulsan"))
@@ -391,7 +391,7 @@ x11();ggplot(s.fit,aes(lag,RR))+geom_point(size=2)+geom_errorbar(aes(ymin=lci,ym
 a<-gam(AGE0005  ~pm+s(as.numeric(date),k=7*9,fx=T)+s(AT,k=6,fx=T)+dow,family="poisson",data=s1)
 b<-gam(AGE0005  ~pm+s(as.numeric(date),k=7*9)+s(AT,k=6)+dow,family="poisson",data=s1)
 
-tiff(filename="C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\figure\\single14.tiff",width=4800,height=2800,res=300)
+tiff(filename="C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\figure\\single14.tiff",width=4800,height=2800,res=300)
 ggplot(s.fit,aes(lag,RR))+geom_point(size=2)+geom_errorbar(aes(ymin=lci,ymax=uci),width=0.4)+theme_gray(base_size=15)+facet_wrap(~SIDO)+
   geom_hline(yintercept = 1,col="red",linetype=2,size=0.9)+labs(x="Lag")
 dev.off()
@@ -440,7 +440,7 @@ m.fit$obs=factor(m.fit$obs,levels=unique(m.fit$obs))
 x11();ggplot(m.fit,aes(obs,RR))+geom_point(size=2)+geom_errorbar(aes(ymin=lci,ymax=uci),width=0.4)+theme_gray(base_size=15)+facet_wrap(~SIDO,scales="free")+
   geom_hline(yintercept = 1,col="red",linetype=2,size=0.9)+labs(x="Moving average")
 
-tiff(filename="C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\figure\\moving30.tiff",width=4800,height=2800,res=300)
+tiff(filename="C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\figure\\moving30.tiff",width=4800,height=2800,res=300)
 ggplot(m.fit,aes(obs,RR))+geom_point(size=2)+geom_errorbar(aes(ymin=lci,ymax=uci),width=0.4)+theme_gray(base_size=15)+facet_wrap(~SIDO,scales="free")+
   geom_hline(yintercept = 1,col="red",linetype=2,size=0.9)+labs(x="Moving average")
 dev.off()
@@ -449,29 +449,29 @@ dev.off()
 #####################################################################################################################################################################
 #Mult-ipollutant
 
-setwd("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\monitoring_data_JM")
+setwd("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\monitoring_data_JM")
 
-ap08<-as.data.frame(read_excel("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Air_Korea_È®Á¤µ¥ÀÌÅÍ\\2008\\2008_¸ğ´ÏÅÍ¸µ³óµµ.xlsx",sheet=3))
-ap09<-as.data.frame(read_excel("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Air_Korea_È®Á¤µ¥ÀÌÅÍ\\2009\\2009_¸ğ´ÏÅÍ¸µ³óµµ.xlsx",sheet=3))
-ap10<-as.data.frame(read_excel("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Air_Korea_È®Á¤µ¥ÀÌÅÍ\\2010\\2010_¸ğ´ÏÅÍ¸µ³óµµ.xlsx",sheet=3))
-ap11<-as.data.frame(read_excel("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Air_Korea_È®Á¤µ¥ÀÌÅÍ\\2011\\2011_¸ğ´ÏÅÍ¸µ³óµµ.xlsx",sheet=3))
-ap12<-as.data.frame(read_excel("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Air_Korea_È®Á¤µ¥ÀÌÅÍ\\2012\\2012_¸ğ´ÏÅÍ¸µ³óµµ.xlsx",sheet=3))
-ap13<-as.data.frame(read_excel("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Air_Korea_È®Á¤µ¥ÀÌÅÍ\\2013\\2013_¸ğ´ÏÅÍ¸µ³óµµ.xlsx",sheet=3))
-ap14<-as.data.frame(read_excel("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Air_Korea_È®Á¤µ¥ÀÌÅÍ\\2014\\2014_¸ğ´ÏÅÍ¸µ³óµµ.xlsx",sheet=3))
-ap15<-as.data.frame(read_excel("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Air_Korea_È®Á¤µ¥ÀÌÅÍ\\2015\\2015_¸ğ´ÏÅÍ¸µ³óµµ.xlsx",sheet=3))
-ap16<-as.data.frame(read_excel("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Air_Korea_È®Á¤µ¥ÀÌÅÍ\\2016\\2016_¸ğ´ÏÅÍ¸µ³óµµ.xlsx",sheet=3))
+ap08<-as.data.frame(read_excel("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\Air_Korea_í™•ì •ë°ì´í„°\\2008\\2008_ëª¨ë‹ˆí„°ë§ë†ë„.xlsx",sheet=3))
+ap09<-as.data.frame(read_excel("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\Air_Korea_í™•ì •ë°ì´í„°\\2009\\2009_ëª¨ë‹ˆí„°ë§ë†ë„.xlsx",sheet=3))
+ap10<-as.data.frame(read_excel("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\Air_Korea_í™•ì •ë°ì´í„°\\2010\\2010_ëª¨ë‹ˆí„°ë§ë†ë„.xlsx",sheet=3))
+ap11<-as.data.frame(read_excel("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\Air_Korea_í™•ì •ë°ì´í„°\\2011\\2011_ëª¨ë‹ˆí„°ë§ë†ë„.xlsx",sheet=3))
+ap12<-as.data.frame(read_excel("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\Air_Korea_í™•ì •ë°ì´í„°\\2012\\2012_ëª¨ë‹ˆí„°ë§ë†ë„.xlsx",sheet=3))
+ap13<-as.data.frame(read_excel("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\Air_Korea_í™•ì •ë°ì´í„°\\2013\\2013_ëª¨ë‹ˆí„°ë§ë†ë„.xlsx",sheet=3))
+ap14<-as.data.frame(read_excel("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\Air_Korea_í™•ì •ë°ì´í„°\\2014\\2014_ëª¨ë‹ˆí„°ë§ë†ë„.xlsx",sheet=3))
+ap15<-as.data.frame(read_excel("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\Air_Korea_í™•ì •ë°ì´í„°\\2015\\2015_ëª¨ë‹ˆí„°ë§ë†ë„.xlsx",sheet=3))
+ap16<-as.data.frame(read_excel("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\Air_Korea_í™•ì •ë°ì´í„°\\2016\\2016_ëª¨ë‹ˆí„°ë§ë†ë„.xlsx",sheet=3))
 
 ap0816<-rbind(ap08,ap09,ap10,ap11,ap12,ap13,ap14,ap15,ap16)
 
 ap0816<-ap0816 %>% dplyr::  select(-PM25)
-ap0816<-subset(ap0816, sido %in% c("¼­¿ï","ºÎ»ê","´ë±¸","ÀÎÃµ","±¤ÁÖ","´ëÀü","¿ï»ê") )
+ap0816<-subset(ap0816, sido %in% c("ì„œìš¸","ë¶€ì‚°","ëŒ€êµ¬","ì¸ì²œ","ê´‘ì£¼","ëŒ€ì „","ìš¸ì‚°") )
 
-ap0816$SIDO=with(ap0816,ifelse(sido=="¼­¿ï","Seoul",
-                               ifelse(sido=="ºÎ»ê","Busan",
-                                      ifelse(sido=="´ë±¸","Daegu",
-                                             ifelse(sido=="ÀÎÃµ","Incheon",
-                                                    ifelse(sido=="±¤ÁÖ","Gwangju",
-                                                           ifelse(sido=="´ëÀü","Daejeon","Ulsan")))))))
+ap0816$SIDO=with(ap0816,ifelse(sido=="ì„œìš¸","Seoul",
+                               ifelse(sido=="ë¶€ì‚°","Busan",
+                                      ifelse(sido=="ëŒ€êµ¬","Daegu",
+                                             ifelse(sido=="ì¸ì²œ","Incheon",
+                                                    ifelse(sido=="ê´‘ì£¼","Gwangju",
+                                                           ifelse(sido=="ëŒ€ì „","Daejeon","Ulsan")))))))
 ap0816_rev<-ap0816
 ap0816_rev$PM10<-ap0816$PM10/10
 ap0816_rev$SO2<-ap0816$SO2*1000
@@ -513,7 +513,7 @@ X11();ggcorrplot(cor(avg_exposure %>% dplyr:: select(AT:O3),use="complete.obs",m
   theme(legend.title=element_blank(),panel.border = element_blank(), panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
 
-tiff(filename="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\SNU_PM2.5(¹Ì¼¼¸ÕÁö ÀÎÃ¼°Ç°­À¯ÇØÆò°¡)\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\figure\\corr.tiff",width=2500,height=2500,res=300)
+tiff(filename="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\SNU_PM2.5(ë¯¸ì„¸ë¨¼ì§€ ì¸ì²´ê±´ê°•ìœ í•´í‰ê°€)\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\figure\\corr.tiff",width=2500,height=2500,res=300)
 ggcorrplot(cor(avg_exposure %>% dplyr:: select(AT:O3),use="complete.obs",method="spearman"),p.mat=p.mat,hc.order = F,type="lower",pch.cex=25,lab_size=6,pch=4,
            ,lab=T)+theme(text=element_text(size=15),axis.text.x=element_text(angle=90,size=15),axis.text.y=element_text(size=15))+
   theme(legend.title=element_blank(),panel.border = element_blank(), panel.grid.major = element_blank(),
@@ -607,7 +607,7 @@ exposure_m<-cbind(e1,
                   e6 %>%  select(lag0_O3:ma030_O3))
 
 
-# setwd("C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\analysis")
+# setwd("C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\analysis")
 # write.csv(exposure_m,file="ap.csv",row.names=F)
 
 exposure_m$key=paste0(exposure_m$date,"-",exposure_m$SIDO)
@@ -638,7 +638,7 @@ s7.m<-merge(s7,exposure_m,by="key",all.x=T)
 # write.csv(s7.m,file="s7.csv",row.names=F)
 ################################################################################################################################
 ################################################################################################################################
-setwd("C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\analysis")
+setwd("C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\analysis")
 
 s1<-read.csv("s1.csv",header=T)
 s2<-read.csv("s2.csv",header=T)
@@ -701,7 +701,7 @@ s.fit$SIDO=factor(s.fit$SIDO,levels=unique(s.fit$SIDO))
 
 s.fit<-s.fit
 # write.csv(s.fit,file="s.fit.csv",row.names=F)
-setwd("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\SNU_PM2.5(¹Ì¼¼¸ÕÁö ÀÎÃ¼°Ç°­À¯ÇØÆò°¡)\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\analysis")
+setwd("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\SNU_PM2.5(ë¯¸ì„¸ë¨¼ì§€ ì¸ì²´ê±´ê°•ìœ í•´í‰ê°€)\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\analysis")
 list.files()
 s.fit<-read.csv("s.fit.csv")
 s.fit$obs=factor(c(c(0:30),paste0(0,c(1:30))),levels=c(c(0:30),paste0(0,c(1:30))))
@@ -750,8 +750,8 @@ m.fit.e4<-subset(s.fit,gubun=="moving" & exposure=="NO2" & obs   %in% c(paste0(0
 m.fit.e5<-subset(s.fit,gubun=="moving" & exposure=="CO" & obs    %in% c(paste0(0,1:10)))
 m.fit.e6<-subset(s.fit,gubun=="moving" & exposure=="O3" & obs    %in% c(paste0(0,1:10)))
 
-# write.csv(s.fit.e1,file="C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\analysis\\result\\s.fit.e1.csv",row.names=F)
-# write.csv(m.fit.e1,file="C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\analysis\\result\\m.fit.e1.csv",row.names=F)
+# write.csv(s.fit.e1,file="C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\analysis\\result\\s.fit.e1.csv",row.names=F)
+# write.csv(m.fit.e1,file="C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\analysis\\result\\m.fit.e1.csv",row.names=F)
 
 x11();ggplot(m.fit.e1,aes(obs,RR))+geom_point(size=2)+geom_errorbar(aes(ymin=lci,ymax=uci),width=0.4)+theme_gray(base_size=12)+facet_wrap(~SIDO)+
   geom_hline(yintercept = 1,col="red",linetype=2,size=0.9)
@@ -871,7 +871,7 @@ x11();ggplot(df,aes(obs,pc))+geom_point(size=4.5,col=c(rep("black",13),"red","bl
   theme(legend.title=element_blank(),panel.border = element_blank(),
         panel.grid.major = element_blank(),panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
 
-tiff(filename="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\SNU_PM2.5(¹Ì¼¼¸ÕÁö ÀÎÃ¼°Ç°­À¯ÇØÆò°¡)\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\figure\\lagdays.tiff",width=5200,height=3200,res=300)
+tiff(filename="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\SNU_PM2.5(ë¯¸ì„¸ë¨¼ì§€ ì¸ì²´ê±´ê°•ìœ í•´í‰ê°€)\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\figure\\lagdays.tiff",width=5200,height=3200,res=300)
 ggplot(df,aes(obs,pc))+geom_point(size=4.5,col=c(rep("black",13),"red","black"))+geom_errorbar(aes(ymin=pcl,ymax=pcu),width=0.2)+theme_minimal(base_size=22)+labs(x="Lag days",y="Percent change (%)")+
   geom_hline(yintercept = 0,col="blue",linetype="dashed",lwd=1.4)+
   theme(legend.title=element_blank(),panel.border = element_blank(),
@@ -1006,7 +1006,7 @@ text(-5,16.3, pos=4, cex=1.1, paste("Cold season"),col="blue",font=4)
 text(-5,71  , pos=4, cex=1.1, paste("Cities"),font=4)
 text(6,71 , pos=4, cex=1.1, paste("Percent change [95% CI]"),font=4)
 
-tiff(filename="C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\figure\\meta_3.tiff",width=2800,height=4200,res=300)
+tiff(filename="C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\figure\\meta_3.tiff",width=2800,height=4200,res=300)
 par(mar=c(4,4,1,2));
 forest(RM.res, xlim=c(-5, 10), ylim=c(6, 72), steps=4, rows=c(67:61,54:48,41:35,28:22,15:9),refline=0,
        order=c(1:nrow(u)),transf = mytransf,bg=4,col=2,digits=2,cex=0.8,xlab="", mlab="")
@@ -1185,7 +1185,7 @@ barplot(rbind(m7$h1,m7$h2,m7$h3,m7$h4,m7$h5,m7$h6,m7$h7),col=c("#e76bf3","#f37b5
 legend("topright",legend=c("Seoul","Busan","Daegu","Incheon","Gwangju","Daejeon","Ulsan"),
        fill=c("#e76bf3","#f37b59","#e7861b","#00b81f","#00c0b8","#00a5ff","#f8766d"),box.lty=0,cex=1.1)
 
-tiff(filename="C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\figure\\gamm_total_revise.tiff",width=4800,height=2800,res=300)
+tiff(filename="C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\figure\\gamm_total_revise.tiff",width=4800,height=2800,res=300)
 layout(matrix(c(1,1,1,1,2,2),3,2,byrow=T));
 plot(tt_gamm4$gam,select=1,scheme=1,ylim=c(-0.1,0.15),ylab="Log RR",xlab="",cex.lab=1.39,cex.axis=1.39);abline(h=0)
 barplot(rbind(m7$h1,m7$h2,m7$h3,m7$h4,m7$h5,m7$h6,m7$h7),col=c("#e76bf3","#f37b59","#e7861b","#00b81f","#00c0b8","#00a5ff","#f8766d"),
@@ -1273,7 +1273,7 @@ legend(50,20000,legend=c("Seoul","Busan","Daegu","Incheon","Gwangju","Daejeon","
        fill=c("#e76bf3","#f37b59","#e7861b","#00b81f","#00c0b8","#00a5ff","#f8766d"),box.lty=0,cex=1.1)
 
 
-tiff(filename="C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\figure\\gamm_sex_season_revise2.tiff",width=4800,height=2800,res=300)
+tiff(filename="C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\figure\\gamm_sex_season_revise2.tiff",width=4800,height=2800,res=300)
 layout(cbind(matrix(c(1,1,1,1,2,2),3,2,byrow=T),matrix(c(3,3,3,3,4,4),3,2,byrow=T),matrix(c(5,5,5,5,6,6),3,2,byrow=T),matrix(c(7,7,7,7,8,8),3,2,byrow=T)))
 
 plot(t_m$gam,select=1,scheme=1,ylim=c(-0.1,0.15),xlab=expression(paste(PM[2.5]," (",mu,g/m^3," ) ",concentration)),
@@ -1299,12 +1299,12 @@ legend(50,20000,legend=c("Seoul","Busan","Daegu","Incheon","Gwangju","Daejeon","
        fill=c("#e76bf3","#f37b59","#e7861b","#00b81f","#00c0b8","#00a5ff","#f8766d"),box.lty=0,cex=1.1)
 dev.off()
 
-setwd("C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_¼Ò¾Æ_LRI\\analysis")
+setwd("C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_ì†Œì•„_LRI\\analysis")
 ap<-read.csv("ap.csv")
 
-setwd("D:\\ÀÌ´ë¸ñµ¿º´¿ø\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Á¤¸®µ¥ÀÌÅÍ\\PM2.5")
+setwd("D:\\ì´ëŒ€ëª©ë™ë³‘ì›\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\ì •ë¦¬ë°ì´í„°\\PM2.5")
 pp<-read.csv("Daily_PM25_15-16_KMH.csv",header=T)
-ppcode<-as.data.frame(read_excel("½Ã±º±¸ÄÚµå.xlsx",sheet=1))
+ppcode<-as.data.frame(read_excel("ì‹œêµ°êµ¬ì½”ë“œ.xlsx",sheet=1))
 
 names(ppcode)=c("City","SIGUNGU_NM","SIGUNGU")
 
@@ -1317,11 +1317,11 @@ names(pp3)=c("SI","date","PM25_M")
 
 pp3$SIDO=substr(pp3$SI,1,2)
 
-pp3$SIDO=with(pp3,ifelse(SIDO=="¼­¿ï","Seoul",ifelse(SIDO=="ºÎ»ê","Busan",
-                                                   ifelse(SIDO=="´ë±¸","Daegu",
-                                                          ifelse(SIDO=="ÀÎÃµ","Incheon",
-                                                                 ifelse(SIDO=="±¤ÁÖ","Gwangju",
-                                                                        ifelse(SIDO=="´ëÀü","Daejeon","Ulsan")))))))
+pp3$SIDO=with(pp3,ifelse(SIDO=="ì„œìš¸","Seoul",ifelse(SIDO=="ë¶€ì‚°","Busan",
+                                                   ifelse(SIDO=="ëŒ€êµ¬","Daegu",
+                                                          ifelse(SIDO=="ì¸ì²œ","Incheon",
+                                                                 ifelse(SIDO=="ê´‘ì£¼","Gwangju",
+                                                                        ifelse(SIDO=="ëŒ€ì „","Daejeon","Ulsan")))))))
 
 ap2<-ap[1:4]
 ap2$date=as.Date(ap2$date)
