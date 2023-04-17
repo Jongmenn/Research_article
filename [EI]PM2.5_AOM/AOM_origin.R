@@ -5,7 +5,7 @@ library(TTR)    ;library(Epi)
 library(tsModel);library(lubridate)
 library(dlnm)   ;library(metafor)
 library(mixmeta);library(plotrix)
-setwd("C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\analysis\\data")
+setwd("C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\analysis\\data")
 
 aom_w1<-read.csv("AOM_W1.csv",header=T) ; aom_w1$DATE=as.Date(aom_w1$DATE)
 aom_w2<-read.csv("AOM_W2.csv",header=T) ; aom_w2$DATE=as.Date(aom_w2$DATE)
@@ -38,24 +38,24 @@ aom_w4$key=paste0(aom_w4$SIDO,"-",aom_w4$DATE) ; aom_w4$yyyy=substr(aom_w4$DATE,
 # 
 # names(aom_count_w4)=c("year","sido",names(aom_w4)[5:22])
 # 
-# setwd("C:\\Users\\AROOM206_kard141\\Desktop\\AOM\\ºÐ¼®\\°á°ú")
+# setwd("C:\\Users\\AROOM206_kard141\\Desktop\\AOM\\ë¶„ì„\\ê²°ê³¼")
 # write.csv(aom_count_w4,file="aom_count_w4.csv",row.names=F)
 ####################################################################################################################################
-#CMAQ PM2.5 ÀÚ·á °¡Á®¿À±â ; ³ëÃâÀÚ·á  
-setwd("C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\analysis")
+#CMAQ PM2.5 ìžë£Œ ê°€ì ¸ì˜¤ê¸° ; ë…¸ì¶œìžë£Œ  
+setwd("C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\analysis")
 pm<-read.csv("CMAQ_PM2.5_short.csv",header=T)
 
-names(pm)[31]="mtemp" # ÀÏ Æò±Õ ±â¿Â
-names(pm)[48]="mwind" # ÀÏ Æò±Õ Ç³¼Ó
-names(pm)[50]="mdew"  # ÀÏ Æò±Õ ÀÌ½½Á¡ ¿Âµµ
-names(pm)[53]="mhum"  # ÀÏ Æò±Õ »ó´ë ½Àµµ
-names(pm)[54]="map"   # ÀÏ Æò±Õ Áõ±â¾Ð
+names(pm)[31]="mtemp" # ì¼ í‰ê·  ê¸°ì˜¨
+names(pm)[48]="mwind" # ì¼ í‰ê·  í’ì†
+names(pm)[50]="mdew"  # ì¼ í‰ê·  ì´ìŠ¬ì  ì˜¨ë„
+names(pm)[53]="mhum"  # ì¼ í‰ê·  ìƒëŒ€ ìŠµë„
+names(pm)[54]="map"   # ì¼ í‰ê·  ì¦ê¸°ì••
 
 # pm<-pm %>%  select(date:mtemp,mwind,mdew,mhum,map)
 pm<-pm [,c(1:10,18:24,31,48,50,53,54)]
-pm[,3:17]<-pm[,3:17]/10 #PM 10À¸·Î ³ª´²ÁÜ, 1´ÜÀ§ Áõ°¡´ç 10ug/m3  À¸·Î º¸±â À§ÇØ 
+pm[,3:17]<-pm[,3:17]/10 #PM 10ìœ¼ë¡œ ë‚˜ëˆ ì¤Œ, 1ë‹¨ìœ„ ì¦ê°€ë‹¹ 10ug/m3  ìœ¼ë¡œ ë³´ê¸° ìœ„í•´ 
 
-#Apparent Temperature º¯¼ö Ãß°¡
+#Apparent Temperature ë³€ìˆ˜ ì¶”ê°€
 #Compute simple at (schwartz version)
 pm$AT=-2.653+(0.994*pm$mtemp)+(0.0153*pm$mdew*pm$mdew)
 pm <- subset(pm,SIDO %in% c("Seoul","Busan","Daegu","Incheon","Gwangju","Daejeon","Ulsan"))
@@ -122,7 +122,7 @@ g5<-gam(TOT~s(exposure)+s(as.numeric(DATE),k=6*9)+s(AT,k=6)+dow+month,family="qu
 g6<-gam(TOT~s(exposure)+s(as.numeric(DATE),k=6*9)+s(AT,k=6)+dow+month,family="quasipoisson",data=df6)
 g7<-gam(TOT~s(exposure)+s(as.numeric(DATE),k=6*9)+s(AT,k=6)+dow+month,family="quasipoisson",data=df7)
 
-tiff(filename="C:\\Users\\a\\Desktop\\Áý¿¡¼­\\20200418\\revision_figure\\Fig.S6.tiff",width=4000,height=3200,res=300)
+tiff(filename="C:\\Users\\a\\Desktop\\ì§‘ì—ì„œ\\20200418\\revision_figure\\Fig.S6.tiff",width=4000,height=3200,res=300)
 par(mfrow=c(2,4))
 plot(g1,select=1,cex.axis=1.48,cex.lab=1.48,ylim=c(-0.3,0.4),main="Seoul",scheme=1,ylab="logRR",xlab=expression(paste(PM[2.5]," (",mu,g/m^3,")")))
 plot(g2,select=1,cex.axis=1.48,cex.lab=1.48,ylim=c(-0.3,0.4),,main="Busan",scheme=1,ylab="logRR",xlab=expression(paste(PM[2.5]," (",mu,g/m^3,")")))
@@ -136,13 +136,13 @@ dev.off()
 
 ###########################################################################################################################################
 #########################################################################################################################################
-#¼­¿ïÁö¿ª¸¸, ÁúÈ¯ ¿¬·É ´Ù¸£°Ô ÇÏ¿©¼­ ÀÚÀ¯µµ ºñ±³ÇÏ±â 
-#Best Moedl fit °áÁ¤ÇÏ±â À§ÇØ ¿©·¯°¡Áö Á¶ÇÕ , Time df, AT df¸¸ Á¶Á¤ 
+#ì„œìš¸ì§€ì—­ë§Œ, ì§ˆí™˜ ì—°ë ¹ ë‹¤ë¥´ê²Œ í•˜ì—¬ì„œ ìžìœ ë„ ë¹„êµí•˜ê¸° 
+#Best Moedl fit ê²°ì •í•˜ê¸° ìœ„í•´ ì—¬ëŸ¬ê°€ì§€ ì¡°í•© , Time df, AT dfë§Œ ì¡°ì • 
 #summary table 
 
 #################################################################################################################################################################################
-#Time trend ÀÚÀ¯µµ¿¡ µû¶ó beta°ª º¯ÀÌ 
-#Apparent Temperature fixed, time df Á¶Á¤ (3~15)
+#Time trend ìžìœ ë„ì— ë”°ë¼ betaê°’ ë³€ì´ 
+#Apparent Temperature fixed, time df ì¡°ì • (3~15)
 #Seoul Time trend
 
 ###################################################################################################################################################
@@ -176,11 +176,11 @@ z7<-data.frame(beta=d7$estimate,z=d7$statistic,pval=d7$p.value)
 View(rbind(z1,z2,z3,z4,z5,z6,z7))
 
 #Model Comparison ; Poisson, Quasi-Poisson, Negative binomial , 
-#QAIC, AIC ,loglikelihood Ã£À¸·Á°í ÇØº»°Å
+#QAIC, AIC ,loglikelihood ì°¾ìœ¼ë ¤ê³  í•´ë³¸ê±°
 
 #################################################################################################################################################################################
 ########################
-###GAM ¸ðµ¨¸µ - ¼­¿ï####
+###GAM ëª¨ë¸ë§ - ì„œìš¸####
 ########################
 fit01=NULL;fit02=NULL;fit03=NULL;fit04=NULL;fit05=NULL;fit06=NULL;fit07=NULL;fit08=NULL;fit09=NULL
 
@@ -211,7 +211,7 @@ s1.fit<-rbind(s1.fit01,s1.fit02,s1.fit03,
               s1.fit07,s1.fit08,s1.fit09)
 ##################################################################################################################################################
 ########################
-###GAM ¸ðµ¨¸µ - ºÎ»ê####
+###GAM ëª¨ë¸ë§ - ë¶€ì‚°####
 ########################
 fit01=NULL;fit02=NULL;fit03=NULL;fit04=NULL;fit05=NULL;fit06=NULL;fit07=NULL;fit08=NULL;fit09=NULL
 
@@ -242,7 +242,7 @@ s2.fit<-rbind(s2.fit01,s2.fit02,s2.fit03,
               s2.fit07,s2.fit08,s2.fit09)
 ##################################################################################################################################################
 ########################
-###GAM ¸ðµ¨¸µ - ´ë±¸####
+###GAM ëª¨ë¸ë§ - ëŒ€êµ¬####
 ########################
 fit01=NULL;fit02=NULL;fit03=NULL;fit04=NULL;fit05=NULL;fit06=NULL;fit07=NULL;fit08=NULL;fit09=NULL
 
@@ -273,7 +273,7 @@ s3.fit<-rbind(s3.fit01,s3.fit02,s3.fit03,
               s3.fit07,s3.fit08,s3.fit09)
 ##################################################################################################################################################
 ########################
-###GAM ¸ðµ¨¸µ - ÀÎÃµ####
+###GAM ëª¨ë¸ë§ - ì¸ì²œ####
 ########################
 fit01=NULL;fit02=NULL;fit03=NULL;fit04=NULL;fit05=NULL;fit06=NULL;fit07=NULL;fit08=NULL;fit09=NULL
 
@@ -304,7 +304,7 @@ s4.fit<-rbind(s4.fit01,s4.fit02,s4.fit03,
               s4.fit07,s4.fit08,s4.fit09)
 ##################################################################################################################################################
 ########################
-###GAM ¸ðµ¨¸µ - ±¤ÁÖ####
+###GAM ëª¨ë¸ë§ - ê´‘ì£¼####
 ########################
 fit01=NULL;fit02=NULL;fit03=NULL;fit04=NULL;fit05=NULL;fit06=NULL;fit07=NULL;fit08=NULL;fit09=NULL
 
@@ -335,7 +335,7 @@ s5.fit<-rbind(s5.fit01,s5.fit02,s5.fit03,
               s5.fit07,s5.fit08,s5.fit09)
 ##################################################################################################################################################
 ########################
-###GAM ¸ðµ¨¸µ - ´ëÀü####
+###GAM ëª¨ë¸ë§ - ëŒ€ì „####
 ########################
 fit01=NULL;fit02=NULL;fit03=NULL;fit04=NULL;fit05=NULL;fit06=NULL;fit07=NULL;fit08=NULL;fit09=NULL
 
@@ -366,7 +366,7 @@ s6.fit<-rbind(s6.fit01,s6.fit02,s6.fit03,
               s6.fit07,s6.fit08,s6.fit09)
 ##################################################################################################################################################
 ########################
-###GAM ¸ðµ¨¸µ - ¿ï»ê####
+###GAM ëª¨ë¸ë§ - ìš¸ì‚°####
 ########################
 fit01=NULL;fit02=NULL;fit03=NULL;fit04=NULL;fit05=NULL;fit06=NULL;fit07=NULL;fit08=NULL;fit09=NULL
 
@@ -442,7 +442,7 @@ fit_moving$SIDO<-factor(fit_moving$SIDO,levels=c("Seoul","Busan","Daegu","Incheo
 
 fit_single$obs=0:7
 fit_moving$obs=1:7
-setwd("C:\\Users\\AROOM206_kard141\\Desktop\\AOM\\ºÐ¼®\\°á°ú")
+setwd("C:\\Users\\AROOM206_kard141\\Desktop\\AOM\\ë¶„ì„\\ê²°ê³¼")
 
 # write.csv(fit_single,file="fit_single_w2.csv",row.names=F)
 # write.csv(fit_moving,file="fit_moving_w2.csv",row.names=F)
@@ -454,15 +454,15 @@ ag2<-as.data.frame(read_excel("age.xlsx",sheet=2))
 
 x11();ggplot(ag1,aes(AGE,y=count))+geom_bar(stat="identity")+labs(x="Age",y="Frequency")+theme_bw(base_size=20)
 
-tiff(filename="C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\figure\\age_distribution_total.tiff",width=3600,height=2800,res=300)
+tiff(filename="C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\figure\\age_distribution_total.tiff",width=3600,height=2800,res=300)
 ggplot(ag1,aes(AGE,y=count))+geom_bar(stat="identity")+labs(x="Age",y="Frequency")+theme_bw(base_size=20)
 dev.off()
 
 #####################################################################################################################################################################
 #####################################################################################################################################################################
 #df for Time-trend
-#Base Model fit °áÁ¤ÇÏ±âÀ§ÇØ ÀÚÀ¯µµ Á¶ÇÕÇÏ¿© ¸ðµ¨¸µ
-#summary table ¸¸µé±â
+#Base Model fit ê²°ì •í•˜ê¸°ìœ„í•´ ìžìœ ë„ ì¡°í•©í•˜ì—¬ ëª¨ë¸ë§
+#summary table ë§Œë“¤ê¸°
 kk=c(11,12,13,14,15,16,17,18,
      21,22,23,24,25,26,27,28,
      31,32,33,34,35,36,37,38,
@@ -476,11 +476,11 @@ kk=c(11,12,13,14,15,16,17,18,
 gam_df=function(fit){data.frame(Y=as.character(fit$formula)[2],family=fit$family[[1]],link=fit$family[[2]],as.data.frame(t(summary(fit)$p.table[2,])),
                                 AIC=AIC(fit),BIC=BIC(fit),df_time=substr(kk,1,1)[i],df_AT=substr(kk,2,2)[i])}
 
-#degree of freedom °áÁ¤ÇÏ±â À§ÇØ ÀÌ¿ë 
+#degree of freedom ê²°ì •í•˜ê¸° ìœ„í•´ ì´ìš© 
 s1.fit01=NULL ;s1.fit02=NULL;s1.fit03=NULL ;s1.fit04=NULL
 s1.fit05=NULL ;s1.fit06=NULL;s1.fit07=NULL
 
-#¿¬·É ±×·ìº° ½Ãµµº° ÀÚÀ¯µµ Á¶ÇÕ °á°ú È®ÀÎ
+#ì—°ë ¹ ê·¸ë£¹ë³„ ì‹œë„ë³„ ìžìœ ë„ ì¡°í•© ê²°ê³¼ í™•ì¸
 for(i in 1:length(kk)){
   fit01<-gam(TOT ~pm+s(as.numeric(date),k=9*as.numeric(substr(kk,1,1)[i]))+s(AT,k=as.numeric(substr(kk,2,2)[i]))+dowholi,family="poisson",data=s1.w4)
   fit02<-gam(TOT ~pm+s(as.numeric(date),k=9*as.numeric(substr(kk,1,1)[i]))+s(AT,k=as.numeric(substr(kk,2,2)[i]))+dowholi,family="poisson",data=s2.w4)
@@ -513,7 +513,7 @@ aom.df$RR =with(aom.df,round(exp(Estimate),4))
 aom.df$lwl=with(aom.df,round(exp(Estimate-1.96*`Std..Error`),4))
 aom.df$uwl=with(aom.df,round(exp(Estimate+1.96*`Std..Error`),4))
 
-setwd("C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\analysis\\data")
+setwd("C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\analysis\\data")
 # write.csv(aom.df,file="aom.df.csv",row.names=F)
 aom.df<-read.csv("aom.df.csv",header=T)
 
@@ -524,7 +524,7 @@ x11();ggplot(df,aes(df_time,Estimate))+geom_point(size=3,col="red")+geom_errorba
   labs(x="Degree of freedom for time per year",y="log RR")+theme_gray(base_size=20)+facet_wrap(~SIDO)+
   scale_y_continuous(limits=c(-0.0075,0.03))+scale_x_continuous(breaks = c(1:9))+geom_hline(yintercept =0,col="blue",linetype=2,size=1.1)
 
-tiff(filename="C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\figure\\time_df.tiff",width=2800,height=2800,res=300)
+tiff(filename="C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\figure\\time_df.tiff",width=2800,height=2800,res=300)
 ggplot(df,aes(df_time,Estimate))+geom_point(size=3,col="red")+geom_errorbar(aes(ymin=df$Estimate-1.96*df$Std..Error),                                                                            ymax=df$Estimate+1.96*df$Std..Error,width=0.4,size=0.85)+
   labs(x="Degree of freedom for time per year",y="log RR")+theme_gray(base_size=20)+facet_wrap(~SIDO)+
   scale_y_continuous(limits=c(-0.0075,0.03))+scale_x_continuous(breaks = c(1:9))+geom_hline(yintercept =0,col="blue",linetype=2,size=1.1)
@@ -541,7 +541,7 @@ x11();grid.arrange(ggplot(tp,aes(date,x))+geom_line()+theme_bw(base_size=15)+geo
                    ggplot(tp,aes(date,PM))+theme_bw(base_size=15)+geom_line()+geom_hline(yintercept=median(tp$PM,na.rm=T),col="blue",size=1)+
                      labs(x="Date",y=expression(paste(PM[2.5]," (",mu,g/m^3,")"))))
 
-tiff(filename="C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\figure\\time_plot.tiff",width=3600,height=2800,res=300)
+tiff(filename="C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\figure\\time_plot.tiff",width=3600,height=2800,res=300)
 grid.arrange(ggplot(tp,aes(date,x))+geom_line()+theme_bw(base_size=15)+geom_hline(yintercept=median(tp$x,na.rm=T),col="red",size=1)+
                labs(x="Date",y="Acute otitis media counts"),
              ggplot(tp,aes(date,PM))+theme_bw(base_size=15)+geom_line()+geom_hline(yintercept=median(tp$PM,na.rm=T),col="blue",size=1)+
@@ -551,14 +551,14 @@ dev.off()
 #####################################################################################################################################################################
 #####################################################################################################################################################################
 #meta analysis : Total 
-setwd("C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\analysis")
+setwd("C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\analysis")
 moving<-read.csv("moving.csv",header = T)
 
-setwd("C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\analysis\\result")
+setwd("C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\analysis\\result")
 warm<-read.csv("fit_moving_w4.warm_quasipoisson_revision.csv",header=T)
 cold<-read.csv("fit_moving_w4.cold_quasipoisson_revision.csv",header=T)
 
-setwd("C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\analysis\\result")
+setwd("C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\analysis\\result")
 uri_ver1<-read.csv("uri_revise_ver1.csv",header=T)
 
 m01<-subset(moving,category=="TOT" & lag=="lag04" & Episode==4)
@@ -631,7 +631,7 @@ x11();forest(uni13, transf=exp, refline=1, bg=4, col=2,cex.lab=1.6,cex.axis=1.6,
 x11();forest(uni14, transf=exp, refline=1, bg=4, col=2,cex.lab=1.6,cex.axis=1.6,cex=2,fontsize=1,1,digits=3,main="Cold: Female")
 x11();forest(uni15, transf=exp, refline=1, bg=4, col=2,cex.lab=1.6,cex.axis=1.6,cex=2,fontsize=1,1,digits=3,main="Cold: Female")
 
-tiff(filename="C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\figure\\MEta_total.tiff",width=3600,height=2800,res=300)
+tiff(filename="C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\figure\\MEta_total.tiff",width=3600,height=2800,res=300)
 forest(uni01, transf=exp, refline=1, bg=4, col=2,cex.lab=1.6,cex.axis=1.6,cex=2,fontsize=1,1,digits=3,main="",psize=1);
 text(0.967, -1.45, pos=4, cex=1.2, bquote(paste("(Q = ",.(formatC(uni01$QE, digits=2, format="f")), ", df = ", .(uni01$k - uni01$p),
                                                 ", p-value = ", .(formatC(uni01$QEp, digits=3, format="f")), ", ", I^2, " = ",.(formatC(uni01$I2, digits=2, format="f")), "%)")))
@@ -678,7 +678,7 @@ text(0.8,18.3, pos=4, cex=1.1, paste("URI diagnosis:No "),col="blue",font=4)
 text(0.8,94  , pos=4, cex=1.1, paste("Cities"),font=4)
 text(1.16,94 , pos=4, cex=1.1, paste("Relative Risk [95% CI]"),font=4)
 
-tiff(filename="C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\figure\\MEta_total.tiff",width=4000,height=3600,res=300)
+tiff(filename="C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\figure\\MEta_total.tiff",width=4000,height=3600,res=300)
 par(mar=c(4,4,1,2));
 par(mar=c(4,4,1,2));
 forest(RM.res, xlim=c(0.8, 1.2), ylim=c(5, 95), steps=4, rows=c(89:83,77:71,65:59,53:47,41:35,29:23,17:11),refline=1,
@@ -704,7 +704,7 @@ text(1.135,94 , pos=4, cex=1.1, paste("Relative Risk [95% CI]"),font=4)
 dev.off()
 ##################################################################################################################################################################
 #5-day moving average meta analysis 
-uri<-read.csv("C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\analysis\\result\\uri_revise.csv",header=T)
+uri<-read.csv("C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\analysis\\result\\uri_revise.csv",header=T)
 
 u01<-subset(uri,category=="E1" & lag=="lag04")
 u02<-subset(uri,category=="E2" & lag=="lag04")
@@ -745,7 +745,7 @@ text(0.8,30.3, pos=4, cex=1.1, paste("URI Episode 4"),col="blue",font=4)
 text(0.8,68  , pos=4, cex=1.1, paste("Cities"),font=4)
 text(1.16,68 , pos=4, cex=1.1, paste("Relative Risk [95% CI]"),font=4)
 
-tiff(filename="C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\figure\\MEta_uri_ver2.tiff",width=3600,height=2800,res=300)
+tiff(filename="C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\figure\\MEta_uri_ver2.tiff",width=3600,height=2800,res=300)
 par(mar=c(4,4,1,2));
 forest(RM.res, xlim=c(0.8, 1.2), ylim=c(20, 69), steps=4, rows=c(65:59,53:47,41:35,29:23),refline=1,
        order=c(1:nrow(u)),transf = exp,bg=4,col=2,digits=3,cex=0.85,xlab="", mlab="")
@@ -772,18 +772,18 @@ regions<-as.character(unique(dat$SIDO))
 dat$region=NA
 dat$exposure=dat$pm*10
 
-#½Ãµµº°·Î datalistÈ­ ½ÃÅ´
+#ì‹œë„ë³„ë¡œ datalistí™” ì‹œí‚´
 datalist <- lapply(regions, function(region) dat[dat$SIDO==region,])
 names(datalist) <- regions
 
-#coef¸¦ ½Ãµµº°·Î ³Ö±â, B-spline knot 4 ; ¾Ö´Â lag¿¡ ´ëÇÑ °Í (½ÃÁ¡)
+#coefë¥¼ ì‹œë„ë³„ë¡œ ë„£ê¸°, B-spline knot 4 ; ì• ëŠ” lagì— ëŒ€í•œ ê²ƒ (ì‹œì )
 coefl1 <- matrix(NA,length(datalist), 4, dimnames=list(regions,paste0("b",seq(4))))
 coefl2 <- matrix(NA,length(datalist), 4, dimnames=list(regions,paste0("b",seq(4))))
 coefl3 <- matrix(NA,length(datalist), 4, dimnames=list(regions,paste0("b",seq(4))))
 coefl4 <- matrix(NA,length(datalist), 4, dimnames=list(regions,paste0("b",seq(4))))
 coefl5 <- matrix(NA,length(datalist), 4, dimnames=list(regions,paste0("b",seq(4))))
 
-#coef¸¦ ½Ãµµº°·Î ³Ö±â, Natural cubic spline ; ¾Ö´Â var¿¡ ´ëÇÑ °Í (³ëÃâ)
+#coefë¥¼ ì‹œë„ë³„ë¡œ ë„£ê¸°, Natural cubic spline ; ì• ëŠ” varì— ëŒ€í•œ ê²ƒ (ë…¸ì¶œ)
 coefv1 <- matrix(NA,length(datalist), 5, dimnames=list(regions,paste0("b",seq(5))))
 coefv2 <- matrix(NA,length(datalist), 5, dimnames=list(regions,paste0("b",seq(5))))
 coefv3 <- matrix(NA,length(datalist), 5, dimnames=list(regions,paste0("b",seq(5))))
@@ -803,11 +803,11 @@ Sv4 <- vector("list",length(datalist));names(Sv4) <- regions
 Sv5 <- vector("list",length(datalist));names(Sv5) <- regions
 
 bound <- rowMeans(sapply(datalist, function(x) range(x$exposure)))
-#argvar : ¿¹Ãø º¯¼öÀÇ °ø°£¿¡ ´ëÇÑ Çà·Ä
+#argvar : ì˜ˆì¸¡ ë³€ìˆ˜ì˜ ê³µê°„ì— ëŒ€í•œ í–‰ë ¬
 varknots <- equalknots(bound, fun="bs", degree=2, df=4)
 argvar <- list(fun="bs", degree=2, knots=varknots, Bound=bound)
 
-#lag¸¦ ¸îÀ¸·Î ÇÒÁö, knots¸¦ ¸îÀ¸·Î ÇÒÁö 
+#lagë¥¼ ëª‡ìœ¼ë¡œ í• ì§€, knotsë¥¼ ëª‡ìœ¼ë¡œ í• ì§€ 
 lagknots1 <- logknots(4,  df=5, int=T)
 lagknots2 <- logknots(7,  df=5, int=T)
 lagknots3 <- logknots(14, df=5, int=T)
@@ -940,7 +940,7 @@ summary(predpoolv5)
 x11();plot(p0, "overall", ci=, ylab="Relative Risk for Acute otitis media", ylim=c(.8,1.5), lwd=2,col="blue",
            xlab=expression(paste(PM[2.5]," (",mu,g/m^3," ) ",concentration)), main="",cex.lab=1.35,cex.axis=1.35)
 
-tiff(filename="C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\figure\\two_stage_pm_exposure_response.tiff",width=2800,height=2800,res=300)
+tiff(filename="C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\figure\\two_stage_pm_exposure_response.tiff",width=2800,height=2800,res=300)
 plot(p0, "overall", ci=, ylab="Relative Risk for Acute otitis media", ylim=c(.8,1.5), lwd=2,col="blue",
      xlab=expression(paste(PM[2.5]," (",mu,g/m^3," ) ",concentration)), main="",cex.lab=1.35,cex.axis=1.35)
 dev.off()
@@ -990,7 +990,7 @@ x11();ggplot(pool_df,aes(lag,e,col=g))+geom_line(size=1.1)+ylim(0.975,1.05)+them
   theme(legend.title=element_blank())
 
 
-tiff(filename="C:\\Users\\Jongmenn\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\figure\\two_stage_lag_period.tiff",width=4000,height=2800,res=300)
+tiff(filename="C:\\Users\\Jongmenn\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\figure\\two_stage_lag_period.tiff",width=4000,height=2800,res=300)
 ggplot(pool_df,aes(lag,e,col=g))+geom_line(size=1.1)+ylim(0.975,1.05)+theme_bw(base_size=15)+
   labs(x="Lag",y="Relative Risk")+scale_x_continuous(breaks=1:31-1)+geom_hline(yintercept =1,size=0.9)+scale_color_manual(values=c("red","blue","green","yellow"))+
   theme(legend.title=element_blank())
@@ -1062,7 +1062,7 @@ res$obs=c(c(1:nrow(df1)),c(1:nrow(df2)),c(1:nrow(df3)),c(1:nrow(df4)),c(1:nrow(d
 x11();grid.arrange(ggplot(res,aes(obs,res))+geom_line()+facet_wrap(~SIDO)+theme_gray(base_size=15)+labs(y="Residuals",x="Time"),
                    ggplot(res,aes(res))+geom_histogram()+xlim(-1,1)+theme_gray(base_size=15)+facet_wrap(~SIDO)+labs(x="Residuals"),ncol=2)
 
-tiff(filename="C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\figure\\residuals.tiff",width=4000,height=2800,res=300)
+tiff(filename="C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\figure\\residuals.tiff",width=4000,height=2800,res=300)
 grid.arrange(ggplot(res,aes(obs,res))+geom_line()+facet_wrap(~SIDO)+theme_gray(base_size=15)+labs(y="Residuals",x="Time"),
              ggplot(res,aes(res))+geom_histogram()+xlim(-1,1)+theme_gray(base_size=15)+facet_wrap(~SIDO)+labs(x="Residuals"),ncol=2)
 dev.off()
@@ -1083,7 +1083,7 @@ x11();grid.arrange(ggPacf(Seoul$Residuals),
                    ggPacf(Daejeon$Residuals),
                    ggPacf(Ulsan$Residuals))
 
-tiff(filename="C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\figure\\residuals2.tiff",width=3600,height=2800,res=300)
+tiff(filename="C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\figure\\residuals2.tiff",width=3600,height=2800,res=300)
 grid.arrange(ggPacf(Seoul$Residuals),
              ggPacf(Busan$Residuals),
              ggPacf(Daegu$Residuals),
@@ -1096,7 +1096,7 @@ dev.off()
 #####################################################################################################################################################################
 #####################################################################################################################################################################
 #Single lag RR plot ##
-setwd("C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\analysis\\result")
+setwd("C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\analysis\\result")
 sido.fit<-read.csv("fit_single_w4_quasipoisson_revision.csv",header=T)
 sido.fit.w<-read.csv("fit_single_w4.cold_quasipoisson_revision.csv",header=T)
 sido.fit.s<-read.csv("fit_single_w4.warm_quasipoisson_revision.csv",header=T)
@@ -1129,13 +1129,13 @@ x11();ggplot(m,aes(lag,RR))+geom_point(size=2.5,position=position_dodge(width=0.
   geom_errorbar(aes(ymin=lci,ymax=uci),position="dodge",width=0.4,size=0.9)+theme_bw(base_size=18)+facet_wrap(~Cities)+
   labs(x="Moving average",y="Relative Risk")+geom_hline(yintercept = 1,linetype=2,size=1)
 
-tiff(filename="C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\figure\\single_lag.tiff",width=4000,height=2800,res=300)
+tiff(filename="C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\figure\\single_lag.tiff",width=4000,height=2800,res=300)
 ggplot(s,aes(lag,RR))+geom_point(size=2.5,position=position_dodge(width=0.5))+
   geom_errorbar(aes(ymin=lci,ymax=uci),position="dodge",width=0.4,size=0.9)+theme_bw(base_size=15)+facet_wrap(~Cities)+
   labs(x="Single Lag",y="Relative Risk")+geom_hline(yintercept = 1,linetype=2,size=1)
 dev.off()
 
-tiff(filename="C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\figure\\moving_lag.tiff",width=4000,height=2800,res=300)
+tiff(filename="C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\figure\\moving_lag.tiff",width=4000,height=2800,res=300)
 ggplot(m,aes(lag,RR))+geom_point(size=2.5,position=position_dodge(width=0.5))+
   geom_errorbar(aes(ymin=lci,ymax=uci),position="dodge",width=0.4,size=0.9)+theme_bw(base_size=15)+facet_wrap(~Cities)+
   labs(x="Moving average",y="Relative Risk")+geom_hline(yintercept = 1,linetype=2,size=1)
@@ -1197,7 +1197,7 @@ sen.fit21<-as.data.frame(do.call(rbind,fit21)); sen.fit21$lag=names(s1.w4)[24:38
 sen_df1<-rbind(sen.fit01,sen.fit04,sen.fit07,sen.fit10,sen.fit13,sen.fit16,sen.fit19)
 sen_df2<-rbind(sen.fit02,sen.fit05,sen.fit08,sen.fit11,sen.fit14,sen.fit17,sen.fit20)
 sen_df3<-rbind(sen.fit03,sen.fit06,sen.fit09,sen.fit12,sen.fit15,sen.fit18,sen.fit21)
-setwd("C:\\Users\\a\\Desktop\\³í¹®\\¹Ì¼¼¸ÕÁö_AOM\\analysis\\result")
+setwd("C:\\Users\\a\\Desktop\\ë…¼ë¬¸\\ë¯¸ì„¸ë¨¼ì§€_AOM\\analysis\\result")
 # write.csv(sen_df1,file="sen_df1.csv",row.names=F)
 # write.csv(sen_df2,file="sen_df2.csv",row.names=F)
 # write.csv(sen_df3,file="sen_df3.csv",row.names=F)
