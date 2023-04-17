@@ -5,23 +5,23 @@ library(stringr)   ;library(Epi)
 library(survival)
 
 #working directory
-setwd("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\PM2.5_Kawasaki_disease\\data\\EUMC_EMR")
+setwd("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\PM2.5_Kawasaki_disease\\data\\EUMC_EMR")
 
-#¸é¿ª±Û·ÎºÒ¸° G (IgG)´Â Ç×Ã¼ °³º°Çü Áß ÇÏ³ª
-#µ¿ÀÏÇÑ Áß¼â µÎ °³¿Í °æ¼â µÎ°³·Î µÈ ´Ü·®Ã¼ÀÌ°í, ÀÏ¹İÀûÀÎ Ç×Ã¼ÀÇ ÇüÅÂÀÎ YÇôÀ¸·Î ¹è¿­µÇ¾î ÀÖÀ½
-#°¢ IgG¿¡´Â Ç×¿ø °áÇÕÀÚ¸® µÎ°³°¡ ÀÖÀ½, »ç¶÷ÀÇ Ç÷Ã»¿¡ ÀÖ´Â ¸é¿ª±Û·ÎºÒ¸° ÃÑ·® Áß 75%¸¦ Â÷Áö
+#ë©´ì—­ê¸€ë¡œë¶ˆë¦° G (IgG)ëŠ” í•­ì²´ ê°œë³„í˜• ì¤‘ í•˜ë‚˜
+#ë™ì¼í•œ ì¤‘ì‡„ ë‘ ê°œì™€ ê²½ì‡„ ë‘ê°œë¡œ ëœ ë‹¨ëŸ‰ì²´ì´ê³ , ì¼ë°˜ì ì¸ í•­ì²´ì˜ í˜•íƒœì¸ Yí˜€ìœ¼ë¡œ ë°°ì—´ë˜ì–´ ìˆìŒ
+#ê° IgGì—ëŠ” í•­ì› ê²°í•©ìë¦¬ ë‘ê°œê°€ ìˆìŒ, ì‚¬ëŒì˜ í˜ˆì²­ì— ìˆëŠ” ë©´ì—­ê¸€ë¡œë¶ˆë¦° ì´ëŸ‰ ì¤‘ 75%ë¥¼ ì°¨ì§€
 
-#¸é¿ª±Û·ÎºÒ¸° ÁÖ»ç ¸ÂÀº »ç¶÷¸¸ Æ÷ÇÔ½ÃÅ°¸é ÁøÂ¥ °¡¿Í»ç³¢
-#ÀÇ½ÉµÉ °æ¿ìµµ Áø´Ü¸íÀ» ³ÖÀ½ 
+#ë©´ì—­ê¸€ë¡œë¶ˆë¦° ì£¼ì‚¬ ë§ì€ ì‚¬ëŒë§Œ í¬í•¨ì‹œí‚¤ë©´ ì§„ì§œ ê°€ì™€ì‚¬ë¼
+#ì˜ì‹¬ë  ê²½ìš°ë„ ì§„ë‹¨ëª…ì„ ë„£ìŒ 
 
-#¿øÀÎ ¹Ì»ó, ÇÕº´ÁõÀÌ °ü»óµ¿¸ÆÈ®Àå (coronary aneurysm)
+#ì›ì¸ ë¯¸ìƒ, í•©ë³‘ì¦ì´ ê´€ìƒë™ë§¥í™•ì¥ (coronary aneurysm)
 
-#¿ì¸®³ª °°Àº °æ¿ì ÃÊ¿©¸§, °Ü¿ï¿¡ È£¹ßÇÑ´Ù°í ¾Ë·ÁÁ®ÀÖÀ½
-#¾Ë·ÁÁ® ÀÖ´Â °ü·Ã ¹ÙÀÌ·¯½º: enterovirus, adenovirus, human rhinovirus, coronavirus
-#Ã³¹æÄÚµå WIVG
+#ìš°ë¦¬ë‚˜ ê°™ì€ ê²½ìš° ì´ˆì—¬ë¦„, ê²¨ìš¸ì— í˜¸ë°œí•œë‹¤ê³  ì•Œë ¤ì ¸ìˆìŒ
+#ì•Œë ¤ì ¸ ìˆëŠ” ê´€ë ¨ ë°”ì´ëŸ¬ìŠ¤: enterovirus, adenovirus, human rhinovirus, coronavirus
+#ì²˜ë°©ì½”ë“œ WIVG
 
 #Data exploration
-dat<-as.data.frame(read_excel("PGE_M303_Kawasaki_2000_2020_3Â÷_pw_out.xlsx",sheet=1))
+dat<-as.data.frame(read_excel("PGE_M303_Kawasaki_2000_2020_3ì°¨_pw_out.xlsx",sheet=1))
 
 #number of cases : raw data
 nrow(dat)              #4,191
@@ -39,26 +39,26 @@ dat %>% select(ID,age,admission_date,discharge_date) %>%  arrange(ID,admission_d
 addmargins(table(dat$IVIG_prescription))
 table(dat$IVIG_prescription) %>% sum
 #VENOBULIN 
-#IV Globulin-S  ¾ÆÀÌºñ±Û·ÎºÒ¸°¿¡½º¿£ÁÖ (»ç¶÷ ¸é¿ª±Û·ÎºÒ¸°ÁÖ)
+#IV Globulin-S  ì•„ì´ë¹„ê¸€ë¡œë¶ˆë¦°ì—ìŠ¤ì—”ì£¼ (ì‚¬ëŒ ë©´ì—­ê¸€ë¡œë¶ˆë¦°ì£¼)
 #IV Globulin-SN
 table(dat$IVIG_Prescription_note) %>% View
 ###############################################################################################
 ###############################################################################################
 #date format
 age_df         =as.data.frame(do.call(rbind,lapply(strsplit(dat$age," "),rbind)))
-dat$age_year   =as.numeric(gsub("¼¼","",age_df$V1))
-dat$age_mon    =as.numeric(gsub("°³¿ù","",age_df$V2))
+dat$age_year   =as.numeric(gsub("ì„¸","",age_df$V1))
+dat$age_mon    =as.numeric(gsub("ê°œì›”","",age_df$V2))
 dat$age_mon.t  =with(dat,age_year*12+age_month)
 
-#»óº´ ½ÃÀÛÀÏ / »óº´ Á¾·áÀÏ 
+#ìƒë³‘ ì‹œì‘ì¼ / ìƒë³‘ ì¢…ë£Œì¼ 
 dat$start_date=ymd(dat$start_date)
-dat$end_date  =ymd(dat$end_date)  # ÇÏ³ª ÀÌ»óÇÏ°Ô Ç¥±â ("-"·Î Ç¥±â µÇ¾îÀÖÀ½)
+dat$end_date  =ymd(dat$end_date)  # í•˜ë‚˜ ì´ìƒí•˜ê²Œ í‘œê¸° ("-"ë¡œ í‘œê¸° ë˜ì–´ìˆìŒ)
 
-#ÀÔ¿ø ½ÃÀÛÀÏ / ÀÔ¿ø Á¾·áÀÏ
+#ì…ì› ì‹œì‘ì¼ / ì…ì› ì¢…ë£Œì¼
 dat$admission_date=ymd(dat$admission_date)
 dat$discharge_date=ymd(dat$discharge_date)
 
-#¾Ö´Â ÀÔ¿øÀÏ ±âÁØÀ¸·Î 
+#ì• ëŠ” ì…ì›ì¼ ê¸°ì¤€ìœ¼ë¡œ 
 dat$year      =year(dat$admission_date)
 dat$month     =month(dat$admission_date)
 dat$day       =day(dat$admission_date)
@@ -68,7 +68,7 @@ dat$SIDO=substr(dat$address,1,2)
 dat$event=1
 dat$date=dat$admission_date
 
-#°ÅÁÖÁö ÁÖ¼Ò, ½Ãµµ,ÇàÁ¤±¸ ´ÜÀ§·Î 
+#ê±°ì£¼ì§€ ì£¼ì†Œ, ì‹œë„,í–‰ì •êµ¬ ë‹¨ìœ„ë¡œ 
 sido.l=NULL
 gu.l  =NULL
 for(i in 1:nrow(dat)){
@@ -82,15 +82,15 @@ for(i in 1:nrow(dat)){
 dat$SIDO %>% table
 dat$SGG=gu.l
 
-#º¯¼ö ¼ø¼­ Á¤·Ä , º¸±â ÆíÇÒ·Á°í 
+#ë³€ìˆ˜ ìˆœì„œ ì •ë ¬ , ë³´ê¸° í¸í• ë ¤ê³  
 dat<-dat %>% select(ID,SIDO,SGG,sex,age_year,year,month,day,dow,date,event,admission_date,discharge_date,start_date:IVIG_prescription_start_date,
                     `RV-PCR_prescription`:I254,age_mon,age_mon.t,address,postal_code) %>% arrange(ID,age_year,admission_date,desc(discharge_date))
 
-dat<-read.csv("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\PM2.5_Kawasaki_disease\\data\\EUMC_EMR\\EUMC_Kawasaki.csv")
+dat<-read.csv("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\PM2.5_Kawasaki_disease\\data\\EUMC_EMR\\EUMC_Kawasaki.csv")
 ###############################################################################################
 ###############################################################################################
 #CMAQ PM2.5 data
-pm25.rr<-read.csv("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\PM2.5_Kawasaki_disease\\data\\EUMC_EMR\\CMAQ_PM25_rev.csv")
+pm25.rr<-read.csv("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\PM2.5_Kawasaki_disease\\data\\EUMC_EMR\\CMAQ_PM25_rev.csv")
 aggregate(pm25.rr$key,list(pm25.rr$key),length) %>% View
 
 pm25.rr<-pm25.rr %>% dplyr:: select(-c(date,SIDO,SIGUNGU,key2))
@@ -98,22 +98,22 @@ pm25.rr<-pm25.rr %>% dplyr:: select(-c(date,SIDO,SIGUNGU,key2))
 ###############################################################################################
 ###############################################################################################
 #Air pollution data
-setwd("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\PM2.5_Kawasaki_disease\\data")
+setwd("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\PM2.5_Kawasaki_disease\\data")
 ap2001_2019<-read.csv('ap2001_2019.csv')
 
 ###############################################################################################
 ###############################################################################################
 #Meteorological data
-setwd("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\PM2.5_Kawasaki_disease\\data")
-wea_2000_2020<-read.csv("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\PM2.5_Kawasaki_disease\\data\\EUMC_EMR\\wea_2000_2020.csv",header=T)
+setwd("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\PM2.5_Kawasaki_disease\\data")
+wea_2000_2020<-read.csv("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\PM2.5_Kawasaki_disease\\data\\EUMC_EMR\\wea_2000_2020.csv",header=T)
 
 ###############################################################################################
 ###############################################################################################
-#¿Ü·¡/ÀÔ¿ø ºÒºĞ¸í
-#Method1: 5¼¼ ÀÌÇÏ, Case Á¤ÀÇÇÏÁö ¾Ê°í ÁÖ¾îÁø ÀÚ·á ±×´ë·Î & KD ½ÃÁ¡Àº start_date ±âÁØ
-setwd("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\PM2.5_Kawasaki_disease\\data\\EUMC_EMR")
+#ì™¸ë˜/ì…ì› ë¶ˆë¶„ëª…
+#Method1: 5ì„¸ ì´í•˜, Case ì •ì˜í•˜ì§€ ì•Šê³  ì£¼ì–´ì§„ ìë£Œ ê·¸ëŒ€ë¡œ & KD ì‹œì ì€ start_date ê¸°ì¤€
+setwd("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\PM2.5_Kawasaki_disease\\data\\EUMC_EMR")
 
-#Á¶°Ç 1 : °°Àº»ç¶÷ÀÌ °°Àº³¯¿Í¼­ °°Àº³¯ Åğ¿øÇÑ °æ¿ì Á¦¿Ü (Áßº¹ ÀÚ·á Á¦¿Ü)
+#ì¡°ê±´ 1 : ê°™ì€ì‚¬ëŒì´ ê°™ì€ë‚ ì™€ì„œ ê°™ì€ë‚  í‡´ì›í•œ ê²½ìš° ì œì™¸ (ì¤‘ë³µ ìë£Œ ì œì™¸)
 
 dat$def1=with(dat,paste0(ID,"-",admission_date,"-",discharge_date))
 dat.c1<-dat[!duplicated(dat$def1),] %>% arrange(ID,age_year,admission_date,desc(discharge_date)) # 4,191 -> 3,214
@@ -125,7 +125,7 @@ nrow(dat.c1)
 
 dat.c1$ID %>% unique %>% length
 
-#Á¶°Ç 2: ¸é¿ª±Û·ÎºÒ¸° Ã³¹æÀ» ¹ŞÀº È¯ÀÚ 
+#ì¡°ê±´ 2: ë©´ì—­ê¸€ë¡œë¶ˆë¦° ì²˜ë°©ì„ ë°›ì€ í™˜ì 
 is.na(dat.c1$IVIG_prescription) %>% table
 is.na(dat.c1$IVIG_Prescription_note) %>% table
 
@@ -133,9 +133,9 @@ dat.c1$IVIG_prescription %>% table
 dat.c1$IVIG_Prescription_note %>% table
 
 
-#VENOBULIN °ü·ÃµÈ ÄÚµå´Â °ü·Ã¼º °ÅÀÇ ¾ø´Ù°í º¸¸éµÊ 
+#VENOBULIN ê´€ë ¨ëœ ì½”ë“œëŠ” ê´€ë ¨ì„± ê±°ì˜ ì—†ë‹¤ê³  ë³´ë©´ë¨ 
 dat.c2<-dat.c1[!is.na(dat.c1$IVIG_prescription),]%>% arrange(ID,age_year,admission_date,desc(discharge_date))
-dat.c3<-dat.c2[-unique(c(grep("VENOBULIN",dat.c2$IVIG_Prescription_note),grep("³ì½ÊÀÚ",dat.c2$IVIG_Prescription_note))),]
+dat.c3<-dat.c2[-unique(c(grep("VENOBULIN",dat.c2$IVIG_Prescription_note),grep("ë…¹ì‹­ì",dat.c2$IVIG_Prescription_note))),]
 
 nrow(dat.c2)
 nrow(dat.c3)
@@ -149,14 +149,14 @@ nrow(dat.c4) #947
 
 dat.c4$ID %>% unique %>% length
 
-#Á¶°Ç 3: ¼º, ¿¬·É, °ÅÁÖÁö Á¤º¸ ¾ø´Â °æ¿ì Á¦¿Ü 
+#ì¡°ê±´ 3: ì„±, ì—°ë ¹, ê±°ì£¼ì§€ ì •ë³´ ì—†ëŠ” ê²½ìš° ì œì™¸ 
 dat.c4$year
 dat.c5<-dat.c4[complete.cases(dat.c4 %>% select(SIDO,SGG,sex,age_year,year,admission_date)),]
 
 dat.c5$ID %>% unique %>% length
 
-#¿¬µµ´Â 2001~2017±îÁö (PM2.5 Á¦¿Ü·Î º¼ ¶§, PM10, SO2, NO2, CO)
-#¿¬·ÉÀº 10¼¼ ±îÁö ÇØ¼­ 0-1,2-5,6-10¼¼ ÃşÈ­ 
+#ì—°ë„ëŠ” 2001~2017ê¹Œì§€ (PM2.5 ì œì™¸ë¡œ ë³¼ ë•Œ, PM10, SO2, NO2, CO)
+#ì—°ë ¹ì€ 10ì„¸ ê¹Œì§€ í•´ì„œ 0-1,2-5,6-10ì„¸ ì¸µí™” 
 
 dat.c6<-subset(dat.c5,age_year<=10) 
 dat.c6<-subset(dat.c6,year<=2017) %>%  arrange(ID,age_year,admission_date,desc(discharge_date))
@@ -170,7 +170,7 @@ table(dat.c6$sex)
 table(dat.c6$SIDO)
 table(dat.c6$age_year)
 
-dat.c7<-subset(dat.c6,SIDO %in% c("¼­¿ï","°æ±â","ÀÎÃµ"))
+dat.c7<-subset(dat.c6,SIDO %in% c("ì„œìš¸","ê²½ê¸°","ì¸ì²œ"))
 
 dat.c7$admission_date=ymd(dat.c7$admission_date)
 dat.c7$date=ymd(dat.c7$admission_date)
@@ -187,10 +187,10 @@ nrow(dat.c7)
 table(dat.c7$age_year)
 table(dat.c7$hospital)
 
-#Time-stratified (½Ã°£ ÃşÈ­ÇÏ¿© ÀÚ·á ¼Â ±¸¼º)
-#code ¾Ë¸é ¼öÁ¤, ¸ô¶ó¼­ for¹®À¸·Î ÀÛ¼º 
-#³âµµ, ¿ù µ¿ÀÏÇÏ°í °°Àº ¿äÀÏ¿¡ ÇØ´çÇÏ¸é¼­ ÁÖ¸¸ ´Ù¸£°Ô
-#±âÁØÀº ¹ß»ıÀÏ ±âÁØ ÀüÈÄ·Î 4ÁÖ±îÁö ¼³Á¤ÇÏ¿© control ±ºÀÌ ÃÑ 3~4°³
+#Time-stratified (ì‹œê°„ ì¸µí™”í•˜ì—¬ ìë£Œ ì…‹ êµ¬ì„±)
+#code ì•Œë©´ ìˆ˜ì •, ëª°ë¼ì„œ forë¬¸ìœ¼ë¡œ ì‘ì„± 
+#ë…„ë„, ì›” ë™ì¼í•˜ê³  ê°™ì€ ìš”ì¼ì— í•´ë‹¹í•˜ë©´ì„œ ì£¼ë§Œ ë‹¤ë¥´ê²Œ
+#ê¸°ì¤€ì€ ë°œìƒì¼ ê¸°ì¤€ ì „í›„ë¡œ 4ì£¼ê¹Œì§€ ì„¤ì •í•˜ì—¬ control êµ°ì´ ì´ 3~4ê°œ
 
 m1=NULL
 for(i in 1:nrow(dat.c7)){
@@ -232,10 +232,10 @@ m1.rev<-m1.rev %>% arrange(ID,date)
 m1.rev$key =with(m1.rev,paste0(date,"-",SIDO,"-",SGG))
 m1.rev$key2=with(m1.rev,paste0(date,"-",SIDO))
 
-#±â»óº¯¼ö ¿¬°è
+#ê¸°ìƒë³€ìˆ˜ ì—°ê³„
 m1.rev2<-merge(m1.rev,wea_2000_2020,by="key2",all.x=T)
 
-#´ë±â¿À¿° ¿¬°è
+#ëŒ€ê¸°ì˜¤ì—¼ ì—°ê³„
 # ap2001_2019$date=ymd(ap2001_2019$yymmdd)
 m1.rev3<-merge(m1.rev2,pm25.rr,by="key")
 m1.rev3<-m1.rev3 %>% select(ID:lag014_PM25,key,key2) %>% arrange(ID,admission_date)
@@ -261,9 +261,9 @@ table(raw$SIDO)
 with(raw,aggregate(PM25,list(SIDO,event),mean))
 with(raw,aggregate(PM25,list(SIDO,event),sd))
 
-m1.s1<-subset(raw,SIDO %in% c("°æ±â"))
-m1.s2<-subset(raw,SIDO %in% c("¼­¿ï"))
-m1.s3<-subset(raw,SIDO %in% c("ÀÎÃµ"))
+m1.s1<-subset(raw,SIDO %in% c("ê²½ê¸°"))
+m1.s2<-subset(raw,SIDO %in% c("ì„œìš¸"))
+m1.s3<-subset(raw,SIDO %in% c("ì¸ì²œ"))
 
 m1.s1.e0<-subset(m1.s1,event==0)
 m1.s1.e1<-subset(m1.s1,event==1)
@@ -343,7 +343,7 @@ result1.m<-as.data.frame(rbind(summary(fit1)$coeff[1,] ,summary(fit2)$coeff[1,] 
 result1.m$`Pr(>|z|)`=round(result1.m$`Pr(>|z|)`,3)
 result1.m$sign=ifelse(result1.m$`Pr(>|z|)`<0.05,"*","")
 
-#OR, CI °è»ê 
+#OR, CI ê³„ì‚° 
 result1.s$OR=round(with(result1.s,exp(coef*10)),2)
 result1.m$OR=round(with(result1.m,exp(coef*10)),2)
 
@@ -357,7 +357,7 @@ View(rbind(result1.s,result1.m))
 
 result1.s$obs=1:15-1; result1.m$obs=paste0(0,"-",1:14)
 
-#±×¸² ¿¹½Ã·Î
+#ê·¸ë¦¼ ì˜ˆì‹œë¡œ
 result1.m$obs=factor(result1.m$obs,levels=unique(result1.m$obs))
 x11();ggplot(result1.m,aes(obs,OR))+geom_point(size=3)+geom_errorbar(aes(ymin=LCI,ymax=UCI),lwd=0.9,width=0.3)+
   theme_gray(base_size=20)+labs(x="",y="Odds Ratio (95% Confidence interval)")+
@@ -367,9 +367,9 @@ x11();ggplot(result1.s,aes(obs,OR))+geom_point(size=3)+geom_errorbar(aes(ymin=LC
   theme_gray(base_size=20)+labs(x="",y="Odds Ratio (95% Confidence interval)")+
   geom_hline(yintercept = 1,col="red",linetype=1)
 
-d1<-subset(raw,SIDO %in% c("°æ±â"))
-d2<-subset(raw,SIDO %in% c("¼­¿ï"))
-d3<-subset(raw,SIDO %in% c("ÀÎÃµ"))
+d1<-subset(raw,SIDO %in% c("ê²½ê¸°"))
+d2<-subset(raw,SIDO %in% c("ì„œìš¸"))
+d3<-subset(raw,SIDO %in% c("ì¸ì²œ"))
 
 d21<-subset(d1,age_year<=1)
 d22<-subset(d1,age_year<5 & age_year>=1)
@@ -393,12 +393,12 @@ re$coef.r=re$coef*10
 re$se    =re$`se(coef)`*10
 library(metafor)
 
-re$region=c("°æ±â","¼­¿ï","ÀÎÃµ")
+re$region=c("ê²½ê¸°","ì„œìš¸","ì¸ì²œ")
 
 mytransf <- function(x)
   (exp(x))
 
-re<-subset(re,region!="ÀÎÃµ")
+re<-subset(re,region!="ì¸ì²œ")
 
 uni1<-with(re,rma(yi=coef.r,sei=se,slab=region,digits=3,method="REML"))
 
@@ -417,9 +417,9 @@ table(raw$ag)
 table(raw$age_year)
 
 raw$SIDO
-d1<-subset(raw,SIDO=="°æ±â")
-d2<-subset(raw,SIDO=="¼­¿ï")
-d3<-subset(raw,SIDO=="ÀÎÃµ")
+d1<-subset(raw,SIDO=="ê²½ê¸°")
+d2<-subset(raw,SIDO=="ì„œìš¸")
+d3<-subset(raw,SIDO=="ì¸ì²œ")
 
 # m1.rev3<-subset(raw,season=="cold")
 m1.rev3<-subset(d1,season=="cold")
@@ -484,7 +484,7 @@ result1.m$sign=ifelse(result1.m$`Pr(>|z|)`<0.05,"*","")
 result1.s
 result1.m
 
-#OR, CI °è»ê 
+#OR, CI ê³„ì‚° 
 result1.s$OR=round(with(result1.s,exp(coef*10)),2)
 result1.m$OR=round(with(result1.m,exp(coef*10)),2)
 
@@ -501,7 +501,7 @@ aggregate(raw$event,list(raw$season),table)
 aggregate(raw$event,list(raw$ag),table)
 #################################################################################
 #################################################################################
-setwd("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\PM2.5_Kawasaki_disease\\result")
+setwd("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\PM2.5_Kawasaki_disease\\result")
 
 fig<-read.csv("PM_Kawasaki_result.csv")
 
@@ -522,7 +522,7 @@ x11();ggplot(s1,aes(Lag,OR))+geom_point(size=4)+
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
 
-tiff(filename="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\PM2.5_Kawasaki_disease\\Fig.S3.tiff",width=5400,height=3200,res=300)
+tiff(filename="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\PM2.5_Kawasaki_disease\\Fig.S3.tiff",width=5400,height=3200,res=300)
 ggplot(s1,aes(Lag,OR))+geom_point(size=4)+
   geom_errorbar(aes(ymin=LCI,ymax=UCI),width=0.2,lwd=0.8)+
   geom_hline(yintercept=1,col="red",lwd=1.1)+
@@ -638,7 +638,7 @@ x11();ggplot(sm,aes(Group,OR,group=Lag))+geom_point(size=4,aes(shape=Lag),positi
         legend.justification=c(1,1),legend.position=c(1,1))+
   scale_shape_manual(values=c(16,17,15,18))
 
-tiff(filename="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\PM2.5_Kawasaki_disease\\Fig2.tiff",width=5400,height=3200,res=300)
+tiff(filename="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\PM2.5_Kawasaki_disease\\Fig2.tiff",width=5400,height=3200,res=300)
 ggplot(sm,aes(Group,OR,group=Lag))+geom_point(size=4,aes(shape=Lag),position=position_dodge(0.5))+
   geom_errorbar(aes(ymin=LCI,ymax=UCI),width=0.2,lwd=0.8,position=position_dodge(0.5))+
   geom_hline(yintercept=1,col="red",lwd=1.1)+
@@ -651,7 +651,7 @@ ggplot(sm,aes(Group,OR,group=Lag))+geom_point(size=4,aes(shape=Lag),position=pos
 dev.off()
 ########################################################################################################################
 ########################################################################################################################
-setwd("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\´ë±â¿À¿°_°¡¿Í»çÅ°º´\\data\\EUMC_EMR")
+setwd("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\ëŒ€ê¸°ì˜¤ì—¼_ê°€ì™€ì‚¬í‚¤ë³‘\\data\\EUMC_EMR")
 
 pm25<-read.csv("CMAQ_2006_2016_daily_lag.csv")
 
@@ -665,7 +665,7 @@ View(pm25.r)
 ag1<-aggregate(pm25.r$key,list(pm25.r$key),length)
 View(ag1)
 
-#°°Àº ½Ã¿¡ ¿©·¯±¸´Â Á¾ÇÕÇÏ±â
+#ê°™ì€ ì‹œì— ì—¬ëŸ¬êµ¬ëŠ” ì¢…í•©í•˜ê¸°
 pm25.rr<-with(pm25.r,aggregate(pm,list(key,date,SIDO,SIGUNGU),mean))
 
 
