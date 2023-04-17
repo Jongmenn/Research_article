@@ -1,25 +1,25 @@
 #------------------------------------------------------------------------------#
-#ÀÛ¾÷ µğ·ºÅä¸® (±¹°Ç¿µ ÀÚ·á º¸°ü À§Ä¡)
-setwd("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\±¹¹Î°Ç°­¿µ¾çÁ¶»ç\\°ËÁø")
+#ì‘ì—… ë””ë ‰í† ë¦¬ (êµ­ê±´ì˜ ìë£Œ ë³´ê´€ ìœ„ì¹˜)
+setwd("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\êµ­ë¯¼ê±´ê°•ì˜ì–‘ì¡°ì‚¬\\ê²€ì§„")
 #------------------------------------------------------------------------------#
-#Library ¼³Á¤
+#Library ì„¤ì •
 library(dplyr)     ;library(lubridate)
 library(ggplot2)   ;library(readxl)
 library(gridExtra) ;library(readxl)
 library(survey)    ;library(lmtest)
 #------------------------------------------------------------------------------#
-#±¹°Ç¿µ ÀÚ·á ºÒ·¯¿À±â 
+#êµ­ê±´ì˜ ìë£Œ ë¶ˆëŸ¬ì˜¤ê¸° 
 hn16<-read.csv("HN16_ALL.csv",header=T);nrow(hn16)
 hn17<-read.csv("HN17_ALL.csv",header=T);nrow(hn17)
 hn18<-read.csv("HN18_ALL.csv",header=T);nrow(hn18)
 
-#0 ¾øÀ½, 1 ÀÖÀ½, 8 ºñÇØ´ç, 9 ¸ğ¸§, ¹«ÀÀ´ä
-hn16$DI1_dg #°íÇ÷¾Ğ
-hn16$DI2_dg #ÀÌ»óÁöÁúÇ÷Áõ 
-hn16$DI3_dg #³úÁ¹Áß
-hn16$DI4_dg #½É±Ù°æ»öÁõ
-hn16$DI5_dg #Çù½ÉÁõ
-hn16$DE1_dg #´ç´¢
+#0 ì—†ìŒ, 1 ìˆìŒ, 8 ë¹„í•´ë‹¹, 9 ëª¨ë¦„, ë¬´ì‘ë‹µ
+hn16$DI1_dg #ê³ í˜ˆì••
+hn16$DI2_dg #ì´ìƒì§€ì§ˆí˜ˆì¦ 
+hn16$DI3_dg #ë‡Œì¡¸ì¤‘
+hn16$DI4_dg #ì‹¬ê·¼ê²½ìƒ‰ì¦
+hn16$DI5_dg #í˜‘ì‹¬ì¦
+hn16$DE1_dg #ë‹¹ë‡¨
 
 addmargins(table(hn16$DI1_dg))
 addmargins(table(hn16$DI2_dg))
@@ -29,15 +29,15 @@ addmargins(table(hn16$DI5_dg))
 addmargins(table(hn16$DE1_dg))
 addmargins(table(hn16$DI1_dg))
 
-#ÇöÀç À¯º´ 
+#í˜„ì¬ ìœ ë³‘ 
 addmargins(table(hn16$DI1_pr))
 
-#À½ÁÖ 
-hn16$BD1 #Æò»ı À½ÁÖ°æÇè (1: ¸¶¼Åº»Àû¾øÀ½, 2:ÀÖÀ½, 8:ºñÇØ´ç,9 ¸ğ¸§)
-hn16$BD1_11 #1³â°£ À½ÁÖ ºóµµ 1 : ÃÖ±Ù 1³â°£ ÀüÇô, 2: ¿ù 1È¸, 3: ¿ù 1È¸Á¤µµ, 4 ¿ù2-4È¸, 5: ÁÖ2-3È¸ Á¤µµ
-#                6 : ÁÖ 4È¸ ÀÌ»ó 8: ºñÇØ´ç, 9: ¸ğ¸§, ¹«ÀÀ´ä
+#ìŒì£¼ 
+hn16$BD1 #í‰ìƒ ìŒì£¼ê²½í—˜ (1: ë§ˆì…”ë³¸ì ì—†ìŒ, 2:ìˆìŒ, 8:ë¹„í•´ë‹¹,9 ëª¨ë¦„)
+hn16$BD1_11 #1ë…„ê°„ ìŒì£¼ ë¹ˆë„ 1 : ìµœê·¼ 1ë…„ê°„ ì „í˜€, 2: ì›” 1íšŒ, 3: ì›” 1íšŒì •ë„, 4 ì›”2-4íšŒ, 5: ì£¼2-3íšŒ ì •ë„
+#                6 : ì£¼ 4íšŒ ì´ìƒ 8: ë¹„í•´ë‹¹, 9: ëª¨ë¦„, ë¬´ì‘ë‹µ
 
-#Èí¿¬ 1:5°©(100°³ºñ)¹Ì¸¸, 2: 5°©(100°³ºñ) ÀÌ»ó,3 ÇÇ¿îÀû ¾øÀ½ 8, ºñÇØ´ç, 
+#í¡ì—° 1:5ê°‘(100ê°œë¹„)ë¯¸ë§Œ, 2: 5ê°‘(100ê°œë¹„) ì´ìƒ,3 í”¼ìš´ì  ì—†ìŒ 8, ë¹„í•´ë‹¹, 
 hn16.r<-hn16 %>% select(ID,year,region,sex,age,HE_sbp,HE_dbp,incm,ho_incm,kstrata,psu,wt_itvex,
                         edu,occp,HE_ht,HE_wt,HE_BMI,HE_chol,HE_TG,HE_glu,HE_BUN,HE_crea,
                         DI1_dg,DI2_dg,DI3_dg,DI4_dg,DI5_dg,DE1_dg,
@@ -51,22 +51,22 @@ hn18.r<-hn18 %>% select(ID,year,region,sex,age,HE_sbp,HE_dbp,incm,ho_incm,kstrat
                         DI1_dg,DI2_dg,DI3_dg,DI4_dg,DI5_dg,DE1_dg,
                         DI1_pr,DI2_pr,DI3_pr,DI4_pr,DI5_pr,DE1_pr,BD1_11,BS3_1)
 
-#ÀÚ·á º´ÇÕ 
+#ìë£Œ ë³‘í•© 
 hn<-as.data.frame(rbind(hn16.r,hn17.r,hn18.r))
-#º¹ÇÕ Ç¥º» ¼³°è ºĞ¼®À» À§ÇÑ ÅëÇÕ °¡ÁßÄ¡
+#ë³µí•© í‘œë³¸ ì„¤ê³„ ë¶„ì„ì„ ìœ„í•œ í†µí•© ê°€ì¤‘ì¹˜
 hn$T_wt_itvex=hn$wt_itvex/3
 #------------------------------------------------------------------------------#
-#´ë±â¿À¿° ¸ğ´ÏÅÍ¸µ ÀÚ·á 
-pm15<-read_excel("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Air_Korea_È®Á¤µ¥ÀÌÅÍ\\2015\\2015_¸ğ´ÏÅÍ¸µ³óµµ.xlsx",sheet=3)
-pm16<-read_excel("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Air_Korea_È®Á¤µ¥ÀÌÅÍ\\2016\\2016_¸ğ´ÏÅÍ¸µ³óµµ.xlsx",sheet=3)
-pm17<-read_excel("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Air_Korea_È®Á¤µ¥ÀÌÅÍ\\2017\\2017_¸ğ´ÏÅÍ¸µ³óµµ.xlsx",sheet=3)
-pm18<-read_excel("D:\\EUMC\\µ¥ÀÌÅÍ°ü¸®\\Mornitoring_data\\Air_Korea_È®Á¤µ¥ÀÌÅÍ\\2018\\2018_¸ğ´ÏÅÍ¸µ³óµµ.xlsx",sheet=3)
+#ëŒ€ê¸°ì˜¤ì—¼ ëª¨ë‹ˆí„°ë§ ìë£Œ 
+pm15<-read_excel("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\Air_Korea_í™•ì •ë°ì´í„°\\2015\\2015_ëª¨ë‹ˆí„°ë§ë†ë„.xlsx",sheet=3)
+pm16<-read_excel("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\Air_Korea_í™•ì •ë°ì´í„°\\2016\\2016_ëª¨ë‹ˆí„°ë§ë†ë„.xlsx",sheet=3)
+pm17<-read_excel("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\Air_Korea_í™•ì •ë°ì´í„°\\2017\\2017_ëª¨ë‹ˆí„°ë§ë†ë„.xlsx",sheet=3)
+pm18<-read_excel("D:\\EUMC\\ë°ì´í„°ê´€ë¦¬\\Mornitoring_data\\Air_Korea_í™•ì •ë°ì´í„°\\2018\\2018_ëª¨ë‹ˆí„°ë§ë†ë„.xlsx",sheet=3)
 
 pm<-rbind(pm15,pm16,pm17,pm18)
 pm$yymmdd=ymd(pm$yymmdd)
 pm$year=year(pm$yymmdd)
 
-#¿¬Æò±Õ ÀÚ·á·Î »êÃâ
+#ì—°í‰ê·  ìë£Œë¡œ ì‚°ì¶œ
 agg_ap1<-aggregate(pm$PM25,list(pm$year,pm$sido),mean,na.rm=T)
 agg_ap2<-aggregate(pm$PM10,list(pm$year,pm$sido),mean,na.rm=T)
 agg_ap3<-aggregate(pm$SO2,list(pm$year,pm$sido),mean,na.rm=T)
@@ -90,24 +90,24 @@ agg_ap<-cbind(agg_ap1,
 
 head(agg_ap)
 
-#Áö¿ªº° ³ëÃâ ¿¬°èÇÏ±âÀ§ÇØ ÄÚµåº¯°æ 
-hn$region=with(hn,ifelse(region==1 ,"¼­¿ï",region))
-hn$region=with(hn,ifelse(region==2 ,"ºÎ»ê",region))
-hn$region=with(hn,ifelse(region==3 ,"´ë±¸",region))
-hn$region=with(hn,ifelse(region==4 ,"ÀÎÃµ",region))
-hn$region=with(hn,ifelse(region==5 ,"±¤ÁÖ",region))
-hn$region=with(hn,ifelse(region==6 ,"´ëÀü",region))
-hn$region=with(hn,ifelse(region==7 ,"¿ï»ê",region))
-hn$region=with(hn,ifelse(region==8 ,"¼¼Á¾",region))
-hn$region=with(hn,ifelse(region==9 ,"°æ±â",region))
-hn$region=with(hn,ifelse(region==10,"°­¿ø",region))
-hn$region=with(hn,ifelse(region==11,"ÃæºÏ",region))
-hn$region=with(hn,ifelse(region==12,"Ãæ³²",region))
-hn$region=with(hn,ifelse(region==13,"ÀüºÏ",region))
-hn$region=with(hn,ifelse(region==14,"Àü³²",region))
-hn$region=with(hn,ifelse(region==15,"°æºÏ",region))
-hn$region=with(hn,ifelse(region==16,"°æ³²",region))
-hn$region=with(hn,ifelse(region==17,"Á¦ÁÖ",region)) 
+#ì§€ì—­ë³„ ë…¸ì¶œ ì—°ê³„í•˜ê¸°ìœ„í•´ ì½”ë“œë³€ê²½ 
+hn$region=with(hn,ifelse(region==1 ,"ì„œìš¸",region))
+hn$region=with(hn,ifelse(region==2 ,"ë¶€ì‚°",region))
+hn$region=with(hn,ifelse(region==3 ,"ëŒ€êµ¬",region))
+hn$region=with(hn,ifelse(region==4 ,"ì¸ì²œ",region))
+hn$region=with(hn,ifelse(region==5 ,"ê´‘ì£¼",region))
+hn$region=with(hn,ifelse(region==6 ,"ëŒ€ì „",region))
+hn$region=with(hn,ifelse(region==7 ,"ìš¸ì‚°",region))
+hn$region=with(hn,ifelse(region==8 ,"ì„¸ì¢…",region))
+hn$region=with(hn,ifelse(region==9 ,"ê²½ê¸°",region))
+hn$region=with(hn,ifelse(region==10,"ê°•ì›",region))
+hn$region=with(hn,ifelse(region==11,"ì¶©ë¶",region))
+hn$region=with(hn,ifelse(region==12,"ì¶©ë‚¨",region))
+hn$region=with(hn,ifelse(region==13,"ì „ë¶",region))
+hn$region=with(hn,ifelse(region==14,"ì „ë‚¨",region))
+hn$region=with(hn,ifelse(region==15,"ê²½ë¶",region))
+hn$region=with(hn,ifelse(region==16,"ê²½ë‚¨",region))
+hn$region=with(hn,ifelse(region==17,"ì œì£¼",region)) 
 
 hn$key     =with(hn,paste0(year,"-",region))
 
@@ -119,7 +119,7 @@ View(agg_ap)
 
 sido<-factor(unique(agg_pm$sido))
 
-#³ëÃâ ³óµµ Lag º° »êÃâ 
+#ë…¸ì¶œ ë†ë„ Lag ë³„ ì‚°ì¶œ 
 agg_list=NULL
 agg.f<-function(x){
   
@@ -152,7 +152,7 @@ agg.f<-function(x){
   
   s}
 
-z<-subset(agg_ap,sido=="¼¼Á¾")
+z<-subset(agg_ap,sido=="ì„¸ì¢…")
 z$lag1_PM25=lag(z$PM25,1);z$lag2_PM25=lag(z$PM25,2) ;z$lag3_PM25=lag(z$PM25,3)
 z$lag1_PM10=lag(z$PM10,1);z$lag2_PM10=lag(z$PM10,2) ;z$lag3_PM10=lag(z$PM10,3)
 z$lag1_SO2 =lag(z$SO2 ,1);z$lag2_SO2 =lag(z$SO2,2)  ;z$lag3_SO2 =lag(z$SO2,3)
@@ -179,11 +179,11 @@ z$lag01_O3  =apply(z %>% select(O3  ,lag1_O3)            ,1,mean,na.rm=T)
 z$lag02_O3  =apply(z %>% select(O3  ,lag1_O3:lag2_O3)    ,1,mean,na.rm=T)
 z$lag03_O3  =apply(z %>% select(O3  ,lag1_O3:lag3_O3)    ,1,mean,na.rm=T)
 
-agg.ap.r<-rbind(agg.f("¼­¿ï"),agg.f("ºÎ»ê"),agg.f("´ë±¸"),
-                agg.f("ÀÎÃµ"),agg.f("±¤ÁÖ"),agg.f("´ëÀü"),
-                agg.f("¿ï»ê"),agg.f("°æ±â"),agg.f("°­¿ø"),
-                agg.f("ÃæºÏ"),agg.f("Ãæ³²"),agg.f("ÀüºÏ"),
-                agg.f("Àü³²"),agg.f("°æºÏ"),agg.f("°æ³²"),agg.f("Á¦ÁÖ"),z)
+agg.ap.r<-rbind(agg.f("ì„œìš¸"),agg.f("ë¶€ì‚°"),agg.f("ëŒ€êµ¬"),
+                agg.f("ì¸ì²œ"),agg.f("ê´‘ì£¼"),agg.f("ëŒ€ì „"),
+                agg.f("ìš¸ì‚°"),agg.f("ê²½ê¸°"),agg.f("ê°•ì›"),
+                agg.f("ì¶©ë¶"),agg.f("ì¶©ë‚¨"),agg.f("ì „ë¶"),
+                agg.f("ì „ë‚¨"),agg.f("ê²½ë¶"),agg.f("ê²½ë‚¨"),agg.f("ì œì£¼"),z)
 
 m1<-aggregate(agg.ap.r$PM25,list(agg.ap.r$sido),mean)
 m2<-aggregate(agg.ap.r$PM10,list(agg.ap.r$sido),mean)
@@ -225,29 +225,29 @@ hn.r$underlying_disease1=with(hn.r,ifelse(apply(hn.r %>% dplyr:: select(DI1_dg:D
 hn.r$underlying_disease2=with(hn.r,ifelse(apply(hn.r %>% dplyr::select(DI1_pr:DE1_pr),1,sum,na.rm=T)==0,0,
                                           ifelse(DI1_pr==1 | DI2_pr==1 | DI3_pr==1 | DI4_pr==1 |DI5_pr==1 | DE1_pr==1,1,9)))
 
-#¿¬·É 20¼¼ ÀÌ»ó ´ë»ó
+#ì—°ë ¹ 20ì„¸ ì´ìƒ ëŒ€ìƒ
 hn.r<-subset(hn.r,age>=20)
-hn.r<-subset(hn.r,sido!="¼¼Á¾")
-hn.r<-subset(hn.r,sido!="Á¦ÁÖ")
+hn.r<-subset(hn.r,sido!="ì„¸ì¢…")
+hn.r<-subset(hn.r,sido!="ì œì£¼")
 
-#BUN °è»ê, Å©·¹¾ÆÆ¼´Ñ º¸Á¤ (´Ü¼ø version)
+#BUN ê³„ì‚°, í¬ë ˆì•„í‹°ë‹Œ ë³´ì • (ë‹¨ìˆœ version)
 hn.r$HE_BUN.cr=with(hn.r,HE_BUN/HE_crea)
 
-#eGFR °è»ê, MDRD
-#MDRD4 °è»êÀÌ 186¿¡¼­ 175·Î º¯°æµÇ¾úÀ½ IDMS¶û °ü·ÃÀÌ ÀÖÀ½
+#eGFR ê³„ì‚°, MDRD
+#MDRD4 ê³„ì‚°ì´ 186ì—ì„œ 175ë¡œ ë³€ê²½ë˜ì—ˆìŒ IDMSë‘ ê´€ë ¨ì´ ìˆìŒ
 #IDMS(Isotope dilution mass spectrometry) 
-#°ú°Å¿¡´Â 186 °öÇØ¼­ °è»ê Áö±İÀº 175·Î º¯°æ 
+#ê³¼ê±°ì—ëŠ” 186 ê³±í•´ì„œ ê³„ì‚° ì§€ê¸ˆì€ 175ë¡œ ë³€ê²½ 
 #Modification of Diet in Renal Disease (MDRD)-4 equation
 #175 * Scr^(-1.154) * age^(-0.203)*1.212 
 hn.r$eGFR=with(hn.r,ifelse(sex==1,(175*(HE_crea)^(-1.154))*age^(-0.203),NA))
 hn.r$eGFR=with(hn.r,ifelse(sex==2,(175*(HE_crea)^(-1.154))*(age^(-0.203))*0.742,eGFR))
 
-#eGFR 60 ÀÌ»óÀÎ °æ¿ì¿¡ ´ëÇØ¼­ CKD-EPI formula Àû¿ë
-#k°ª (³²ÀÚ¸é 0.9, ¿©ÀÚ¸é 0.7·Î ³ª´®)
+#eGFR 60 ì´ìƒì¸ ê²½ìš°ì— ëŒ€í•´ì„œ CKD-EPI formula ì ìš©
+#kê°’ (ë‚¨ìë©´ 0.9, ì—¬ìë©´ 0.7ë¡œ ë‚˜ëˆ”)
 hn.r$Scr_k    =with(hn.r,ifelse(sex==1,HE_crea/0.9,HE_crea/0.7))
 hn.r$indicator=1
 
-#³²ÀÚ°í eGFRÀÌ 60 ÃÊ°ú¶ó¸é
+#ë‚¨ìê³  eGFRì´ 60 ì´ˆê³¼ë¼ë©´
 hn.r$CKD_EPI=with(hn.r,
                   ifelse(eGFR>60 & sex==1,
                          141*(apply(hn.r %>% dplyr:: select(Scr_k,indicator),1,min)^(-0.411))*
@@ -263,7 +263,7 @@ ifelse(hn.r$CKD_EPI>=60,0,1) %>% table
 subset(hn.r,sex==1)$eGFR %>% mean
 subset(hn.r,sex==2)$eGFR %>% mean
 
-#eGFR ¼öÁØ¿¡ µû¶ó °è±ŞÈ­ -> CKD ´Ü°è
+#eGFR ìˆ˜ì¤€ì— ë”°ë¼ ê³„ê¸‰í™” -> CKD ë‹¨ê³„
 hn.r$eGFR_g=factor(with(hn.r,ifelse(eGFR>=60,0,1)))
 hn.r$eGFR_4g=factor(with(hn.r,ifelse(eGFR>=60,0,
                                      ifelse(eGFR>=30 & eGFR<60,1,
@@ -283,30 +283,30 @@ table(hn.r$eGFR_4g)
 table(hn.r$CKD_EPI_g)
 table(hn.r$CKD_EPI_4g)
 
-#0ÀÌ ÀÖÀ¸¸é ·Î±×º¯È¯½Ã ¹«ÇÑ´ë·Î °¡´Ï±î °ª º¸Á¤ 
-#Ä¡¿ìÃÄÁ® ÀÖ´Â ÀÚ·á -> ÀÚ·áº¯È¯ 
+#0ì´ ìˆìœ¼ë©´ ë¡œê·¸ë³€í™˜ì‹œ ë¬´í•œëŒ€ë¡œ ê°€ë‹ˆê¹Œ ê°’ ë³´ì • 
+#ì¹˜ìš°ì³ì ¸ ìˆëŠ” ìë£Œ -> ìë£Œë³€í™˜ 
 hn.r$ln_BUN.cr=log(hn.r$HE_BUN.cr+0.0001)
 hn.r$ln_crea  =log(hn.r$HE_crea+0.0001)
 
 
 
-#°áÃøÄ¡ ÀÖ´Â ÀÚ·á Áö¿ì°í ºĞ¼®¿¡ ÀÌ¿ëÇÒ ÀÚ·á¸¸ 
+#ê²°ì¸¡ì¹˜ ìˆëŠ” ìë£Œ ì§€ìš°ê³  ë¶„ì„ì— ì´ìš©í•  ìë£Œë§Œ 
 nrow(hn.r)
 hn.r<-hn.r[complete.cases(hn.r %>% dplyr:: select(key:PM25,underlying_disease1,underlying_disease2,BD1_11,BS3_1)),]
 nrow(hn.r)
 hn.r<-subset(hn.r,hn.r$BD1_11!=9)
 hn.r<-subset(hn.r,hn.r$BS3_1 !=9)
 nrow(hn.r)
-#ºĞÆ÷¸¸ º¸±â 
+#ë¶„í¬ë§Œ ë³´ê¸° 
 x11();par(mfrow=c(1,3))
 hist(log(hn.r$HE_BUN.cr),n=100,main="Log BUN.cr",xlab="BUN.cr",cex.lab=1.4,cex.axis=1.4,col="gray80");
 hist(log(hn.r$HE_crea),n=100,main="Log creatinine",xlab="Creatinine",cex.lab=1.4,cex.axis=1.4,col="gray80");
 hist(hn.r$eGFR,n=100,xlim=c(0,250),main="eGFR",xlab="eGFR",cex.lab=1.4,cex.axis=1.4,col="gray80")
 
-write.csv(hn.r,file="±¹°Ç¿µ_EGFR_AP.csv",row.names=F,na="")
+write.csv(hn.r,file="êµ­ê±´ì˜_EGFR_AP.csv",row.names=F,na="")
 
 #--------------------------------------------------------------------------------#
-#½ÅÀå±â´É ÁöÇ¥ ºĞÆ÷ & PM2.5(°Ë»ç ´çÇØ³âµµ ³ëÃâ ³óµµ)¿Í °ü·Ã¼º
+#ì‹ ì¥ê¸°ëŠ¥ ì§€í‘œ ë¶„í¬ & PM2.5(ê²€ì‚¬ ë‹¹í•´ë…„ë„ ë…¸ì¶œ ë†ë„)ì™€ ê´€ë ¨ì„±
 x11();grid.arrange(ggplot(hn.r,aes(ln_BUN.cr))+geom_histogram()+stat_bin(bins=100)+theme_gray(base_size=20)+
                      labs(x="Log BUN.cr",y="Count"),
                    ggplot(hn.r,aes(PM25,ln_BUN.cr))+geom_point()+stat_smooth(method="lm")+
@@ -327,11 +327,11 @@ x11();grid.arrange(ggplot(hn.r,aes(eGFR))+geom_histogram()+stat_bin(bins=100)+th
                    ggplot(hn.r,aes(PM25,eGFR))+geom_point()+stat_smooth(method="lm")+
                      theme_gray(base_size=20)+labs(x=expression(PM[2.5] *" (" * mu*"g/m"^3*")"),y="eGFR"),ncol=2)
 
-#eGFR ¼öÁØ¿¡ µû¶ó Á¤»ó±º, ¾ÇÈ­±º 
-eg1<-subset(hn.r,eGFR<60)  #¾ÇÈ­
-eg2<-subset(hn.r,eGFR>=60) #Á¤»ó
+#eGFR ìˆ˜ì¤€ì— ë”°ë¼ ì •ìƒêµ°, ì•…í™”êµ° 
+eg1<-subset(hn.r,eGFR<60)  #ì•…í™”
+eg2<-subset(hn.r,eGFR>=60) #ì •ìƒ
 
-#eGFR ÃşÈ­ÇÏ¿©¼­ º¼‹š 
+#eGFR ì¸µí™”í•˜ì—¬ì„œ ë³¼Â‹Âš 
 x11();grid.arrange(ggplot(hn.r,aes(PM25,eGFR))+geom_point()+stat_smooth(method="lm")+
                      theme_gray(base_size=20)+
                      labs(x=expression(PM[2.5] *" (" * mu*"g/m"^3*")"),y="eGFR"),
@@ -395,12 +395,12 @@ x11();grid.arrange(ggplot(hn.r,aes(O3,eGFR))+geom_point()+stat_smooth(method="lm
                      labs(x=expression(O[3] *" (ppb)"),y="eGFR"),ncol=3)
 
 #------------------------------------------------------------------------------#
-#º¹ÇÕÇ¥º» ¼³°è 
+#ë³µí•©í‘œë³¸ ì„¤ê³„ 
 
-#º¹ÇÕÇ¥º»ºĞ¼® ÁØºñ
-com.svy<-svydesign(ids    =~psu,       #Áı¶ô
-                   strata =~kstrata,   #Ãş
-                   weights=~T_wt_itvex,#°¡ÁßÄ¡
+#ë³µí•©í‘œë³¸ë¶„ì„ ì¤€ë¹„
+com.svy<-svydesign(ids    =~psu,       #ì§‘ë½
+                   strata =~kstrata,   #ì¸µ
+                   weights=~T_wt_itvex,#ê°€ì¤‘ì¹˜
                    data   =hn.r)
 
 svytotal(~sex==2,design=com.svy)
@@ -455,21 +455,21 @@ svytotal(~eGFR_g==0,design=com.svy,na.rm=T)
 
 
 
-#°¡ÁßµÇÁö ¾ÊÀº ºóµµ
+#ê°€ì¤‘ë˜ì§€ ì•Šì€ ë¹ˆë„
 addmargins(table(hn.r$sex))
 prop.table(table(hn.r$sex))
 
-#º¹ÇÕÇ¥º» ±×·ìº° Æò±Õ
+#ë³µí•©í‘œë³¸ ê·¸ë£¹ë³„ í‰ê· 
 svyby(~eGFR,by=~sex,com.svy,svymean) %>% round(3)
 #------------------------------------------------------------------------------#
-#¼±ÇüÈ¸±ÍºĞ¼® eGFR & PM2.5
+#ì„ í˜•íšŒê·€ë¶„ì„ eGFR & PM2.5
 
-#Ç÷¾Ğ(SBP)Àº ¸ğµ¨ ºñ±³½Ã ÁÖ¿äÀÎÀÚ ¾Æ´Ï¶ó¼­ Á¦¿Ü -> LR test
-#Áö¿ªÀº ¸ğµ¨¿¡¼­ ´ë±â¿À¿°°ú °ø¼±¼ºÀÌ ³ô¾Æ¼­ Á¦¿Ü VIF·Î Æò°¡ 
+#í˜ˆì••(SBP)ì€ ëª¨ë¸ ë¹„êµì‹œ ì£¼ìš”ì¸ì ì•„ë‹ˆë¼ì„œ ì œì™¸ -> LR test
+#ì§€ì—­ì€ ëª¨ë¸ì—ì„œ ëŒ€ê¸°ì˜¤ì—¼ê³¼ ê³µì„ ì„±ì´ ë†’ì•„ì„œ ì œì™¸ VIFë¡œ í‰ê°€ 
 
 #fit1 : Crude model
 #fit2 : adjusted model: age,sex,BMI,income,education,Triglyceride+underlying disease,drinking, smoking
-#°¡ÁßÄ¡ Àû¿ëx
+#ê°€ì¤‘ì¹˜ ì ìš©x
 
 b.fita1<-lm(eGFR~PM25,data=hn.r);b.fita2<-lm(eGFR~PM10,data=hn.r)
 b.fita3<-lm(eGFR~SO2 ,data=hn.r);fita4<-lm(eGFR~NO2 ,data=hn.r)
@@ -496,8 +496,8 @@ b.result$E      =(b.result$Estimate*b.result$uc) %>% round(3)
 b.result$lci     =(b.result$uc*(b.result$Estimate-1.96*b.result$`Std. Error`))%>% round(3)
 b.result$uci     =(b.result$uc*(b.result$Estimate+1.96*b.result$`Std. Error`))%>% round(3)
 
-#º¹ÇÕÇ¥º»ºĞ¼®-¼±Çü È¸±Í
-#Ç¥ÁØ¿ÀÂ÷ È®ÀÎ 
+#ë³µí•©í‘œë³¸ë¶„ì„-ì„ í˜• íšŒê·€
+#í‘œì¤€ì˜¤ì°¨ í™•ì¸ 
 svy.fita1<-svyglm(eGFR~PM25,data=hn.r,com.svy);svy.fita2<-svyglm(eGFR~PM10,data=hn.r,com.svy)
 svy.fita3<-svyglm(eGFR~SO2,data=hn.r,com.svy) ;svy.fita4<-svyglm(eGFR~NO2,data=hn.r,com.svy)
 svy.fita5<-svyglm(eGFR~CO,data=hn.r,com.svy)  ;svy.fita6<-svyglm(eGFR~O3,data=hn.r,com.svy)
@@ -526,7 +526,7 @@ s.result$uci     =(s.result$uc*(s.result$Estimate+1.96*s.result$`Std. Error`))%>
 b.result;s.result
 View(b.result)
 View(s.result)
-#º¹ÇÕÇ¥º»¿¡¼­ ´ÙÁß°ø¼±¼º °ËÅä - ±×·¡µµ Áö¿ª »©¾ßÇÔ 
+#ë³µí•©í‘œë³¸ì—ì„œ ë‹¤ì¤‘ê³µì„ ì„± ê²€í†  - ê·¸ë˜ë„ ì§€ì—­ ë¹¼ì•¼í•¨ 
 # eliminate cases with missing values
 
 V <- Vmat(mobj = svy.fit3,
@@ -538,13 +538,13 @@ X3 <- model.matrix(~ NO2+age+sex+HE_BMI+factor(incm)+factor(edu)+HE_TG+
                      factor(underlying_disease2)+factor(BD1_11)+factor(BS3_1),
                    data = data.frame(hn.r))
 
-#°øºĞ»ê Çà·Ä, °¡ÁßÄ¡, µ¥ÀÌÅÍ ¼Â ±¸¼ºÇÏ¿© ¸ğµ¨¸µ
+#ê³µë¶„ì‚° í–‰ë ¬, ê°€ì¤‘ì¹˜, ë°ì´í„° ì…‹ êµ¬ì„±í•˜ì—¬ ëª¨ë¸ë§
 svy_vif<-svyvif(X = X3[,-1], w = hn.r$T_wt_itvex, V = V)
 View(svy_vif)
 #------------------------------------------------------------------------------#
 with(hn.r,aggregate(eGFR_g,list(sido),table))
 
-#°¡ÁßÄ¡ Àû¿ëx, ½ÅÀå±â´É ÁöÇ¥,eGFR ·ÎÁö½ºÆ½È¸±Í
+#ê°€ì¤‘ì¹˜ ì ìš©x, ì‹ ì¥ê¸°ëŠ¥ ì§€í‘œ,eGFR ë¡œì§€ìŠ¤í‹±íšŒê·€
 fita1<-glm(eGFR_g~PM25,data=hn.r,family="binomial");fita2<-glm(eGFR_g~PM10,data=hn.r,family="binomial")
 fita3<-glm(eGFR_g~SO2,data=hn.r,family="binomial") ;fita4<-glm(eGFR_g~NO2,data=hn.r,family="binomial")
 fita5<-glm(eGFR_g~CO,data=hn.r,family="binomial")  ;fita6<-glm(eGFR_g~O3,data=hn.r,family="binomial")
@@ -570,7 +570,7 @@ b.result$OR      =exp(b.result$Estimate*b.result$uc) %>% round(3)
 b.result$lci     =exp(b.result$uc*(b.result$Estimate-1.96*b.result$`Std. Error`))%>% round(3)
 b.result$uci     =exp(b.result$uc*(b.result$Estimate+1.96*b.result$`Std. Error`))%>% round(3)
 
-#°¡ÁßÄ¡ Àû¿ë, ½ÅÀå±â´É ÁöÇ¥,eGFR ·ÎÁö½ºÆ½È¸±Í
+#ê°€ì¤‘ì¹˜ ì ìš©, ì‹ ì¥ê¸°ëŠ¥ ì§€í‘œ,eGFR ë¡œì§€ìŠ¤í‹±íšŒê·€
 svy.fita1<-svyglm(eGFR_g~PM25,data=hn.r,com.svy,family="quasibinomial")
 svy.fita2<-svyglm(eGFR_g~PM10,data=hn.r,com.svy,family="quasibinomial")
 svy.fita3<-svyglm(eGFR_g~SO2,data=hn.r,com.svy ,family="quasibinomial")
@@ -631,8 +631,8 @@ b.result$E      =(b.result$Estimate*b.result$uc) %>% round(3)
 b.result$lci     =(b.result$uc*(b.result$Estimate-1.96*b.result$`Std. Error`))%>% round(3)
 b.result$uci     =(b.result$uc*(b.result$Estimate+1.96*b.result$`Std. Error`))%>% round(3)
 
-#º¹ÇÕÇ¥º»ºĞ¼®-¼±Çü È¸±Í
-#Ç¥ÁØ¿ÀÂ÷ È®ÀÎ 
+#ë³µí•©í‘œë³¸ë¶„ì„-ì„ í˜• íšŒê·€
+#í‘œì¤€ì˜¤ì°¨ í™•ì¸ 
 svy.fita1<-svyglm(eGFR~lag1_PM25,data=hn.r,com.svy);svy.fita2<-svyglm(eGFR~lag1_PM10,data=hn.r,com.svy)
 svy.fita3<-svyglm(eGFR~lag1_SO2,data=hn.r,com.svy) ;svy.fita4<-svyglm(eGFR~lag1_NO2,data=hn.r,com.svy)
 svy.fita5<-svyglm(eGFR~lag1_CO,data=hn.r,com.svy)  ;svy.fita6<-svyglm(eGFR~lag1_O3,data=hn.r,com.svy)
@@ -692,8 +692,8 @@ b.result$E      =(b.result$Estimate*b.result$uc) %>% round(3)
 b.result$lci     =(b.result$uc*(b.result$Estimate-1.96*b.result$`Std. Error`))%>% round(3)
 b.result$uci     =(b.result$uc*(b.result$Estimate+1.96*b.result$`Std. Error`))%>% round(3)
 
-#º¹ÇÕÇ¥º»ºĞ¼®-¼±Çü È¸±Í
-#Ç¥ÁØ¿ÀÂ÷ È®ÀÎ 
+#ë³µí•©í‘œë³¸ë¶„ì„-ì„ í˜• íšŒê·€
+#í‘œì¤€ì˜¤ì°¨ í™•ì¸ 
 svy.fita1<-svyglm(eGFR~lag01_PM25,data=hn.r,com.svy);svy.fita2<-svyglm(eGFR~lag01_PM10,data=hn.r,com.svy)
 svy.fita3<-svyglm(eGFR~lag01_SO2,data=hn.r,com.svy) ;svy.fita4<-svyglm(eGFR~lag01_NO2,data=hn.r,com.svy)
 svy.fita5<-svyglm(eGFR~lag01_CO,data=hn.r,com.svy)  ;svy.fita6<-svyglm(eGFR~lag01_O3,data=hn.r,com.svy)
@@ -750,8 +750,8 @@ b.result$OR      =exp(b.result$Estimate*b.result$uc) %>% round(3)
 b.result$lci     =exp(b.result$uc*(b.result$Estimate-1.96*b.result$`Std. Error`))%>% round(3)
 b.result$uci     =exp(b.result$uc*(b.result$Estimate+1.96*b.result$`Std. Error`))%>% round(3)
 
-#º¹ÇÕÇ¥º»ºĞ¼®-·ÎÁö½ºÆ½ È¸±Í
-#Ç¥ÁØ¿ÀÂ÷ È®ÀÎ 
+#ë³µí•©í‘œë³¸ë¶„ì„-ë¡œì§€ìŠ¤í‹± íšŒê·€
+#í‘œì¤€ì˜¤ì°¨ í™•ì¸ 
 svy.fita1<-svyglm(eGFR_g~lag1_PM25,data=hn.r,com.svy,family="quasibinomial");svy.fita2<-svyglm(eGFR_g~lag1_PM10,data=hn.r,com.svy,family="quasibinomial")
 svy.fita3<-svyglm(eGFR_g~lag1_SO2 ,data=hn.r,com.svy,family="quasibinomial");svy.fita4<-svyglm(eGFR_g~lag1_NO2 ,data=hn.r,com.svy,family="quasibinomial")
 svy.fita5<-svyglm(eGFR_g~lag1_CO  ,data=hn.r,com.svy,family="quasibinomial");svy.fita6<-svyglm(eGFR_g~lag1_O3  ,data=hn.r,com.svy,family="quasibinomial")
@@ -808,8 +808,8 @@ b.result$OR      =exp(b.result$Estimate*b.result$uc) %>% round(3)
 b.result$lci     =exp(b.result$uc*(b.result$Estimate-1.96*b.result$`Std. Error`))%>% round(3)
 b.result$uci     =exp(b.result$uc*(b.result$Estimate+1.96*b.result$`Std. Error`))%>% round(3)
 
-#º¹ÇÕÇ¥º»ºĞ¼®-¼±Çü È¸±Í
-#Ç¥ÁØ¿ÀÂ÷ È®ÀÎ 
+#ë³µí•©í‘œë³¸ë¶„ì„-ì„ í˜• íšŒê·€
+#í‘œì¤€ì˜¤ì°¨ í™•ì¸ 
 svy.fita1<-svyglm(eGFR_g~lag01_PM25,data=hn.r,com.svy,family="quasibinomial");svy.fita2<-svyglm(eGFR_g~lag01_PM10,data=hn.r,com.svy,family="quasibinomial")
 svy.fita3<-svyglm(eGFR_g~lag01_SO2,data=hn.r,com.svy ,family="quasibinomial") ;svy.fita4<-svyglm(eGFR_g~lag01_NO2,data=hn.r,com.svy,family="quasibinomial")
 svy.fita5<-svyglm(eGFR_g~lag01_CO,data=hn.r,com.svy  ,family="quasibinomial")  ;svy.fita6<-svyglm(eGFR_g~lag01_O3,data=hn.r,com.svy,family="quasibinomial")
