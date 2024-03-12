@@ -1,0 +1,113 @@
+setwd("D:\\SNU\\연구\\KEI_환경보건감시체계\\PM2P5")
+
+cmaq<-read_excel("SGG_PM25_upload.xlsx")
+cmaq_pm10<-read_excel("D:\\SNU\\연구\\KEI_환경보건감시체계\\PM2P5\\명지선선생님전달자료\\SGG_PM10_all.xlsx")
+cmaq_so2 <-read_excel("D:\\SNU\\연구\\KEI_환경보건감시체계\\PM2P5\\명지선선생님전달자료\\SGG_SO2_all.xlsx")
+cmaq_no2 <-read_excel("D:\\SNU\\연구\\KEI_환경보건감시체계\\PM2P5\\명지선선생님전달자료\\SGG_NO2_1.xlsx")
+cmaq_o3  <-read_excel("D:\\SNU\\연구\\KEI_환경보건감시체계\\PM2P5\\명지선선생님전달자료\\SGG_O3_1.xlsx")
+
+head(cmaq_pm10)
+cmaq1_monthly<-cmaq      %>% group_by(yyyymm) %>% summarise(CMAQ_PM25=mean(PM25_m1))
+cmaq2_monthly<-cmaq_pm10 %>% group_by(yyyymm) %>% summarise(CMAQ_PM10=mean(PM10_m1))
+cmaq3_monthly<-cmaq_so2  %>% group_by(yyyymm) %>% summarise(CMAQ_SO2 =mean(SO2_m1))
+cmaq4_monthly<-cmaq_no2  %>% group_by(yyyymm) %>% summarise(CMAQ_NO2 =mean(NO2_m1))
+cmaq5_monthly<-cmaq_o3   %>% group_by(yyyymm) %>% summarise(CMAQ_O3  =mean(O3_m1))
+
+ap15<-read_excel("D:/EUMC/데이터관리/Mornitoring_data/Air_Korea_확정데이터/2015/2015_모니터링농도.xlsx",sheet=2)
+ap16<-read_excel("D:/EUMC/데이터관리/Mornitoring_data/Air_Korea_확정데이터/2016/2016_모니터링농도.xlsx",sheet=2)
+ap17<-read_excel("D:/EUMC/데이터관리/Mornitoring_data/Air_Korea_확정데이터/2017/2017_모니터링농도.xlsx",sheet=2)
+ap18<-read_excel("D:/EUMC/데이터관리/Mornitoring_data/Air_Korea_확정데이터/2018/2018_모니터링농도.xlsx",sheet=2)
+ap19<-read_excel("D:/EUMC/데이터관리/Mornitoring_data/Air_Korea_확정데이터/2019/2019_모니터링농도.xlsx",sheet=2)
+
+ap1519<-rbind(ap15,ap16,ap17,ap18,ap19)
+
+ap1519$date=ymd(ap1519$date)
+head(ap1519)
+ap1519$yyyymm=paste0(substr(ap1519$date,1,4),substr(ap1519$date,6,7)
+
+ap_monthly<-ap1519 %>% group_by(yyyymm) %>% summarise(PM25=mean(PM25),
+                                                      PM10=mean(PM10),
+                                                      SO2 =mean(SO2)*1000,
+                                                      NO2 =mean(NO2)*1000,
+                                                      O3  =mean(O3)*1000)
+ap_monthly$yyyymm=as.numeric(ap_monthly$yyyymm)
+
+mm<-cmaq1_monthly %>% 
+  left_join(cmaq2_monthly) %>% 
+  left_join(cmaq3_monthly) %>% 
+  left_join(cmaq4_monthly) %>% 
+  left_join(cmaq5_monthly) %>% 
+  left_join(ap_monthly)
+mm_rev<-mm[complete.cases(mm),]
+mm_rev$year=substr(mm_rev$yyyymm,1,4)
+
+fit1<-lm(CMAQ_PM25~PM25,data=mm_rev)
+fit2<-lm(CMAQ_PM10~PM10,data=mm_rev)
+fit3<-lm(CMAQ_SO2~SO2,data=mm_rev)
+fit4<-lm(CMAQ_NO2~NO2,data=mm_rev)
+fit5<-lm(CMAQ_O3~O3,data=mm_rev)
+
+summary(fit1)$r.squared
+summary(fit2)$r.squared
+summary(fit3)$r.squared
+summary(fit4)$r.squared
+summary(fit5)$r.squared
+
+sqrt(mean(fit1$residuals^2))
+sqrt(mean(fit2$residuals^2))
+sqrt(mean(fit3$residuals^2))
+sqrt(mean(fit4$residuals^2))
+sqrt(mean(fit5$residuals^2))
+
+
+g1<-ggplot(mm_rev,aes(PM25,CMAQ_PM25))+
+  geom_point(size=5,col="gray60",pch=16)+
+  stat_smooth(method="lm",se=F,col="black",size=1.1)+
+  geom_abline (slope=1, intercept =0, linetype = "dashed", color="red",size=1.1)+
+  labs(x=expression(paste("Observed ", "PM"[2.5]*" (μg/m"^"3"~")")),
+       y=expression(paste("Modeled ", "PM"[2.5]*" (μg/m"^"3"~")")),)+
+  theme_bw(base_size=18)+
+  geom_text(aes(x=30,y=15),size=6,
+            label=expression(paste("R"^"2",": 0.80 ",",  ","RMSE: 2.47"," (μg/m"^"3"~")")))
+
+g2<-ggplot(mm_rev,aes(PM10,CMAQ_PM10))+
+  geom_point(size=5,col="gray60",pch=16)+
+  stat_smooth(method="lm",se=F,col="black",size=1.1)+
+  geom_abline (slope=1, intercept =0, linetype = "dashed", color="red",size=1.1)+
+  labs(x=expression(paste("Observed ", "PM"[10]*" (μg/m"^"3"~")")),
+       y=expression(paste("Modeled ", "PM"[10]*" (μg/m"^"3"~")")),)+
+  theme_bw(base_size=18)+
+  geom_text(aes(x=60,y=28),size=6,
+            label=expression(paste("R"^"2",": 0.82 ",",  ","RMSE: 4.42"," (μg/m"^"3"~")")))
+
+g3<-ggplot(mm_rev,aes(SO2,CMAQ_SO2))+
+  geom_point(size=5,col="gray60",pch=16)+
+  stat_smooth(method="lm",se=F,col="black",size=1.1)+
+  geom_abline (slope=1, intercept =0, linetype = "dashed", color="red",size=1.1)+
+  labs(x=expression(paste("Observed ", "SO"[2]*" (ppb)")),
+       y=expression(paste("Modeled ", "SO"[2]*" (ppb)")),)+
+  theme_bw(base_size=18)+
+  geom_text(aes(x=5.2,y=3),size=6,
+            label=expression(paste("R"^"2",": 0.90 ",",  ","RMSE: 0.19"," (ppb)")))
+
+g4<-ggplot(mm_rev,aes(NO2,CMAQ_NO2))+
+  geom_point(size=5,col="gray60",pch=16)+
+  stat_smooth(method="lm",se=F,col="black",size=1.1)+
+  geom_abline (slope=1, intercept =0, linetype = "dashed", color="red",size=1.1)+
+  labs(x=expression(paste("Observed ", "NO"[2]*" (ppb)")),
+       y=expression(paste("Modeled ", "NO"[2]*" (ppb)")),)+
+  theme_bw(base_size=18)+
+  geom_text(aes(x=24,y=12.5),size=6,
+            label=expression(paste("R"^"2",": 0.88 ",",  ","RMSE: 1.32"," (ppb)")))
+
+g5<-ggplot(mm_rev,aes(NO2,CMAQ_NO2))+
+  geom_point(size=5,col="gray60",pch=16)+
+  stat_smooth(method="lm",se=F,col="black",size=1.1)+
+  geom_abline (slope=1, intercept =0, linetype = "dashed", color="red",size=1.1)+
+  labs(x=expression(paste("Observed ", "O"[3]*" (ppb)")),
+       y=expression(paste("Modeled ", "O"[3]*" (ppb)")),)+
+  theme_bw(base_size=18)+
+  geom_text(aes(x=24,y=12.5),size=6,
+            label=expression(paste("R"^"2",": 0.90 ",",  ","RMSE: 2.64"," (ppb)")))
+
+x11();grid.arrange(g1,g2,g3,g4,g5,ncol=3)
