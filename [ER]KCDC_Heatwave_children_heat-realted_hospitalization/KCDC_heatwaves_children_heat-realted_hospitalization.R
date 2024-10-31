@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------#
-#Æø¿° Áúº´Ã» °ø´ÜÀÚ·á -5¼¼ ¹Ì¸¸ ¿µÀ¯¾Æ & ¿Â¿­ÁúÈ¯°ü·Ã ÀÔ¿ø ³í¹®ÀÛ¼º¿ë ÄÚµå
+#í­ì—¼ ì§ˆë³‘ì²­ ê³µë‹¨ìë£Œ -5ì„¸ ë¯¸ë§Œ ì˜ìœ ì•„ & ì˜¨ì—´ì§ˆí™˜ê´€ë ¨ ì…ì› ë…¼ë¬¸ì‘ì„±ìš© ì½”ë“œ
 #-------------------------------------------------------------------------#
 #library
 pacman::p_load("dplyr","ggplot2","reshape2","sqldf","RColorBrewer","lubridate","lmtest","readxl","survival",
@@ -9,11 +9,11 @@ pacman::p_load("dplyr","ggplot2","reshape2","sqldf","RColorBrewer","lubridate","
 #-------------------------------------------------------------------------#
 
 #-------------------------------------------------------------------------#
-setwd("D:\\EUMC\\Áúº´°ü¸®Ã»\\Æø¿°¿¬±¸\\°ø´ÜÀÚ·á")
+setwd("D:\\EUMC\\ì§ˆë³‘ê´€ë¦¬ì²­\\í­ì—¼ì—°êµ¬\\ê³µë‹¨ìë£Œ")
 child_ts<-read.csv("child_ts.csv")
 child_ts$ddate=as.Date(child_ts$ddate)
 
-#dataset n; 1826*17=31,042, 2015-01-01~2019-12-31±îÁö ±â°£*17°³ µµ½Ã
+#dataset n; 1826*17=31,042, 2015-01-01~2019-12-31ê¹Œì§€ ê¸°ê°„*17ê°œ ë„ì‹œ
 
 
 child_ts %>% group_by(year,month) %>% summarise(meanT=mean(meantemp_lag0,na.rm=T),
@@ -21,53 +21,53 @@ child_ts %>% group_by(year,month) %>% summarise(meanT=mean(meantemp_lag0,na.rm=T
 
 #--------------------------------------------------------------------------#
 #--------------------------------------------------------------------------#
-#³ëÃâ ÀÚ·á
-temp_outcome<-read_excel("D:\\EUMC\\Áúº´°ü¸®Ã»\\Æø¿°¿¬±¸\\°ø´ÜÀÚ·á\\heattable.xlsx",sheet=1)
+#ë…¸ì¶œ ìë£Œ
+temp_outcome<-read_excel("D:\\EUMC\\ì§ˆë³‘ê´€ë¦¬ì²­\\í­ì—¼ì—°êµ¬\\ê³µë‹¨ìë£Œ\\heattable.xlsx",sheet=1)
 
 to<-melt(temp_outcome %>% dplyr:: select(-c(note)),id.vars=c("category","month"))
-to$month=ifelse(as.numeric(gsub("¿ù","",to$month))<10,paste0(0,as.numeric(gsub("¿ù","",to$month))),
-                as.numeric(gsub("¿ù","",to$month)))
+to$month=ifelse(as.numeric(gsub("ì›”","",to$month))<10,paste0(0,as.numeric(gsub("ì›”","",to$month))),
+                as.numeric(gsub("ì›”","",to$month)))
 to$yymm=ymd(paste0(substr(to$variable,2,5),"-",to$month,"-",01))
 
 heatrelated_month_yr<-to %>% filter(category %in% c("heatrelated"))
 
 exp <-to %>% filter(category %in% c("meanT","maxT"))
-exp$gubun=rep(c("Æò±Õ±â¿Â(¡ÆC)","ÃÖ°í±â¿Â(¡ÆC)"),each=12)
+exp$gubun=rep(c("í‰ê· ê¸°ì˜¨(Â°C)","ìµœê³ ê¸°ì˜¨(Â°C)"),each=12)
 exp$gubun=factor(exp$gubun,levels=unique(exp$gubun))
 
-#±×¸² ¼öÁ¤ 
+#ê·¸ë¦¼ ìˆ˜ì • 
 exp1<-exp %>% filter(category=="meanT")
 exp2<-exp %>% filter(category=="maxT")
 
 exp2$fillcol=c("orange","orange","orange","orange","orange","red","red","red","orange","orange","orange","orange")
 
-#¿ùº° ±×¸² ver1, 5¼¼ ¹Ì¸¸ ¿µÀ¯¾Æ ¿Â¿­ÁúÈ¯ °ü·Ã ÀÔ¿ø ¹ß»ı °Ç¼ö (°ãÃÄ¼­)
+#ì›”ë³„ ê·¸ë¦¼ ver1, 5ì„¸ ë¯¸ë§Œ ì˜ìœ ì•„ ì˜¨ì—´ì§ˆí™˜ ê´€ë ¨ ì…ì› ë°œìƒ ê±´ìˆ˜ (ê²¹ì³ì„œ)
 x11();ggplot(heatrelated_month_yr,aes(yymm,value))+
   theme_bw(base_size=25)+scale_y_continuous(labels = scales::comma)+
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   scale_x_date(breaks = date_breaks("1 months"),date_labels = "%Y %m")+
   geom_bar(data=exp2,aes(x=yymm,y = value*60),stat="identity",fill=exp2$fillcol,binwidth=0.2)+
-  scale_y_continuous(sec.axis= sec_axis(~. /60, name = "Temperauture(¡ÆC)"),labels=comma)+
+  scale_y_continuous(sec.axis= sec_axis(~. /60, name = "Temperauture(Â°C)"),labels=comma)+
   geom_point(size=5)+geom_line(size=2)+labs(x="Date",y="Counts ")+
   scale_fill_manual(values=c("red","orange"),label=c("red","orange"))
 
-#¿ùº° °Ç¼ö_ÃÖ°í±â¿Â 
-tiff(file="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\Figure\\¿ùº° °Ç¼ö_ÃÖ°í±â¿Â.tiff",
+#ì›”ë³„ ê±´ìˆ˜_ìµœê³ ê¸°ì˜¨ 
+tiff(file="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\Figure\\ì›”ë³„ ê±´ìˆ˜_ìµœê³ ê¸°ì˜¨.tiff",
      width=6000, height=3000,res=300)
 ggplot(heatrelated_month_yr,aes(yymm,value))+
   theme_bw(base_size=25)+scale_y_continuous(labels = scales::comma)+
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   scale_x_date(breaks = date_breaks("1 months"),date_labels = "%Y %m")+
   geom_bar(data=exp2,aes(x=yymm,y = value*60),stat="identity",fill=exp2$fillcol,binwidth=0.2)+
-  scale_y_continuous(sec.axis= sec_axis(~. /60, name = "Temperauture(¡ÆC)"),labels=comma)+
+  scale_y_continuous(sec.axis= sec_axis(~. /60, name = "Temperauture(Â°C)"),labels=comma)+
   geom_point(size=5)+geom_line(size=2)+labs(x="Date",y="Counts ")+
   scale_fill_manual(values=c("red","orange"),label=c("red","orange"))
 dev.off()
 
-#¿ùº° ±×¸² ver2, 5¼¼ ¹Ì¸¸ ¿µÀ¯¾Æ ¿Â¿­ÁúÈ¯ °ü·Ã ÀÔ¿ø ¹ß»ı °Ç¼ö (³ª´²¼­) 
+#ì›”ë³„ ê·¸ë¦¼ ver2, 5ì„¸ ë¯¸ë§Œ ì˜ìœ ì•„ ì˜¨ì—´ì§ˆí™˜ ê´€ë ¨ ì…ì› ë°œìƒ ê±´ìˆ˜ (ë‚˜ëˆ ì„œ) 
 exp$gubun=ifelse(exp$category=="maxT","Maxium Temperature","Mean Temperature")
 exp$gubun=factor(exp$gubun,levels=unique(exp$gubun))
-gexp<-ggplot(exp,aes(yymm,value,col=gubun))+geom_point(size=5)+geom_line(size=2)+labs(x="",y="Temperauture (¡ÆC)")+
+gexp<-ggplot(exp,aes(yymm,value,col=gubun))+geom_point(size=5)+geom_line(size=2)+labs(x="",y="Temperauture (Â°C)")+
   theme_bw(base_size=25)+scale_y_continuous(labels = scales::comma)+
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5),
         legend.title = element_blank(),legend.position = "top")+
@@ -82,10 +82,10 @@ heat_g<-ggplot(heatrelated_month_yr,aes(yymm,value))+geom_point(size=5)+geom_lin
 x11();grid.arrange(gexp,heat_g,ncol=1)
 #--------------------------------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------------------------------#
-#¸ŞÀÎÀ¸·Î »ç¿ëÇÒ ÀÚ·á
-#ÀüÃ¼ ÀÚ·á¿¡¼­ µ¥ÀÌÅÍ Å¬·»Â¡ ÇÏ°í, °°Àº³¯ Áßº¹ È¯ÀÚ Á¦°Å, ¿¡ÇÇ¼Òµå Á¤¸®ÇØ¼­
-#¿Â¿­°ü·ÃÁúÈ¯(T67, E86)À¸·Î ÃßÃâµÈ °íÀ¯ È¯ÀÚ´Â 65,582°ÇÀÓ 
-#ÃÑ 60,196°ÇÀÎµ¥ ÀÌÁß ¿©¸§±â°£¸¸ ÇÏ¸é 17,179
+#ë©”ì¸ìœ¼ë¡œ ì‚¬ìš©í•  ìë£Œ
+#ì „ì²´ ìë£Œì—ì„œ ë°ì´í„° í´ë Œì§• í•˜ê³ , ê°™ì€ë‚  ì¤‘ë³µ í™˜ì ì œê±°, ì—í”¼ì†Œë“œ ì •ë¦¬í•´ì„œ
+#ì˜¨ì—´ê´€ë ¨ì§ˆí™˜(T67, E86)ìœ¼ë¡œ ì¶”ì¶œëœ ê³ ìœ  í™˜ìëŠ” 65,582ê±´ì„ 
+#ì´ 60,196ê±´ì¸ë° ì´ì¤‘ ì—¬ë¦„ê¸°ê°„ë§Œ í•˜ë©´ 17,179
 
 #total: 60,196 (2015~2019)
 #summer period (6,7,8):17,179
@@ -93,7 +93,7 @@ heatdat<-child_ts %>% dplyr::select(SIDO_KN:SIDO,heatrelated_CHILD_TOT:pm25_lag0
 
 heatdat$area=factor(heatdat$area,levels=unique(heatdat$area))
 
-#ÀüÃ¼±â°£ ÀÏÀÏ°Ç¼ö µµ½Ãº° Æò±Õ/ºĞ»ê 
+#ì „ì²´ê¸°ê°„ ì¼ì¼ê±´ìˆ˜ ë„ì‹œë³„ í‰ê· /ë¶„ì‚° 
 cbind(mean=aggregate(heatdat$outcome,list(heatdat$area),mean,na.rm=T),
       var=aggregate(heatdat$outcome,list(heatdat$area),var,na.rm=T)$x)
 
@@ -102,17 +102,17 @@ var(heatdat$outcome,na.rm=T)
 
 
 
-#Àü±¹ ÃëÇÕÇÑ outcome Ä«¿îÆ®
+#ì „êµ­ ì·¨í•©í•œ outcome ì¹´ìš´íŠ¸
 aggC<-aggregate(heatdat$outcome,list(heatdat$ddate),sum)
 
-#Àü±¹¿¡¼­ ÀÏ ÃÖ°í±â¿Â Á¦ÀÏ ³ô¾ÒÀ» ¶§
+#ì „êµ­ì—ì„œ ì¼ ìµœê³ ê¸°ì˜¨ ì œì¼ ë†’ì•˜ì„ ë•Œ
 aggT<-aggregate(heatdat$maxtemp_lag0,list(heatdat$ddate),max,na.rm=T)
 
 names(aggC)=c("date","counts")
 names(aggT)=c("date","maxT")
 
 aggCT<-aggC %>% left_join(aggT,by="date")
-aggCT$heat=as.factor(ifelse(aggCT$maxT>=33,"Maximum temperature ¡Ã 33¡ÆC","Maximum temperature < 33¡ÆC"))
+aggCT$heat=as.factor(ifelse(aggCT$maxT>=33,"Maximum temperature â‰¥ 33Â°C","Maximum temperature < 33Â°C"))
 aggCT$year =year(aggCT$date)
 aggCT$month=month(aggCT$date)
 aggCT2<-subset(aggCT,month %in% c(6,7,8))
@@ -120,15 +120,15 @@ aggCT2<-subset(aggCT,month %in% c(6,7,8))
 aggCT2 %>% group_by(month,year) %>% summarise(sum(counts))
 
 
-#Àü±¹ ÀÏº° ¿Â¿­ÁúÈ¯ ÀÔ¿ø ÇÕ°è
-#Àü±¹ ÀÏº° ÀÏÃÖ°í±â¿Â (33µµ ÀÌ»óÀº »¡°­ Ç¥½Ã, ±×¿Ü ¿À·»Áö»ö)
-#ºóµµ´Â Á¡À¸·Î Ç¥½Ã 
+#ì „êµ­ ì¼ë³„ ì˜¨ì—´ì§ˆí™˜ ì…ì› í•©ê³„
+#ì „êµ­ ì¼ë³„ ì¼ìµœê³ ê¸°ì˜¨ (33ë„ ì´ìƒì€ ë¹¨ê°• í‘œì‹œ, ê·¸ì™¸ ì˜¤ë Œì§€ìƒ‰)
+#ë¹ˆë„ëŠ” ì ìœ¼ë¡œ í‘œì‹œ 
 
 x11();ggplot(aggCT,aes(date,maxT,fill=heat))+
   scale_x_date(breaks = date_breaks("1 months"),date_labels = "%Y %m")+
   geom_bar(stat="identity",col=ifelse(aggCT$maxT>=33,"red","orange"))+
   scale_y_continuous(sec.axis= sec_axis(~. *5, name = "Daily counts"),labels=comma)+
-  geom_point(data=aggCT,aes(date,counts/5),size=2)+labs(x="Date",y="Maximum temperature (¡ÆC)")+
+  geom_point(data=aggCT,aes(date,counts/5),size=2)+labs(x="Date",y="Maximum temperature (Â°C)")+
   scale_fill_manual(values=c("orange","red"))+
   theme_gray(base_size=25)+theme(legend.position = "top",
                                  legend.title=element_blank(),
@@ -137,14 +137,14 @@ x11();ggplot(aggCT,aes(date,maxT,fill=heat))+
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   scale_x_date(breaks = date_breaks("1 months"),date_labels = "%Y %m")
 
-##GAMM,³ëÃâ ¹İÀÀ ±×¸²ÀúÀå, ´ÜÀÏ Áö¿¬; ¿Â¿­ÁúÈ¯ °ü·Ã
-tiff(file="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\Figure\\ÀÏÀÏ°Ç¼ö_ÃÖ°í±â¿Â.tiff",
+##GAMM,ë…¸ì¶œ ë°˜ì‘ ê·¸ë¦¼ì €ì¥, ë‹¨ì¼ ì§€ì—°; ì˜¨ì—´ì§ˆí™˜ ê´€ë ¨
+tiff(file="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\Figure\\ì¼ì¼ê±´ìˆ˜_ìµœê³ ê¸°ì˜¨.tiff",
      width=6000, height=3000,res=300)
 ggplot(aggCT,aes(date,maxT,fill=heat))+
   scale_x_date(breaks = date_breaks("1 months"),date_labels = "%Y %m")+
   geom_bar(stat="identity",col=ifelse(aggCT$maxT>=33,"red","orange"))+
   scale_y_continuous(sec.axis= sec_axis(~. *5, name = "Daily counts"),labels=comma)+
-  geom_point(data=aggCT,aes(date,counts/5),size=2)+labs(x="Date",y="Maximum temperature (¡ÆC)")+
+  geom_point(data=aggCT,aes(date,counts/5),size=2)+labs(x="Date",y="Maximum temperature (Â°C)")+
   scale_fill_manual(values=c("orange","red"))+
   theme_gray(base_size=25)+theme(legend.position = "top",
                                  legend.title=element_blank(),
@@ -158,7 +158,7 @@ names(agg_yr_month)=c("year","month","count")
 
 agg_yr_month %>% filter(month %in% c(6,7,8) )
 
-#ÀüÃ¼ ±â°£¿¡ ´ëÇØ¼­ °ËÅä 
+#ì „ì²´ ê¸°ê°„ì— ëŒ€í•´ì„œ ê²€í†  
 heatdat %>% dplyr:: group_by(area) %>% summarise(mean=mean(heatrelated_CHILD_TOT),var=var(heatrelated_CHILD_TOT))
 heatdat%>% dplyr::  group_by(ddate) %>% summarise(meanT=mean(meantemp_lag0,na.rm=T),
                                                   maxT =mean(maxtemp_lag0,na.rm=T),
@@ -169,7 +169,7 @@ heatdat%>% dplyr::  group_by(ddate) %>% summarise(meanT=mean(meantemp_lag0,na.rm
                                                   dewtemp=mean(dewtemp_lag0),na.rm=T) %>% dplyr::select(meanT:dewtemp) %>% 
   cor(method="spearman",use="complete.obs")
 
-#Æø¿°±â°£¿¡ ´ëÇØ¼­ °ËÅä 
+#í­ì—¼ê¸°ê°„ì— ëŒ€í•´ì„œ ê²€í†  
 
 heatdat %>% filter(month %in% c(6,7,8))  %>%   
   dplyr:: group_by(area) %>% summarise(mean=mean(heatrelated_CHILD_TOT),var=var(heatrelated_CHILD_TOT))
@@ -186,36 +186,36 @@ heatdat %>% filter(month %in% c(6,7,8))  %>%
 
 #--------------------------------------------------------------------------#
 #--------------------------------------------------------------------------#
-#ÀüÃ¼ ÀÏ°ıÀûÀ¸·Î GAMMÀ¸·Î ÃßÁ¤ÇÏ±â 
+#ì „ì²´ ì¼ê´„ì ìœ¼ë¡œ GAMMìœ¼ë¡œ ì¶”ì •í•˜ê¸° 
 #Exposure-repsonse curve, GAMM
-#°áÃø Á¦°Å, ¼¼Á¾, Á¦ÁÖ Á¦¿Ü, 6~8¿ù¸¸
-tt<-heatdat[complete.cases(heatdat),] %>% filter(!area %in% c("¼¼Á¾","Á¦ÁÖ")) %>% filter(month %in% c(6:8))
+#ê²°ì¸¡ ì œê±°, ì„¸ì¢…, ì œì£¼ ì œì™¸, 6~8ì›”ë§Œ
+tt<-heatdat[complete.cases(heatdat),] %>% filter(!area %in% c("ì„¸ì¢…","ì œì£¼")) %>% filter(month %in% c(6:8))
 tt$outcome=tt$heatrelated_CHILD_TOT
 tt$area=factor(tt$area)
 
 
 filter(heatdat, month %in% c(6,7,8))$heatrelated_CHILD_M %>% sum
 filter(heatdat, month %in% c(6,7,8))$heatrelated_CHILD_F %>% sum
-filter(heatdat, month %in% c(6,7,8) & !area %in% c("¼¼Á¾","Á¦ÁÖ"))$heatrelated_CHILD_M %>% sum
-filter(heatdat, month %in% c(6,7,8) & !area %in% c("¼¼Á¾","Á¦ÁÖ"))$heatrelated_CHILD_F %>% sum
+filter(heatdat, month %in% c(6,7,8) & !area %in% c("ì„¸ì¢…","ì œì£¼"))$heatrelated_CHILD_M %>% sum
+filter(heatdat, month %in% c(6,7,8) & !area %in% c("ì„¸ì¢…","ì œì£¼"))$heatrelated_CHILD_F %>% sum
 
 heatdat %>% dplyr:: filter(month %in% c(6,7,8)) %>%  group_by(area) %>% summarise(sum(outcome))
 heatdat %>% dplyr:: filter(month %in% c(6,7,8)) %>%  group_by(month,year) %>% summarise(sum(outcome))
-heatdat %>% dplyr:: filter(month %in% c(6,7,8) & !area %in% c("¼¼Á¾","Á¦ÁÖ")) %>%  group_by(year) %>% summarise(sum(heatrelated_CHILD_M))
-heatdat %>% dplyr:: filter(month %in% c(6,7,8) & !area %in% c("¼¼Á¾","Á¦ÁÖ")) %>%  group_by(year) %>% summarise(sum(heatrelated_CHILD_F))
+heatdat %>% dplyr:: filter(month %in% c(6,7,8) & !area %in% c("ì„¸ì¢…","ì œì£¼")) %>%  group_by(year) %>% summarise(sum(heatrelated_CHILD_M))
+heatdat %>% dplyr:: filter(month %in% c(6,7,8) & !area %in% c("ì„¸ì¢…","ì œì£¼")) %>%  group_by(year) %>% summarise(sum(heatrelated_CHILD_F))
 
-heatdat %>% dplyr:: filter(month %in% c(6,7,8) & !area %in% c("¼¼Á¾","Á¦ÁÖ"))%>%  group_by(year)  %>% summarise(sum(outcome))
+heatdat %>% dplyr:: filter(month %in% c(6,7,8) & !area %in% c("ì„¸ì¢…","ì œì£¼"))%>%  group_by(year)  %>% summarise(sum(outcome))
 heatdat$area=factor(heatdat$area,levels=unique(heatdat$area))
-heatdat %>% dplyr:: filter(month %in% c(6,7,8) & !area %in% c("¼¼Á¾","Á¦ÁÖ"))%>%  group_by(year,area)  %>% summarise(sum(outcome)) %>% View
+heatdat %>% dplyr:: filter(month %in% c(6,7,8) & !area %in% c("ì„¸ì¢…","ì œì£¼"))%>%  group_by(year,area)  %>% summarise(sum(outcome)) %>% View
 
-#Æø¿° ±â°£ (6~8¿ù) ÀÏÀÏ°Ç¼ö µµ½Ãº° Æò±Õ/ºĞ»ê
+#í­ì—¼ ê¸°ê°„ (6~8ì›”) ì¼ì¼ê±´ìˆ˜ ë„ì‹œë³„ í‰ê· /ë¶„ì‚°
 cbind(mean=aggregate(tt$outcome,list(tt$area),mean,na.rm=T),
       var=aggregate(tt$outcome,list(tt$area),var,na.rm=T)$x)
 
 mean(tt$outcome,na.rm=T)
 var(tt$outcome,na.rm=T)
 
-#³ëÃâÀÚ·á µµ½Ãº° ¿ä¾à Åë°è
+#ë…¸ì¶œìë£Œ ë„ì‹œë³„ ìš”ì•½ í†µê³„
 cbind(aggregate(tt$maxtemp_lag0,list(tt$area),mean,na.rm=T),
       sd=aggregate(tt$maxtemp_lag0,list(tt$area),sd,na.rm=T)$x)
 
@@ -237,7 +237,7 @@ with(tt,cbind(m=mean(meanhumi_lag0,na.rm=T),sd=sd(meanhumi_lag0,na.rm=T)))
 with(tt,cbind(m=mean(dewtemp_lag0,na.rm=T),sd=sd(dewtemp_lag0,na.rm=T)))
 with(tt,cbind(m=mean(windspeed_lag0,na.rm=T),sd=sd(windspeed_lag0,na.rm=T)))
 
-#³ëÃâ º¯¼ö ¿ä¾à ÇÔ¼ö »ı¼º
+#ë…¸ì¶œ ë³€ìˆ˜ ìš”ì•½ í•¨ìˆ˜ ìƒì„±
 summ.func<-function(x){
   x2<-as.numeric(na.omit(x))
   n   =sum(!is.na(x))
@@ -262,7 +262,7 @@ summ.func<-function(x){
   GeoSE<-sd(log(x2))/sqrt(length(x2))
   
   #GEO 95% CI
-  tval<-qt(0.975,df=length(x2)-1) #t°ª(two-sided)
+  tval<-qt(0.975,df=length(x2)-1) #tê°’(two-sided)
   
   Geo_lci=geometric.mean(x2)/exp(tval*GeoSE) #Geo 95% Lower CI
   Geo_uci=geometric.mean(x2)*exp(tval*GeoSE) #Geo 95% Upper CI
@@ -270,7 +270,7 @@ summ.func<-function(x){
   as.data.frame(cbind(n,Mean,SD,SE,tval,LCI,UCI,CV,Skewness,Kurtosis,
                       Min,p25,p50,p75,Max,GM,GeoSD,GeoCV,GeoSE,Geo_lci,Geo_uci))}
 
-#³ëÃâÀÚ·á ¿ä¾à Åë°è
+#ë…¸ì¶œìë£Œ ìš”ì•½ í†µê³„
 rbind(summ.func(tt$maxtemp_lag0),
       summ.func(tt$pm25_lag0),
       summ.func(tt$meanhumi_lag0),
@@ -278,10 +278,10 @@ rbind(summ.func(tt$maxtemp_lag0),
       summ.func(tt$windspeed_lag0))
 #--------------------------------------------------------------------------#
 #--------------------------------------------------------------------------#
-##GAMM,³ëÃâ ¹İÀÀ ±×¸², ´ÜÀÏ Áö¿¬; ¿Â¿­ÁúÈ¯ °ü·Ã
+##GAMM,ë…¸ì¶œ ë°˜ì‘ ê·¸ë¦¼, ë‹¨ì¼ ì§€ì—°; ì˜¨ì—´ì§ˆí™˜ ê´€ë ¨
 tt.fig=NULL
 
-#GAMM, ´ÜÀÏÁö¿¬ 
+#GAMM, ë‹¨ì¼ì§€ì—° 
 tt.fig$er0<-gamm(outcome~s(maxtemp_lag0)+s(time,k=2*5)+s(meanhumi_lag0)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.fig$er1<-gamm(outcome~s(maxtemp_lag1)+s(time,k=2*5)+s(meanhumi_lag1)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.fig$er2<-gamm(outcome~s(maxtemp_lag2)+s(time,k=2*5)+s(meanhumi_lag2)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
@@ -291,7 +291,7 @@ tt.fig$er5<-gamm(outcome~s(maxtemp_lag5)+s(time,k=2*5)+s(meanhumi_lag5)+dow,rand
 tt.fig$er6<-gamm(outcome~s(maxtemp_lag6)+s(time,k=2*5)+s(meanhumi_lag6)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.fig$er7<-gamm(outcome~s(maxtemp_lag7)+s(time,k=2*5)+s(meanhumi_lag7)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 
-#GAMM, ÀÌµ¿Æò±Õ
+#GAMM, ì´ë™í‰ê· 
 tt.fig$er01<-gamm(outcome~s(maxtemp_lag01)+s(time,k=2*5)+s(meanhumi_lag01)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.fig$er02<-gamm(outcome~s(maxtemp_lag02)+s(time,k=2*5)+s(meanhumi_lag02)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.fig$er03<-gamm(outcome~s(maxtemp_lag03)+s(time,k=2*5)+s(meanhumi_lag03)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
@@ -300,69 +300,69 @@ tt.fig$er05<-gamm(outcome~s(maxtemp_lag05)+s(time,k=2*5)+s(meanhumi_lag05)+dow,r
 tt.fig$er06<-gamm(outcome~s(maxtemp_lag06)+s(time,k=2*5)+s(meanhumi_lag06)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.fig$er07<-gamm(outcome~s(maxtemp_lag07)+s(time,k=2*5)+s(meanhumi_lag07)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 
-##GAMM,³ëÃâ ¹İÀÀ ±×¸²ÀúÀå, ´ÜÀÏ Áö¿¬; ¿Â¿­ÁúÈ¯ °ü·Ã
-png(file="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\Figure\\¿Â¿­ÁúÈ¯(heatrelated).png",width=1600, height=800)
+##GAMM,ë…¸ì¶œ ë°˜ì‘ ê·¸ë¦¼ì €ì¥, ë‹¨ì¼ ì§€ì—°; ì˜¨ì—´ì§ˆí™˜ ê´€ë ¨
+png(file="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\Figure\\ì˜¨ì—´ì§ˆí™˜(heatrelated).png",width=1600, height=800)
 par(mfrow=c(2,4),mar=c(5,5,5,5),oma=c(3,3,2,3))
-plot(tt.fig$er0$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag0",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er1$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag1",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er2$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag2",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er3$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag3",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er4$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag4",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er5$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag5",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er6$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag6",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er7$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag7",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er0$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag0",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er1$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag1",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er2$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag2",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er3$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag3",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er4$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag4",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er5$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag5",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er6$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag6",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er7$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag7",ylim=c(-0.3,0.3));abline(h=0,col="red")
 dev.off()
 
-##GAMM,³ëÃâ ¹İÀÀ ±×¸²ÀúÀå, ´ÜÀÏ Áö¿¬; ¿Â¿­ÁúÈ¯ °ü·Ã
-tiff(file="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\Figure\\¿Â¿­ÁúÈ¯(heatrelated).tiff",width=6000, height=3000,res=300)
+##GAMM,ë…¸ì¶œ ë°˜ì‘ ê·¸ë¦¼ì €ì¥, ë‹¨ì¼ ì§€ì—°; ì˜¨ì—´ì§ˆí™˜ ê´€ë ¨
+tiff(file="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\Figure\\ì˜¨ì—´ì§ˆí™˜(heatrelated).tiff",width=6000, height=3000,res=300)
 par(mfrow=c(2,4),mar=c(5,5,5,5),oma=c(3,3,2,3))
-plot(tt.fig$er0$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag0",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er1$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag1",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er2$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag2",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er3$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag3",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er4$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag4",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er5$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag5",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er6$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag6",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er7$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag7",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er0$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag0",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er1$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag1",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er2$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag2",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er3$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag3",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er4$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag4",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er5$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag5",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er6$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag6",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er7$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag7",ylim=c(-0.3,0.3));abline(h=0,col="red")
 dev.off()
 
-##GAMM,³ëÃâ ¹İÀÀ ±×¸²ÀúÀå, ÀÌµ¿Æò±Õ; ¿Â¿­ÁúÈ¯ °ü·Ã
-png(file="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\Figure\\¿Â¿­ÁúÈ¯(heatrelated)(ÀÌµ¿Æò±Õ).png",width=1600, height=800)
+##GAMM,ë…¸ì¶œ ë°˜ì‘ ê·¸ë¦¼ì €ì¥, ì´ë™í‰ê· ; ì˜¨ì—´ì§ˆí™˜ ê´€ë ¨
+png(file="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\Figure\\ì˜¨ì—´ì§ˆí™˜(heatrelated)(ì´ë™í‰ê· ).png",width=1600, height=800)
 par(mfrow=c(2,4),mar=c(5,5,5,5),oma=c(3,3,2,3))
-plot(tt.fig$er01$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag01",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er02$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag02",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er03$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag03",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er04$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag04",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er05$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag05",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er06$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag06",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er07$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag07",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er01$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag01",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er02$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag02",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er03$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag03",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er04$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag04",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er05$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag05",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er06$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag06",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er07$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag07",ylim=c(-0.3,0.3));abline(h=0,col="red")
 dev.off()
 
-##GAMM,³ëÃâ ¹İÀÀ ±×¸²ÀúÀå, ÀÌµ¿Æò±Õ ; ¿Â¿­ÁúÈ¯ °ü·Ã
-tiff(file="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\Figure\\¿Â¿­ÁúÈ¯(heatrelated)(ÀÌµ¿Æò±Õ).tiff",width=6000, height=3000,res=300)
+##GAMM,ë…¸ì¶œ ë°˜ì‘ ê·¸ë¦¼ì €ì¥, ì´ë™í‰ê·  ; ì˜¨ì—´ì§ˆí™˜ ê´€ë ¨
+tiff(file="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\Figure\\ì˜¨ì—´ì§ˆí™˜(heatrelated)(ì´ë™í‰ê· ).tiff",width=6000, height=3000,res=300)
 par(mfrow=c(2,4),mar=c(5,5,5,5),oma=c(3,3,2,3))
-plot(tt.fig$er01$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag01",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er02$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag02",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er03$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag03",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er04$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag04",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er05$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag05",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er06$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag06",ylim=c(-0.3,0.3));abline(h=0,col="red")
-plot(tt.fig$er07$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Lag07",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er01$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag01",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er02$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag02",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er03$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag03",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er04$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag04",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er05$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag05",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er06$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag06",ylim=c(-0.3,0.3));abline(h=0,col="red")
+plot(tt.fig$er07$gam,select=1,scheme=1,cex.lab=2.5,cex.axis=2.5,cex.main=2.8,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Lag07",ylim=c(-0.3,0.3));abline(h=0,col="red")
 dev.off()
 
 #--------------------------------------------------------------------------#
 #--------------------------------------------------------------------------#
-#ÁúÈ¯º°·Î µµ½Ãº° ³ëÃâ-¹İÀÀ ±×¸² ±×¸®±â 
+#ì§ˆí™˜ë³„ë¡œ ë„ì‹œë³„ ë…¸ì¶œ-ë°˜ì‘ ê·¸ë¦¼ ê·¸ë¦¬ê¸° 
 sido.gam.func<-function(dataset,text,ylimin,ylimax){
   dd<-dataset
-  sido01<-dd %>% filter(area=="¼­¿ï");sido02<-dd %>% filter(area=="ºÎ»ê")
-  sido03<-dd %>% filter(area=="´ë±¸");sido04<-dd %>% filter(area=="ÀÎÃµ")
-  sido05<-dd %>% filter(area=="±¤ÁÖ");sido06<-dd %>% filter(area=="´ëÀü")
-  sido07<-dd %>% filter(area=="¿ï»ê");sido08<-dd %>% filter(area=="°æ±â")
-  sido09<-dd %>% filter(area=="°­¿ø");sido10<-dd %>% filter(area=="ÃæºÏ")
-  sido11<-dd %>% filter(area=="Ãæ³²");sido12<-dd %>% filter(area=="ÀüºÏ")
-  sido13<-dd %>% filter(area=="Àü³²");sido14<-dd %>% filter(area=="°æºÏ")
-  sido15<-dd %>% filter(area=="°æ³²")
+  sido01<-dd %>% filter(area=="ì„œìš¸");sido02<-dd %>% filter(area=="ë¶€ì‚°")
+  sido03<-dd %>% filter(area=="ëŒ€êµ¬");sido04<-dd %>% filter(area=="ì¸ì²œ")
+  sido05<-dd %>% filter(area=="ê´‘ì£¼");sido06<-dd %>% filter(area=="ëŒ€ì „")
+  sido07<-dd %>% filter(area=="ìš¸ì‚°");sido08<-dd %>% filter(area=="ê²½ê¸°")
+  sido09<-dd %>% filter(area=="ê°•ì›");sido10<-dd %>% filter(area=="ì¶©ë¶")
+  sido11<-dd %>% filter(area=="ì¶©ë‚¨");sido12<-dd %>% filter(area=="ì „ë¶")
+  sido13<-dd %>% filter(area=="ì „ë‚¨");sido14<-dd %>% filter(area=="ê²½ë¶")
+  sido15<-dd %>% filter(area=="ê²½ë‚¨")
   
   gam01<-gam(outcome~s(maxtemp_lag0)+s(time,k=2*5)+s(meanhumi_lag0)+dow,data=sido01,family="poisson")
   gam02<-gam(outcome~s(maxtemp_lag0)+s(time,k=2*5)+s(meanhumi_lag0)+dow,data=sido02,family="poisson")
@@ -380,54 +380,54 @@ sido.gam.func<-function(dataset,text,ylimin,ylimax){
   gam14<-gam(outcome~s(maxtemp_lag0)+s(time,k=2*5)+s(meanhumi_lag0)+dow,data=sido14,family="poisson")
   gam15<-gam(outcome~s(maxtemp_lag0)+s(time,k=2*5)+s(meanhumi_lag0)+dow,data=sido15,family="poisson")
   
-  png.save<-paste0("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\Figure\\",text,".png")
+  png.save<-paste0("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\Figure\\",text,".png")
   
   png(file=png.save,width=1600, height=800)
   par(mfrow=c(3,5),mar=c(5,5,5,5),oma=c(3,3,2,3))
-  plot(gam01,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Seoul",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam02,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Busan",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam03,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Daegu",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam04,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Incheon",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam05,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Gwangju",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam06,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Daejeon",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam07,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Ulsan",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam08,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Gyeeonggi-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam09,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Gangwon-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam10,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Chungcheongbuk-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam11,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Chungcheongnam-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam12,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Jeollabuk-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam13,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Jeollanam-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam14,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Gyeongsangbuk-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam15,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Gyeongsangnam-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam01,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Seoul",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam02,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Busan",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam03,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Daegu",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam04,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Incheon",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam05,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Gwangju",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam06,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Daejeon",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam07,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Ulsan",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam08,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Gyeeonggi-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam09,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Gangwon-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam10,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Chungcheongbuk-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam11,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Chungcheongnam-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam12,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Jeollabuk-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam13,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Jeollanam-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam14,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Gyeongsangbuk-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam15,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Gyeongsangnam-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
   dev.off()
   
-  png.save<-paste0("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\Figure\\",text,".tiff")
+  png.save<-paste0("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\Figure\\",text,".tiff")
   tiff(file=png.save,width=6600, height=4200,res=300)
   par(mfrow=c(3,5),mar=c(5,5,5,5),oma=c(3,3,2,3))
-  plot(gam01,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Seoul",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam02,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Busan",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam03,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Daegu",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam04,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Incheon",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam05,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Gwangju",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam06,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Daejeon",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam07,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Ulsan",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam08,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Gyeeonggi-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam09,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Gangwon-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam10,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Chungcheongbuk-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam11,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Chungcheongnam-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam12,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Jeollabuk-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam13,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Jeollanam-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam14,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Gyeongsangbuk-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
-  plot(gam15,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(¡ÆC)",ylab="log RR" ,main="Gyeongsangnam-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam01,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Seoul",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam02,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Busan",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam03,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Daegu",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam04,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Incheon",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam05,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Gwangju",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam06,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Daejeon",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam07,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Ulsan",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam08,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Gyeeonggi-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam09,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Gangwon-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam10,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Chungcheongbuk-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam11,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Chungcheongnam-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam12,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Jeollabuk-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam13,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Jeollanam-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam14,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Gyeongsangbuk-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
+  plot(gam15,select=1,scheme=1,cex.lab=2.3,cex.axis=2.3,cex.main=2.5,xlab="Maxtimum Temerature(Â°C)",ylab="log RR" ,main="Gyeongsangnam-do",ylim=c(ylimin,ylimax));abline(h=0,col="red")
   dev.off()
   
 }
-sido.gam.func(tt,"µµ½Ãº°¿Â¿­ÁúÈ¯°ü·Ã",-1.0,1.0)
+sido.gam.func(tt,"ë„ì‹œë³„ì˜¨ì—´ì§ˆí™˜ê´€ë ¨",-1.0,1.0)
 
 #--------------------------------------------------------------------------#
 #--------------------------------------------------------------------------#
-#³»¿ë ¼öÁ¤Á» ÇÏ±â 
-##GAMM,¸ğµ¨¸µ, ´ÜÀÏ Áö¿¬; ¿Â¿­ÁúÈ¯ °ü·Ã
+#ë‚´ìš© ìˆ˜ì •ì¢€ í•˜ê¸° 
+##GAMM,ëª¨ë¸ë§, ë‹¨ì¼ ì§€ì—°; ì˜¨ì—´ì§ˆí™˜ ê´€ë ¨
 tt.res=NULL
 tt.res$fit0<-gamm(outcome~maxtemp_lag0+s(time,k=2*5)+s(meanhumi_lag0)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$fit1<-gamm(outcome~maxtemp_lag1+s(time,k=2*5)+s(meanhumi_lag1)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
@@ -438,7 +438,7 @@ tt.res$fit5<-gamm(outcome~maxtemp_lag5+s(time,k=2*5)+s(meanhumi_lag5)+dow,random
 tt.res$fit6<-gamm(outcome~maxtemp_lag6+s(time,k=2*5)+s(meanhumi_lag6)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$fit7<-gamm(outcome~maxtemp_lag7+s(time,k=2*5)+s(meanhumi_lag7)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 
-##GAMM,¸ğµ¨¸µ, ÀÌµ¿Æò±Õ; ¿Â¿­ÁúÈ¯ °ü·Ã
+##GAMM,ëª¨ë¸ë§, ì´ë™í‰ê· ; ì˜¨ì—´ì§ˆí™˜ ê´€ë ¨
 tt.res$fit01<-gamm(outcome~maxtemp_lag01+s(time,k=2*5)+s(meanhumi_lag01)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$fit02<-gamm(outcome~maxtemp_lag02+s(time,k=2*5)+s(meanhumi_lag02)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$fit03<-gamm(outcome~maxtemp_lag03+s(time,k=2*5)+s(meanhumi_lag03)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
@@ -447,7 +447,7 @@ tt.res$fit05<-gamm(outcome~maxtemp_lag05+s(time,k=2*5)+s(meanhumi_lag05)+dow,ran
 tt.res$fit06<-gamm(outcome~maxtemp_lag06+s(time,k=2*5)+s(meanhumi_lag06)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$fit07<-gamm(outcome~maxtemp_lag07+s(time,k=2*5)+s(meanhumi_lag07)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 
-##GAMM,¸ğµ¨¸µ, Æø¿° 28µµ
+##GAMM,ëª¨ë¸ë§, í­ì—¼ 28ë„
 tt.res$heat28_0<-gamm(outcome~heat28_lag0+s(time,k=2*5)+s(meanhumi_lag0)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat28_1<-gamm(outcome~heat28_lag1+s(time,k=2*5)+s(meanhumi_lag1)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat28_2<-gamm(outcome~heat28_lag2+s(time,k=2*5)+s(meanhumi_lag2)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
@@ -457,7 +457,7 @@ tt.res$heat28_5<-gamm(outcome~heat28_lag5+s(time,k=2*5)+s(meanhumi_lag5)+dow,ran
 tt.res$heat28_6<-gamm(outcome~heat28_lag6+s(time,k=2*5)+s(meanhumi_lag6)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat28_7<-gamm(outcome~heat28_lag7+s(time,k=2*5)+s(meanhumi_lag7)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 
-##GAMM,¸ğµ¨¸µ, Æø¿° 29µµ
+##GAMM,ëª¨ë¸ë§, í­ì—¼ 29ë„
 tt.res$heat29_0<-gamm(outcome~heat29_lag0+s(time,k=2*5)+s(meanhumi_lag0)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat29_1<-gamm(outcome~heat29_lag1+s(time,k=2*5)+s(meanhumi_lag1)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat29_2<-gamm(outcome~heat29_lag2+s(time,k=2*5)+s(meanhumi_lag2)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
@@ -467,7 +467,7 @@ tt.res$heat29_5<-gamm(outcome~heat29_lag5+s(time,k=2*5)+s(meanhumi_lag5)+dow,ran
 tt.res$heat29_6<-gamm(outcome~heat29_lag6+s(time,k=2*5)+s(meanhumi_lag6)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat29_7<-gamm(outcome~heat29_lag7+s(time,k=2*5)+s(meanhumi_lag7)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 
-##GAMM,¸ğµ¨¸µ, Æø¿° 30µµ
+##GAMM,ëª¨ë¸ë§, í­ì—¼ 30ë„
 tt.res$heat30_0<-gamm(outcome~heat30_lag0+s(time,k=2*5)+s(meanhumi_lag0)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat30_1<-gamm(outcome~heat30_lag1+s(time,k=2*5)+s(meanhumi_lag1)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat30_2<-gamm(outcome~heat30_lag2+s(time,k=2*5)+s(meanhumi_lag2)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
@@ -477,7 +477,7 @@ tt.res$heat30_5<-gamm(outcome~heat30_lag5+s(time,k=2*5)+s(meanhumi_lag5)+dow,ran
 tt.res$heat30_6<-gamm(outcome~heat30_lag6+s(time,k=2*5)+s(meanhumi_lag6)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat30_7<-gamm(outcome~heat30_lag7+s(time,k=2*5)+s(meanhumi_lag7)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 
-##GAMM,¸ğµ¨¸µ, Æø¿° 31µµ
+##GAMM,ëª¨ë¸ë§, í­ì—¼ 31ë„
 tt.res$heat31_0<-gamm(outcome~heat31_lag0+s(time,k=2*5)+s(meanhumi_lag0)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat31_1<-gamm(outcome~heat31_lag1+s(time,k=2*5)+s(meanhumi_lag1)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat31_2<-gamm(outcome~heat31_lag2+s(time,k=2*5)+s(meanhumi_lag2)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
@@ -487,7 +487,7 @@ tt.res$heat31_5<-gamm(outcome~heat31_lag5+s(time,k=2*5)+s(meanhumi_lag5)+dow,ran
 tt.res$heat31_6<-gamm(outcome~heat31_lag6+s(time,k=2*5)+s(meanhumi_lag6)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat31_7<-gamm(outcome~heat31_lag7+s(time,k=2*5)+s(meanhumi_lag7)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 
-##GAMM,¸ğµ¨¸µ, Æø¿° 32µµ
+##GAMM,ëª¨ë¸ë§, í­ì—¼ 32ë„
 tt.res$heat32_0<-gamm(outcome~heat32_lag0+s(time,k=2*5)+s(meanhumi_lag0)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat32_1<-gamm(outcome~heat32_lag1+s(time,k=2*5)+s(meanhumi_lag1)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat32_2<-gamm(outcome~heat32_lag2+s(time,k=2*5)+s(meanhumi_lag2)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
@@ -497,7 +497,7 @@ tt.res$heat32_5<-gamm(outcome~heat32_lag5+s(time,k=2*5)+s(meanhumi_lag5)+dow,ran
 tt.res$heat32_6<-gamm(outcome~heat32_lag6+s(time,k=2*5)+s(meanhumi_lag6)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat32_7<-gamm(outcome~heat32_lag7+s(time,k=2*5)+s(meanhumi_lag7)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 
-##GAMM,¸ğµ¨¸µ, Æø¿° 33µµ
+##GAMM,ëª¨ë¸ë§, í­ì—¼ 33ë„
 tt.res$heat33_0<-gamm(outcome~heat33_lag0+s(time,k=2*5)+s(meanhumi_lag0)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat33_1<-gamm(outcome~heat33_lag1+s(time,k=2*5)+s(meanhumi_lag1)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
 tt.res$heat33_2<-gamm(outcome~heat33_lag2+s(time,k=2*5)+s(meanhumi_lag2)+dow,random=list(area=~1),data=tt,family="poisson",control=lmeControl(opt="optim",msMaxIter=10000))
@@ -572,11 +572,11 @@ as.data.frame(rbind(tt.single,tt.moving,tt.heat28,tt.heat29,
 
 #--------------------------------------------------------------------------#
 #--------------------------------------------------------------------------#
-#pm ³ÖÀº ¸ğµ¨, ¾È³ÖÀº ¸ğµ¨ ¹Î°¨µµ ºĞ¼® 
+#pm ë„£ì€ ëª¨ë¸, ì•ˆë„£ì€ ëª¨ë¸ ë¯¼ê°ë„ ë¶„ì„ 
 
-#First stage, ½Ãµµº° ºĞ¼®
-#ÁúÈ¯º°·Î µµ½Ãº° ³ëÃâ-¹İÀÀ ±×¸² ±×¸®±â 
-#º¸Á¤º¯¼ö:PM2.5, Time(K=2*5),S(meanhumi),S(Windspeed),DOW(¿äÀÏ)
+#First stage, ì‹œë„ë³„ ë¶„ì„
+#ì§ˆí™˜ë³„ë¡œ ë„ì‹œë³„ ë…¸ì¶œ-ë°˜ì‘ ê·¸ë¦¼ ê·¸ë¦¬ê¸° 
+#ë³´ì •ë³€ìˆ˜:PM2.5, Time(K=2*5),S(meanhumi),S(Windspeed),DOW(ìš”ì¼)
 heatdat$outcome=heatdat$heatrelated_CHILD_TOT
 
 heatdat$outM=heatdat$heatrelated_CHILD_M
@@ -584,7 +584,7 @@ heatdat$outF=heatdat$heatrelated_CHILD_F
 
 sido.gam<-function(dat){
   
-  #ÀÏ ÃÖ°í±â¿Â ´ÜÀÏÁö¿¬
+  #ì¼ ìµœê³ ê¸°ì˜¨ ë‹¨ì¼ì§€ì—°
   fit_lag0<-gam(outcome~maxtemp_lag0+pm25_lag0+s(time,k=2*5)+s(meanhumi_lag0)+s(windspeed_lag0)+dow,data=dat,family="poisson")
   fit_lag1<-gam(outcome~maxtemp_lag1+pm25_lag1+s(time,k=2*5)+s(meanhumi_lag1)+s(windspeed_lag1)+dow,data=dat,family="poisson")
   fit_lag2<-gam(outcome~maxtemp_lag2+pm25_lag2+s(time,k=2*5)+s(meanhumi_lag2)+s(windspeed_lag2)+dow,data=dat,family="poisson")
@@ -594,7 +594,7 @@ sido.gam<-function(dat){
   fit_lag6<-gam(outcome~maxtemp_lag6+pm25_lag6+s(time,k=2*5)+s(meanhumi_lag6)+s(windspeed_lag6)+dow,data=dat,family="poisson")
   fit_lag7<-gam(outcome~maxtemp_lag7+pm25_lag7+s(time,k=2*5)+s(meanhumi_lag7)+s(windspeed_lag7)+dow,data=dat,family="poisson")
   
-  #ÀÏ ÃÖ°í±â¿Â ÀÌµ¿Æò±Õ 
+  #ì¼ ìµœê³ ê¸°ì˜¨ ì´ë™í‰ê·  
   fit_lag01<-gam(outcome~maxtemp_lag01+pm25_lag01+s(time,k=2*5)+s(meanhumi_lag01)+s(windspeed_lag01)+dow,data=dat,family="poisson")
   fit_lag02<-gam(outcome~maxtemp_lag02+pm25_lag02+s(time,k=2*5)+s(meanhumi_lag02)+s(windspeed_lag02)+dow,data=dat,family="poisson")
   fit_lag03<-gam(outcome~maxtemp_lag03+pm25_lag03+s(time,k=2*5)+s(meanhumi_lag03)+s(windspeed_lag03)+dow,data=dat,family="poisson")
@@ -603,7 +603,7 @@ sido.gam<-function(dat){
   fit_lag06<-gam(outcome~maxtemp_lag06+pm25_lag06+s(time,k=2*5)+s(meanhumi_lag06)+s(windspeed_lag06)+dow,data=dat,family="poisson")
   fit_lag07<-gam(outcome~maxtemp_lag07+pm25_lag06+s(time,k=2*5)+s(meanhumi_lag07)+s(windspeed_lag07)+dow,data=dat,family="poisson")
   
-  #Æø¿° 28µµ ´ÜÀÏÁö¿¬
+  #í­ì—¼ 28ë„ ë‹¨ì¼ì§€ì—°
   heat28_lag0<-gam(outcome~heat28_lag0+pm25_lag0+s(time,k=2*5)+s(meanhumi_lag0)+s(windspeed_lag0)+dow,data=dat,family="poisson")
   heat28_lag1<-gam(outcome~heat28_lag1+pm25_lag1+s(time,k=2*5)+s(meanhumi_lag1)+s(windspeed_lag1)+dow,data=dat,family="poisson")
   heat28_lag2<-gam(outcome~heat28_lag2+pm25_lag2+s(time,k=2*5)+s(meanhumi_lag2)+s(windspeed_lag2)+dow,data=dat,family="poisson")
@@ -613,7 +613,7 @@ sido.gam<-function(dat){
   heat28_lag6<-gam(outcome~heat28_lag6+pm25_lag6+s(time,k=2*5)+s(meanhumi_lag6)+s(windspeed_lag6)+dow,data=dat,family="poisson")
   heat28_lag7<-gam(outcome~heat28_lag7+pm25_lag7+s(time,k=2*5)+s(meanhumi_lag7)+s(windspeed_lag7)+dow,data=dat,family="poisson")
   
-  #Æø¿° 29µµ ´ÜÀÏÁö¿¬
+  #í­ì—¼ 29ë„ ë‹¨ì¼ì§€ì—°
   heat29_lag0<-gam(outcome~heat29_lag0+pm25_lag0+s(time,k=2*5)+s(meanhumi_lag0)+s(windspeed_lag0)+dow,data=dat,family="poisson")
   heat29_lag1<-gam(outcome~heat29_lag1+pm25_lag1+s(time,k=2*5)+s(meanhumi_lag1)+s(windspeed_lag1)+dow,data=dat,family="poisson")
   heat29_lag2<-gam(outcome~heat29_lag2+pm25_lag2+s(time,k=2*5)+s(meanhumi_lag2)+s(windspeed_lag2)+dow,data=dat,family="poisson")
@@ -623,7 +623,7 @@ sido.gam<-function(dat){
   heat29_lag6<-gam(outcome~heat29_lag6+pm25_lag6+s(time,k=2*5)+s(meanhumi_lag6)+s(windspeed_lag6)+dow,data=dat,family="poisson")
   heat29_lag7<-gam(outcome~heat29_lag7+pm25_lag7+s(time,k=2*5)+s(meanhumi_lag7)+s(windspeed_lag7)+dow,data=dat,family="poisson")
   
-  #Æø¿° 30µµ ´ÜÀÏÁö¿¬
+  #í­ì—¼ 30ë„ ë‹¨ì¼ì§€ì—°
   heat30_lag0<-gam(outcome~heat30_lag0+pm25_lag0+s(time,k=2*5)+s(meanhumi_lag0)+s(windspeed_lag0)+dow,data=dat,family="poisson")
   heat30_lag1<-gam(outcome~heat30_lag1+pm25_lag1+s(time,k=2*5)+s(meanhumi_lag1)+s(windspeed_lag1)+dow,data=dat,family="poisson")
   heat30_lag2<-gam(outcome~heat30_lag2+pm25_lag2+s(time,k=2*5)+s(meanhumi_lag2)+s(windspeed_lag2)+dow,data=dat,family="poisson")
@@ -633,7 +633,7 @@ sido.gam<-function(dat){
   heat30_lag6<-gam(outcome~heat30_lag6+pm25_lag6+s(time,k=2*5)+s(meanhumi_lag6)+s(windspeed_lag6)+dow,data=dat,family="poisson")
   heat30_lag7<-gam(outcome~heat30_lag7+pm25_lag7+s(time,k=2*5)+s(meanhumi_lag7)+s(windspeed_lag7)+dow,data=dat,family="poisson")
   
-  #Æø¿° 31µµ ´ÜÀÏÁö¿¬
+  #í­ì—¼ 31ë„ ë‹¨ì¼ì§€ì—°
   heat31_lag0<-gam(outcome~heat31_lag0+pm25_lag0+s(time,k=2*5)+s(meanhumi_lag0)+s(windspeed_lag0)+dow,data=dat,family="poisson")
   heat31_lag1<-gam(outcome~heat31_lag1+pm25_lag1+s(time,k=2*5)+s(meanhumi_lag1)+s(windspeed_lag1)+dow,data=dat,family="poisson")
   heat31_lag2<-gam(outcome~heat31_lag2+pm25_lag2+s(time,k=2*5)+s(meanhumi_lag2)+s(windspeed_lag2)+dow,data=dat,family="poisson")
@@ -643,7 +643,7 @@ sido.gam<-function(dat){
   heat31_lag6<-gam(outcome~heat31_lag6+pm25_lag6+s(time,k=2*5)+s(meanhumi_lag6)+s(windspeed_lag6)+dow,data=dat,family="poisson")
   heat31_lag7<-gam(outcome~heat31_lag7+pm25_lag7+s(time,k=2*5)+s(meanhumi_lag7)+s(windspeed_lag7)+dow,data=dat,family="poisson")
   
-  #Æø¿° 32µµ ´ÜÀÏÁö¿¬
+  #í­ì—¼ 32ë„ ë‹¨ì¼ì§€ì—°
   heat32_lag0<-gam(outcome~heat32_lag0+pm25_lag0+s(time,k=2*5)+s(meanhumi_lag0)+s(windspeed_lag0)+dow,data=dat,family="poisson")
   heat32_lag1<-gam(outcome~heat32_lag1+pm25_lag1+s(time,k=2*5)+s(meanhumi_lag1)+s(windspeed_lag1)+dow,data=dat,family="poisson")
   heat32_lag2<-gam(outcome~heat32_lag2+pm25_lag2+s(time,k=2*5)+s(meanhumi_lag2)+s(windspeed_lag2)+dow,data=dat,family="poisson")
@@ -653,7 +653,7 @@ sido.gam<-function(dat){
   heat32_lag6<-gam(outcome~heat32_lag6+pm25_lag6+s(time,k=2*5)+s(meanhumi_lag6)+s(windspeed_lag6)+dow,data=dat,family="poisson")
   heat32_lag7<-gam(outcome~heat32_lag7+pm25_lag7+s(time,k=2*5)+s(meanhumi_lag7)+s(windspeed_lag7)+dow,data=dat,family="poisson")
   
-  #Æø¿° 33µµ ´ÜÀÏÁö¿¬
+  #í­ì—¼ 33ë„ ë‹¨ì¼ì§€ì—°
   heat33_lag0<-gam(outcome~heat33_lag0+pm25_lag0+s(time,k=2*5)+s(meanhumi_lag0)+s(windspeed_lag0)+dow,data=dat,family="poisson")
   heat33_lag1<-gam(outcome~heat33_lag1+pm25_lag1+s(time,k=2*5)+s(meanhumi_lag1)+s(windspeed_lag1)+dow,data=dat,family="poisson")
   heat33_lag2<-gam(outcome~heat33_lag2+pm25_lag2+s(time,k=2*5)+s(meanhumi_lag2)+s(windspeed_lag2)+dow,data=dat,family="poisson")
@@ -822,14 +822,14 @@ sido.gam<-function(dat){
 
 heatdat2<-subset(heatdat,month %in% c(6,7,8))
 
-s01<-subset(heatdat2,area=="¼­¿ï");s02<-subset(heatdat2,area=="ºÎ»ê")
-s03<-subset(heatdat2,area=="´ë±¸");s04<-subset(heatdat2,area=="ÀÎÃµ")
-s05<-subset(heatdat2,area=="±¤ÁÖ");s06<-subset(heatdat2,area=="´ëÀü")
-s07<-subset(heatdat2,area=="¿ï»ê");s08<-subset(heatdat2,area=="°æ±â")
-s09<-subset(heatdat2,area=="°­¿ø");s10<-subset(heatdat2,area=="ÃæºÏ")
-s11<-subset(heatdat2,area=="Ãæ³²");s12<-subset(heatdat2,area=="ÀüºÏ")
-s13<-subset(heatdat2,area=="Àü³²");s14<-subset(heatdat2,area=="°æºÏ")
-s15<-subset(heatdat2,area=="°æ³²")
+s01<-subset(heatdat2,area=="ì„œìš¸");s02<-subset(heatdat2,area=="ë¶€ì‚°")
+s03<-subset(heatdat2,area=="ëŒ€êµ¬");s04<-subset(heatdat2,area=="ì¸ì²œ")
+s05<-subset(heatdat2,area=="ê´‘ì£¼");s06<-subset(heatdat2,area=="ëŒ€ì „")
+s07<-subset(heatdat2,area=="ìš¸ì‚°");s08<-subset(heatdat2,area=="ê²½ê¸°")
+s09<-subset(heatdat2,area=="ê°•ì›");s10<-subset(heatdat2,area=="ì¶©ë¶")
+s11<-subset(heatdat2,area=="ì¶©ë‚¨");s12<-subset(heatdat2,area=="ì „ë¶")
+s13<-subset(heatdat2,area=="ì „ë‚¨");s14<-subset(heatdat2,area=="ê²½ë¶")
+s15<-subset(heatdat2,area=="ê²½ë‚¨")
 
 heat_tb<-function(data){
   dd<-data
@@ -868,9 +868,9 @@ sido.heat_tb<-rbind(heat_tb01,heat_tb02,heat_tb03,heat_tb04,heat_tb05,
                     heat_tb06,heat_tb07,heat_tb08,heat_tb09,heat_tb10,
                     heat_tb11,heat_tb12,heat_tb13,heat_tb14,heat_tb15)
 
-write.csv(sido.heat_tb,file="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\µµ½Ãº°_Æø¿°Á¤ÀÇº°ºóµµ.csv",row.names=F,na="")
+write.csv(sido.heat_tb,file="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\ë„ì‹œë³„_í­ì—¼ì •ì˜ë³„ë¹ˆë„.csv",row.names=F,na="")
 
-#½Ãµµº° ¸ğµ¨¸µ
+#ì‹œë„ë³„ ëª¨ë¸ë§
 sido01<-sido.gam(s01);sido02<-sido.gam(s02);sido03<-sido.gam(s03)
 sido04<-sido.gam(s04);sido05<-sido.gam(s05);sido06<-sido.gam(s06)
 sido07<-sido.gam(s07);sido08<-sido.gam(s08);sido09<-sido.gam(s09)
@@ -880,16 +880,16 @@ sido13<-sido.gam(s13);sido14<-sido.gam(s14);sido15<-sido.gam(s15)
 sido.tb<-rbind(sido01,sido02,sido03,sido04,sido05,sido06,sido07,sido08,
                sido09,sido10,sido11,sido12,sido13,sido14,sido15)
 
-write.csv(sido.tb,file="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\¿Â¿­ÁúÈ¯_½Ãµµº°_TS°á°ú.csv",row.names=F,na="")
+write.csv(sido.tb,file="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\ì˜¨ì—´ì§ˆí™˜_ì‹œë„ë³„_TSê²°ê³¼.csv",row.names=F,na="")
 
 #--------------------------------------------------------------------------#
 #--------------------------------------------------------------------------#
 
-#Second stage, ¸ŞÅ¸ºĞ¼®
-tt.sido.tb<-read.csv("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\¿Â¿­ÁúÈ¯_½Ãµµº°_TS°á°ú.csv")
+#Second stage, ë©”íƒ€ë¶„ì„
+tt.sido.tb<-read.csv("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\ì˜¨ì—´ì§ˆí™˜_ì‹œë„ë³„_TSê²°ê³¼.csv")
 
-tt.sido.tb_m<-read.csv("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\¿Â¿­ÁúÈ¯_½Ãµµº°_TS°á°ú_³².csv")
-tt.sido.tb_f<-read.csv("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\¿Â¿­ÁúÈ¯_½Ãµµº°_TS°á°ú_¿©.csv")
+tt.sido.tb_m<-read.csv("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\ì˜¨ì—´ì§ˆí™˜_ì‹œë„ë³„_TSê²°ê³¼_ë‚¨.csv")
+tt.sido.tb_f<-read.csv("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\ì˜¨ì—´ì§ˆí™˜_ì‹œë„ë³„_TSê²°ê³¼_ì—¬.csv")
 
 tt.sido.tb$SE  =tt.sido.tb$Std..Error
 tt.sido.tb_m$SE=tt.sido.tb_m$Std..Error
@@ -1068,9 +1068,9 @@ meta_func<-function(dataset){
         single.heat32,single.heat33)
 }
 
-meta1<-meta_func(tt.sido.tb) #¿Â¿­ÁúÈ¯
-meta_m<-meta_func(tt.sido.tb_m) #¿Â¿­ÁúÈ¯
-meta_f<-meta_func(tt.sido.tb_f) #¿Â¿­ÁúÈ¯
+meta1<-meta_func(tt.sido.tb) #ì˜¨ì—´ì§ˆí™˜
+meta_m<-meta_func(tt.sido.tb_m) #ì˜¨ì—´ì§ˆí™˜
+meta_f<-meta_func(tt.sido.tb_f) #ì˜¨ì—´ì§ˆí™˜
 
 meta1$RR =exp(meta1$beta)
 meta1$lci=exp(meta1$beta-1.96*meta1$se)
@@ -1093,8 +1093,8 @@ meta_sex$sex=factor(meta_sex$sex,levels=unique(meta_sex$sex))
 
 meta2.r<-subset(meta_sex,exposure!="maxT")
 
-# write.csv(meta1,file="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\meta_reulst_heatrelated.csv",row.names=F,na="")
-# write.csv(meta_sex,file="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\meta_reulst_heatrelated_sex.csv",row.names=F,na="")
+# write.csv(meta1,file="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\meta_reulst_heatrelated.csv",row.names=F,na="")
+# write.csv(meta_sex,file="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\meta_reulst_heatrelated_sex.csv",row.names=F,na="")
 
 meta1.r<-subset(meta1,exposure=="maxT")
 meta1.r$category=c(rep("Single lag",8),rep("Moving average",7))
@@ -1108,7 +1108,7 @@ meta2.r$category=c(rep("Single lag",8),rep("Moving average",7))
 meta2.1<-subset(meta2.r,category=="Single lag")
 meta2.2<-subset(meta2.r,category=="Moving average")
 
-#ÀüÃ¼ ¸ŞÅ¸,´ÜÀÏÁö¿¬
+#ì „ì²´ ë©”íƒ€,ë‹¨ì¼ì§€ì—°
 gs1<-ggplot(meta1.1,aes(lag,RR))+geom_point(size=6)+theme_bw(base_size=25)+
   geom_errorbar(aes(ymin=lci,ymax=uci),width=0.2,lwd=1.1)+facet_wrap(~category)+labs(x="",y="Relative Risk (95% CI)")+
   geom_hline(yintercept=1,col="black",linetype=2)+coord_cartesian(ylim=c(0.99,1.04))+
@@ -1117,7 +1117,7 @@ gs1<-ggplot(meta1.1,aes(lag,RR))+geom_point(size=6)+theme_bw(base_size=25)+
   theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
-#ÀüÃ¼ ¸ŞÅ¸,ÀÌµ¿Æò±Õ
+#ì „ì²´ ë©”íƒ€,ì´ë™í‰ê· 
 gm1<-ggplot(meta1.2,aes(lag,RR))+geom_point(size=6)+theme_bw(base_size=25)+
   geom_errorbar(aes(ymin=lci,ymax=uci),width=0.2,lwd=1.1)+facet_wrap(~category)+labs(x="",y="")+
   geom_hline(yintercept=1,col="black",linetype=2)+coord_cartesian(ylim=c(0.99,1.04))+
@@ -1128,13 +1128,13 @@ gm1<-ggplot(meta1.2,aes(lag,RR))+geom_point(size=6)+theme_bw(base_size=25)+
 
 x11();grid.arrange(gs1,gm1,ncol=2)
 
-##GAMM,³ëÃâ ¹İÀÀ ±×¸²ÀúÀå, Meta_¿Â¿­ÁúÈ¯(ÀüÃ¼)_PM25º¸Á¤_MaxT
-tiff(file="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\Figure\\Meta_¿Â¿­ÁúÈ¯(ÀüÃ¼)_PM25º¸Á¤_MaxT.tiff",
+##GAMM,ë…¸ì¶œ ë°˜ì‘ ê·¸ë¦¼ì €ì¥, Meta_ì˜¨ì—´ì§ˆí™˜(ì „ì²´)_PM25ë³´ì •_MaxT
+tiff(file="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\Figure\\Meta_ì˜¨ì—´ì§ˆí™˜(ì „ì²´)_PM25ë³´ì •_MaxT.tiff",
      width=6000, height=3000,res=300)
 grid.arrange(gs1,gm1,ncol=2)
 dev.off()
 
-#¼ºº° ¸ŞÅ¸,´ÜÀÏÁö¿¬
+#ì„±ë³„ ë©”íƒ€,ë‹¨ì¼ì§€ì—°
 meta2.1
 gsex<-ggplot(meta2.1,aes(lag,RR,fill=sex))+
   geom_point(size=6,aes(shape=sex,col=sex),position=position_dodge(0.5))+
@@ -1149,8 +1149,8 @@ gsex<-ggplot(meta2.1,aes(lag,RR,fill=sex))+
 
 x11();gsex
 
-##GAMM,³ëÃâ ¹İÀÀ ±×¸²ÀúÀå, Meta_¿Â¿­ÁúÈ¯(ÀüÃ¼)_PM25º¸Á¤_¼ºº°
-tiff(file="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\Figure\\Meta_¿Â¿­ÁúÈ¯(ÀüÃ¼)_PM25º¸Á¤_¼ºº°.tiff",
+##GAMM,ë…¸ì¶œ ë°˜ì‘ ê·¸ë¦¼ì €ì¥, Meta_ì˜¨ì—´ì§ˆí™˜(ì „ì²´)_PM25ë³´ì •_ì„±ë³„
+tiff(file="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\Figure\\Meta_ì˜¨ì—´ì§ˆí™˜(ì „ì²´)_PM25ë³´ì •_ì„±ë³„.tiff",
      width=6000, height=3000,res=300)
 gsex
 dev.off()
@@ -1159,11 +1159,11 @@ dev.off()
 #--------------------------------------------------------------------------#
 library(forestplot)
 
-#ÀÚ·áºÒ·¯¿À±â 
-setwd("D:\\EUMC\\Áúº´°ü¸®Ã»\\Æø¿°¿¬±¸\\°ø´ÜÀÚ·á\\")
-d1<-read_excel("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\KCDC_Heatwave_children_results.xlsx",sheet="¸ŞÅ¸_¿Â¿­ÁúÈ¯ÀüÃ¼") #Sheetº°·Î º¯°æ 
+#ìë£Œë¶ˆëŸ¬ì˜¤ê¸° 
+setwd("D:\\EUMC\\ì§ˆë³‘ê´€ë¦¬ì²­\\í­ì—¼ì—°êµ¬\\ê³µë‹¨ìë£Œ\\")
+d1<-read_excel("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\KCDC_Heatwave_children_results.xlsx",sheet="ë©”íƒ€_ì˜¨ì—´ì§ˆí™˜ì „ì²´") #Sheetë³„ë¡œ ë³€ê²½ 
 
-#Å×ÀÌºí Á¤·Ä ÇÏ±âÀ§ÇØ Á¦¸ñ ¾Æ·¡ ÇÑÄ­¾¿ ¶ç¾î¾µ ºÎºĞ ÁöÁ¤ 
+#í…Œì´ë¸” ì •ë ¬ í•˜ê¸°ìœ„í•´ ì œëª© ì•„ë˜ í•œì¹¸ì”© ë„ì–´ì“¸ ë¶€ë¶„ ì§€ì • 
 subgps <- c(2:9,12:19,22:29,32:39,42:49,52:59)
 d1$value[subgps] <- paste("  ",d1$value[subgps]) 
 
@@ -1171,7 +1171,7 @@ d1$rr_text=paste0(round(d1$RR,2),", 95% CI:",round(d1$LCI,2),", ",round(d1$UCI,2
 d1$rr_text=paste0(round(d1$RR,2))
 d1$CI95   =paste0(as.character(round(d1$LCI,2)),", ",as.character(round(d1$UCI,2)))
 
-#Á¦¸ñ¿¡ ¾²ÀÎ ºÎºĞÀº Áö¿ì±â 
+#ì œëª©ì— ì“°ì¸ ë¶€ë¶„ì€ ì§€ìš°ê¸° 
 d1[grep("Heatwave",d1$value),]$rr_text=NA
 d1[grep("Heatwave",d1$value),]$CI95   =NA
 d1$rr_text=ifelse(d1$TF==0,NA,d1$rr_text)
@@ -1182,15 +1182,15 @@ grep("lag7",d1$value)
 
 d1.revise<-d1[-grep("lag7",d1$value),]
 
-#±×¸²¿¡ Ç¥ÇöÇÒ ÅØ½ºÆ®
+#ê·¸ë¦¼ì— í‘œí˜„í•  í…ìŠ¤íŠ¸
 tabletext <- cbind(c("Categories","\n",d1.revise$value),
                    c("Relative Risk","\n",d1.revise$rr_text),
                    c("95% CI","\n",d1.revise$CI95))
 
 
 
-#forestplot() ³»¿¡ ¿É¼Ç fpColorsÀº ¿­·Î ¹­ÀÎ ÀÚ·á¿¡ ´ëÇØ¼­(±×·ìº° ÀÚ·á) ÀÏ°ıÀûÀ¸·Î »ö±òÁöÁ¤
-#À¯ÀÇÇÑ ±×·ì/ À¯ÀÇÇÏÁö ¾ÊÀº ±×·ìÀ¸·Î ÁöÁ¤ÇØ¼­ ¿­·Î ¹­±â
+#forestplot() ë‚´ì— ì˜µì…˜ fpColorsì€ ì—´ë¡œ ë¬¶ì¸ ìë£Œì— ëŒ€í•´ì„œ(ê·¸ë£¹ë³„ ìë£Œ) ì¼ê´„ì ìœ¼ë¡œ ìƒ‰ê¹”ì§€ì •
+#ìœ ì˜í•œ ê·¸ë£¹/ ìœ ì˜í•˜ì§€ ì•Šì€ ê·¸ë£¹ìœ¼ë¡œ ì§€ì •í•´ì„œ ì—´ë¡œ ë¬¶ê¸°
 est<-as.data.frame(cbind(RR=c(NA,NA,d1.revise$RR),lci=c(NA,NA,d1.revise$LCI),uci=c(NA,NA,d1.revise$UCI)))
 signi<-ifelse(est$lci>1,1,0)
 signi[is.na(signi)]<-0
@@ -1224,7 +1224,7 @@ x11();forestplot(labeltext=tabletext, graph.pos=4,
 
 
 #Save the current figures
-tiff(filename="D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\Figure\\forestplot_tot.tiff",width=3600,height=4200,res=300)
+tiff(filename="D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\Figure\\forestplot_tot.tiff",width=3600,height=4200,res=300)
 forestplot(labeltext=tabletext, graph.pos=4, 
            mean =cbind(est1$RR,est2$RR), 
            lower=cbind(est1$lci,est2$lci),
