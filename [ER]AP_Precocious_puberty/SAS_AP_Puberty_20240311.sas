@@ -1,44 +1,44 @@
 
 /*
-¡Ø Áø·á Å×ÀÌºí(20t, 30t, 40t, 60t µî)¿¡¼­ ÀÚ·á ÃßÃâ ½Ã Á¶°ÇÀý¿¡ 
-¿ä¾ç°³½Ã³â¿ù ( MDCARE_STRT_YYYYMM ) À» ¹Ýµå½Ã ±âº» Á¶°Ç À¸·Î ÇÏ¸ç, 
-1°³¿ù ´ÜÀ§·Î ÃßÃâÇÔ(¿¬µµº° ½ÇÀÎ¿ø ¼ö Ä«¿îÆ®ÀÇ °æ¿ì, Á¶ÀÎ ¾øÀÌ ÃÖÀå 1³â ´ÜÀ§ Ä«¿îÆ® °¡´É)
-MDCARE_STRT_YYYYMM=¡®01501¡¯O)
-SUBSTR(MDCARE_STRT_YYYYMM,1,4)=¡®015¡¯X)
-MDCARE_STRT_YYYYMM LIKE ¡®015%¡¯X)
-MDCARE_STRT_YYYYMM BETWEEN ¡®01501¡¯AND ¡®01512¡¯X)	 
+â€» ì§„ë£Œ í…Œì´ë¸”(20t, 30t, 40t, 60t ë“±)ì—ì„œ ìžë£Œ ì¶”ì¶œ ì‹œ ì¡°ê±´ì ˆì— 
+ìš”ì–‘ê°œì‹œë…„ì›” ( MDCARE_STRT_YYYYMM ) ì„ ë°˜ë“œì‹œ ê¸°ë³¸ ì¡°ê±´ ìœ¼ë¡œ í•˜ë©°, 
+1ê°œì›” ë‹¨ìœ„ë¡œ ì¶”ì¶œí•¨(ì—°ë„ë³„ ì‹¤ì¸ì› ìˆ˜ ì¹´ìš´íŠ¸ì˜ ê²½ìš°, ì¡°ì¸ ì—†ì´ ìµœìž¥ 1ë…„ ë‹¨ìœ„ ì¹´ìš´íŠ¸ ê°€ëŠ¥)
+MDCARE_STRT_YYYYMM=â€˜01501â€™O)
+SUBSTR(MDCARE_STRT_YYYYMM,1,4)=â€˜015â€™X)
+MDCARE_STRT_YYYYMM LIKE â€˜015%â€™X)
+MDCARE_STRT_YYYYMM BETWEEN â€˜01501â€™AND â€˜01512â€™X)	 
 */
 
-/* 2023³â_Àü¹®À§¿ø_ÀüÃ¼Å×ÀÌºí·¹ÀÌ¾Æ¿ô_±ÇÇÑ¸ñ·Ï_220417.xlsx ÀÌ ÀÚ·á Âü°íÇØ¼­
-DB¶û Å×ÀÌºí ¸ñ·Ï °ËÅäÇØ¼­ ÀÌ¿ëÇÏ±â*/
+/* 2023ë…„_ì „ë¬¸ìœ„ì›_ì „ì²´í…Œì´ë¸”ë ˆì´ì•„ì›ƒ_ê¶Œí•œëª©ë¡_220417.xlsx ì´ ìžë£Œ ì°¸ê³ í•´ì„œ
+DBëž‘ í…Œì´ë¸” ëª©ë¡ ê²€í† í•´ì„œ ì´ìš©í•˜ê¸°*/
 
-/*hana ¿ë·®Ã¼Å©*/
+/*hana ìš©ëŸ‰ì²´í¬*/
 PROC SQL; 
 &CONNECT.;
 SELECT * FROM CONNECTION TO X1(CALL SP_USER_SIZE('NHIS_Z23013')); DISCONNECT FROM X1; QUIT;
 
-/*µ¥ÀÌÅÍ Áö¿ì±â*/
-PROC SQL;DROP TABLE SAPTMP.ÆÄÀÏ¸í; QUIT;
+/*ë°ì´í„° ì§€ìš°ê¸°*/
+PROC SQL;DROP TABLE SAPTMP.íŒŒì¼ëª…; QUIT;
 
 LIBNAME A '/AMDATA05/EXPERT23/HA_EUNHEE/OJM' COMPRESS=YES;;
 
-/*»ç¸Á Å×ÀÌºí Á¶È¸*/
+/*ì‚¬ë§ í…Œì´ë¸” ì¡°íšŒ*/
 PROC SQL;
 &CONNECT.;
 CREATE TABLE DTH AS SELECT * FROM CONNECTION TO X1(
 SELECT TOP 10* FROM NHISBDA.HHDV_DEATH);
 DISCONNECT FROM X1; QUIT;
 
-/*¿¬±¸ ´ë»óÀÚ Á¤ÀÇ*/
+/*ì—°êµ¬ ëŒ€ìƒìž ì •ì˜*/
 /*
-½ºÅ°¸¶: NHISBDA Å×ÀÌºí: HHDV_DSES_YY(ÀÎ±¸»çÈ¸°æÁ¦¼öÁØ(¿¬º°)) 
-¼Ò¾Æ ´ë»óÀÚ ÃßÃâÇÏ±â (»ê¸ð & ¿¬°è ÀÚ·á ÀÌ¿ëÇÏ´Â°Ç ÃßÈÄ °í·ÁÇÏ±â )
-Å×ÀÌºí: HHDV_MOTHER_CHILD_LINK(»ê¸ð½Å»ý¾Æ¿¬°á)
-¼ºÁ¶¼÷Áß: ³²¾Æ ¸¸ 9¼¼ ÀÌÀü  / ¿©¾Æ ¸¸ 8¼¼ ÀÌÀü ¹ß»ýÇÏ´Â °æ¿ì (Á¤ÀÇ»ó ÀÌ·¸Áö¸¸ ÀÌÈÄ ¿¬·É¿¡µµ ¹ß»ýÇÏ´Â °æ¿ì Á¸Àç)
-enroll½ÃÁ¡Àº µ¿ÀÏÇÏ°Ô ÇÏ°í (³ëÃâ½ÃÁ¡µµ ¸ÂÃß°í event ¹ß»ý¸¸ °í·ÁÇÏ¸é µÉµí) 
+ìŠ¤í‚¤ë§ˆ: NHISBDA í…Œì´ë¸”: HHDV_DSES_YY(ì¸êµ¬ì‚¬íšŒê²½ì œìˆ˜ì¤€(ì—°ë³„)) 
+ì†Œì•„ ëŒ€ìƒìž ì¶”ì¶œí•˜ê¸° (ì‚°ëª¨ & ì—°ê³„ ìžë£Œ ì´ìš©í•˜ëŠ”ê±´ ì¶”í›„ ê³ ë ¤í•˜ê¸° )
+í…Œì´ë¸”: HHDV_MOTHER_CHILD_LINK(ì‚°ëª¨ì‹ ìƒì•„ì—°ê²°)
+ì„±ì¡°ìˆ™ì¤‘: ë‚¨ì•„ ë§Œ 9ì„¸ ì´ì „  / ì—¬ì•„ ë§Œ 8ì„¸ ì´ì „ ë°œìƒí•˜ëŠ” ê²½ìš° (ì •ì˜ìƒ ì´ë ‡ì§€ë§Œ ì´í›„ ì—°ë ¹ì—ë„ ë°œìƒí•˜ëŠ” ê²½ìš° ì¡´ìž¬)
+enrollì‹œì ì€ ë™ì¼í•˜ê²Œ í•˜ê³  (ë…¸ì¶œì‹œì ë„ ë§žì¶”ê³  event ë°œìƒë§Œ ê³ ë ¤í•˜ë©´ ë ë“¯) 
 
-2007~2009³â 0¼¼ÀÎ ¾ÆÀÌµé·Î ¼öÁ¤ / 3°³³â ´ë»óÀÚ °üÂû
-2013: 6¼¼ 2014: 6¼¼ 2015: 6¼¼
+2007~2009ë…„ 0ì„¸ì¸ ì•„ì´ë“¤ë¡œ ìˆ˜ì • / 3ê°œë…„ ëŒ€ìƒìž ê´€ì°°
+2013: 6ì„¸ 2014: 6ì„¸ 2015: 6ì„¸
 */
 PROC SQL; &CONNECT.; CREATE TABLE POP13 AS SELECT * FROM CONNECTION TO X1 (SELECT * FROM NHISBDA.HHDV_DSES_YY WHERE STD_YYYY=2013 and YEND_STD_AGE=6); DISCONNECT FROM X1; QUIT;
 PROC SQL; &CONNECT.; CREATE TABLE POP14 AS SELECT * FROM CONNECTION TO X1 (SELECT * FROM NHISBDA.HHDV_DSES_YY WHERE STD_YYYY=2014 and YEND_STD_AGE=6); DISCONNECT FROM X1; QUIT;
@@ -54,7 +54,7 @@ DATA saptmp.&data.; set a.&data; run;
 %pop(pop13);%pop(pop14);%pop(pop15)
 /********************************************************************************************************************************************/
 
-/* 2009³â 0¼¼ÀÎ ¾ÆÀÌ (2015³â 6¼¼(baseline) ½ÃÁ¡) ÃßÃâÇÑ ´ë»óÀÚ Å¸°Ù */
+/* 2009ë…„ 0ì„¸ì¸ ì•„ì´ (2015ë…„ 6ì„¸(baseline) ì‹œì ) ì¶”ì¶œí•œ ëŒ€ìƒìž íƒ€ê²Ÿ */
 DATA TG; SET saptmp.pop13-saptmp.pop15; keep indi_dscm_no; RUN;
 proc sort data=TG nodupkey out=TG; by indi_dscm_no; run;
 DATA SAPTMP.TG; SET TG; RUN;
@@ -66,10 +66,10 @@ DATA POP15; SET SAPTMP.pop15;run;
 data pop; set pop13-pop15; run;
 data saptmp.pop; set pop; run;
 
-/*¿¬µµº° ¼ºº°*/
+/*ì—°ë„ë³„ ì„±ë³„*/
 proc freq ddata=pop; tables std_yyyy*sex_type/list; run;
 
-/*¿Ü±¹ÀÎ ºóµµ*/
+/*ì™¸êµ­ì¸ ë¹ˆë„*/
 proc freq data=pop; tables FOREIGNER_Y; run; /*6,162*/
 
 PROC SQL;
@@ -82,7 +82,7 @@ data z; set saptmp.PP_T20; year=substr(mdcare_strt_yyyymm,1,4); run;
 proc freq data=z; tables year; run;
 
 /********************************************************************************************************************************************/
-/*»óº´ ÀÚ·á¿¡¼­ Precocious puberty ÃßÃâ ÇÏ±â */
+/*ìƒë³‘ ìžë£Œì—ì„œ Precocious puberty ì¶”ì¶œ í•˜ê¸° */
 PROC SQL; 
 &CONNECT.;
 CREATE TABLE PP_T20 AS SELECT * FROM CONNECTION TO X1(
@@ -111,7 +111,7 @@ AND MDCARE_STRT_YYYYMM IN
  AND INDI_DSCM_NO IS NOT NULL
  AND INDI_DSCM_NO <90000000 AND
 
- /*ÁÖ, ºÎ1-4 »óº´*/
+ /*ì£¼, ë¶€1-4 ìƒë³‘*/
 (LEFT(SICK_SYM1,4)='E228' OR LEFT(SICK_SYM1,4)='E301' OR LEFT(SICK_SYM1,4)='E309') OR
 (LEFT(SICK_SYM2,4)='E228' OR LEFT(SICK_SYM2,4)='E301' OR LEFT(SICK_SYM2,4)='E309') OR
 (LEFT(SICK_SYM3,4)='E228' OR LEFT(SICK_SYM3,4)='E301' OR LEFT(SICK_SYM3,4)='E309') OR
@@ -121,7 +121,7 @@ AND MDCARE_STRT_YYYYMM IN
 DISCONNECT FROM X1; QUIT;
 
 
-/*T20 Å×ÀÌºí ´ë»óÀÚ °ËÅä; ¾ÆÀÌµð ¹«È¿ Á¦°Å ¿¬±¸±â°£ 2009~2019 ÇØ´ç ÀÇ°ú ¿Ü·¡, ÀÔ¿ø¸¸ °í·Á ÁÖ, ºÎ1»óº´¸¸ °í·Á */
+/*T20 í…Œì´ë¸” ëŒ€ìƒìž ê²€í† ; ì•„ì´ë”” ë¬´íš¨ ì œê±° ì—°êµ¬ê¸°ê°„ 2009~2019 í•´ë‹¹ ì˜ê³¼ ì™¸ëž˜, ìž…ì›ë§Œ ê³ ë ¤ ì£¼, ë¶€1ìƒë³‘ë§Œ ê³ ë ¤ */
 DATA PP_T20_REVISE; SET PP_T20; 
 IF INDI_DSCM_NO^="." & INDI_DSCM_NO^=0;
 YYYY=SUBSTR(MDCARE_STRT_DT,1,4);
@@ -135,15 +135,15 @@ PROC SQL; CREATE TABLE PP_T20_TG AS SELECT * FROM PP_T20_REVISE WHERE INDI_DSCM_
 
 PROC FREQ DATA=PP_T20_TG; TABLES YYYY; RUN;
 PROC FREQ DATA=PP_T20_TG; TABLES FORM_CD; RUN;
-/*T20¿¡¼­ ½Äº°µÇ´Â °íÀ¯ ´ë»óÀÚ (Precocious puberty)*/
+/*T20ì—ì„œ ì‹ë³„ë˜ëŠ” ê³ ìœ  ëŒ€ìƒìž (Precocious puberty)*/
 PROC SORT DATA=PP_T20_TG NODUPKEY OUT=PP_T20_INDI ; BY INDI_DSCM_NO; RUN;
 DATA PP_T20_INDI; SET PP_T20_INDI; KEEP INDI_DSCM_NO; RUN;
 
-/*PP_T20 ÀÚ·á SAPTMP ¿Å±è*/
+/*PP_T20 ìžë£Œ SAPTMP ì˜®ê¹€*/
 DATA SAPTMP.PP_T20; SET PP_T20_TG; RUN;
 DATA PP_T20; SET SAPTMP.PP_T20;RUN;
 
-/*PP_T20_INDI ÀÚ·á SAPTMP ¿Å±è: PP ½Äº°µÇ´Â °íÀ¯ ´ë»óÀÚ*/
+/*PP_T20_INDI ìžë£Œ SAPTMP ì˜®ê¹€: PP ì‹ë³„ë˜ëŠ” ê³ ìœ  ëŒ€ìƒìž*/
 data saptmp.PP_T20_INDI; set PP_T20_INDI; run;
 
 data a.pp_t20; set SAPTMP.PP_T20; RUN;
@@ -151,8 +151,8 @@ data a.pp_t20_indi; set SAPTMP.PP_T20_INDI; RUN;
 data a.TG; set SAPTMP.TG; RUN;
 
 /********************************************************************************************************************************************/
-/*T30Å×ÀÌºíÀÌ¶û ¿¬±¸±â°£ µ¿¾È PP(¼ºÁ¶¼÷Áõ) ÄÚµå Á¸ÀçÇÏ´Â ´ë»ó ¿¬°è */
-/*T30¿¡¼­ ¾àÁ¦ Ãß¸®±â PP´ë»óÀÚ¿¡ ´ëÇÑ ¸ðµç Ã³Ä¡ ³»¿ª ½Äº°*/
+/*T30í…Œì´ë¸”ì´ëž‘ ì—°êµ¬ê¸°ê°„ ë™ì•ˆ PP(ì„±ì¡°ìˆ™ì¦) ì½”ë“œ ì¡´ìž¬í•˜ëŠ” ëŒ€ìƒ ì—°ê³„ */
+/*T30ì—ì„œ ì•½ì œ ì¶”ë¦¬ê¸° PPëŒ€ìƒìžì— ëŒ€í•œ ëª¨ë“  ì²˜ì¹˜ ë‚´ì—­ ì‹ë³„*/
 %MACRO MONTHLY(STRT, STP);
 %DO YYYYMM=&STRT. %TO &STP.;
 	%IF %SUBSTR(&YYYYMM, 5)=13 %THEN 
@@ -173,7 +173,7 @@ DISCONNECT FROM X1; QUIT;
 %END; %MEND MONTHLY;
 %MONTHLY(STRT=200701, STP=202212);
 
-/*¿¬±¸±â°£ µ¿¾È PP »óº´ÄÚµå Á¸ÀçÇÏ´Â ´ë»ó Áß T30 ¿¬°èÇÑ ´ë»ó ¿¬µµº° MERGE=> SAPTMP ¿Å±è*/
+/*ì—°êµ¬ê¸°ê°„ ë™ì•ˆ PP ìƒë³‘ì½”ë“œ ì¡´ìž¬í•˜ëŠ” ëŒ€ìƒ ì¤‘ T30 ì—°ê³„í•œ ëŒ€ìƒ ì—°ë„ë³„ MERGE=> SAPTMP ì˜®ê¹€*/
 DATA SAPTMP.PP_T30_2007; SET A.T30_200701-A.T30_200712; RUN; DATA SAPTMP.PP_T30_2008; SET A.T30_200801-A.T30_200812; RUN;
 DATA SAPTMP.PP_T30_2009; SET A.T30_200901-A.T30_200912; RUN; DATA SAPTMP.PP_T30_2010; SET A.T30_201001-A.T30_201012; RUN;
 DATA SAPTMP.PP_T30_2011; SET A.T30_201101-A.T30_201112; RUN; DATA SAPTMP.PP_T30_2012; SET A.T30_201201-A.T30_201212; RUN;
@@ -185,7 +185,7 @@ DATA SAPTMP.PP_T30_2021; SET A.T30_202101-A.T30_202112; RUN; DATA SAPTMP.PP_T30_
 
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
-/*T30: ¾àÁ¦ÄÚµå Á¸ÀçÇÏ´Â ´ë»ó ½Äº°*/
+/*T30: ì•½ì œì½”ë“œ ì¡´ìž¬í•˜ëŠ” ëŒ€ìƒ ì‹ë³„*/
 DATA A.PP_T30_DRUG_2007; SET SAPTMP.PP_T30_2007; IF MCARE_DIV_CD IN ("182602BIJ","182604BIJ","182611BIJ","244902BIJ","467501BIJ","467502BIJ"); RUN;
 DATA A.PP_T30_DRUG_2008; SET SAPTMP.PP_T30_2008; IF MCARE_DIV_CD IN ("182602BIJ","182604BIJ","182611BIJ","244902BIJ","467501BIJ","467502BIJ"); RUN;
 DATA A.PP_T30_DRUG_2009; SET SAPTMP.PP_T30_2009; IF MCARE_DIV_CD IN ("182602BIJ","182604BIJ","182611BIJ","244902BIJ","467501BIJ","467502BIJ"); RUN; 
@@ -203,7 +203,7 @@ DATA A.PP_T30_DRUG_2020; SET SAPTMP.PP_T30_2020; IF MCARE_DIV_CD IN ("182602BIJ"
 DATA A.PP_T30_DRUG_2021; SET SAPTMP.PP_T30_2021; IF MCARE_DIV_CD IN ("182602BIJ","182604BIJ","182611BIJ","244902BIJ","467501BIJ","467502BIJ"); RUN; 
 DATA A.PP_T30_DRUG_2022; SET SAPTMP.PP_T30_2022; IF MCARE_DIV_CD IN ("182602BIJ","182604BIJ","182611BIJ","244902BIJ","467501BIJ","467502BIJ"); RUN; 
 
-/*2007~2022³â°£ T30¿¡¼­ ¿¬±¸ ´ë»óÀÚ (3³âÄ¡) PP¾àÁ¦ »ç¿ë MERGE*/
+/*2007~2022ë…„ê°„ T30ì—ì„œ ì—°êµ¬ ëŒ€ìƒìž (3ë…„ì¹˜) PPì•½ì œ ì‚¬ìš© MERGE*/
 DATA A.PP_T30_DRUG; SET A.PP_T30_DRUG_2007-A.PP_T30_DRUG_2022; RUN; 
 PROC SORT DATA=A.PP_T30_DRUG; BY INDI_DSCM_NO MDCARE_STRT_YYYYMM; RUN;
 PROC SORT DATA=A.PP_T30_DRUG NODUPKEY OUT=A.PP_T30_DRUG_INDI; BY INDI_DSCM_NO; RUN;  /*43,026*/
@@ -211,12 +211,12 @@ PROC SORT DATA=A.PP_T30_DRUG NODUPKEY OUT=A.PP_T30_DRUG_INDI; BY INDI_DSCM_NO; R
 
 PROC FREQ DATA=A.PP_T30_DRUG; TABLES MCARE_DIV_CD FORM_CD; RUN;
 
-/*ÇØ´ç ¾àÁ¦¿¡ ¾î¶² »óº´ÀÌ ÁÖ·Î ¸¹ÀºÁö °ËÅä E301(1¼øÀ§) E228 (2¼øÀ§)*/
+/*í•´ë‹¹ ì•½ì œì— ì–´ë–¤ ìƒë³‘ì´ ì£¼ë¡œ ë§Žì€ì§€ ê²€í†  E301(1ìˆœìœ„) E228 (2ìˆœìœ„)*/
 PROC FREQ DATA=A.PP_T30_DRUG      ; TABLES SICK_SYM1; RUN;
 PROC FREQ DATA=A.PP_T30_DRUG_INDI; TABLES SICK_SYM1; RUN;
 
 /********************************************************************************************************************************************/
-/*¾àÁ¦ÄÚµå Á¸ÀçÇÏ´Â ´ë»ó ½Äº°*/
+/*ì•½ì œì½”ë“œ ì¡´ìž¬í•˜ëŠ” ëŒ€ìƒ ì‹ë³„*/
 %MACRO MONTHLY_T60(STRT, STP);
 %DO YYYYMM=&STRT. %TO &STP.;
 	%IF %SUBSTR(&YYYYMM, 5)=13 %THEN 
@@ -237,7 +237,7 @@ DISCONNECT FROM X1; QUIT;
 %END; %MEND MONTHLY;
 %MONTHLY_T60(STRT=200701, STP=202212);
 
-/*¿¬±¸±â°£ µ¿¾È PP »óº´ÄÚµå Á¸ÀçÇÏ´Â ´ë»ó Áß T30 ¿¬°èÇÑ ´ë»ó ¿¬µµº° MERGE=> SAPTMP ¿Å±è*/
+/*ì—°êµ¬ê¸°ê°„ ë™ì•ˆ PP ìƒë³‘ì½”ë“œ ì¡´ìž¬í•˜ëŠ” ëŒ€ìƒ ì¤‘ T30 ì—°ê³„í•œ ëŒ€ìƒ ì—°ë„ë³„ MERGE=> SAPTMP ì˜®ê¹€*/
 DATA SAPTMP.PP_T60_2007; SET A.T60_200701-A.T60_200712; RUN; DATA SAPTMP.PP_T60_2008; SET A.T60_200801-A.T60_200812; RUN;
 DATA SAPTMP.PP_T60_2009; SET A.T60_200901-A.T60_200912; RUN; DATA SAPTMP.PP_T60_2010; SET A.T60_201001-A.T60_201012; RUN;
 DATA SAPTMP.PP_T60_2011; SET A.T60_201101-A.T60_201112; RUN; DATA SAPTMP.PP_T60_2012; SET A.T60_201201-A.T60_201212; RUN;
@@ -247,9 +247,9 @@ DATA SAPTMP.PP_T60_2017; SET A.T60_201701-A.T60_201712; RUN; DATA SAPTMP.PP_T60_
 DATA SAPTMP.PP_T60_2019; SET A.T60_201901-A.T60_201912; RUN; DATA SAPTMP.PP_T60_2020; SET A.T60_202001-A.T60_202012; RUN;
 DATA SAPTMP.PP_T60_2021; SET A.T60_202101-A.T60_202112; RUN; DATA SAPTMP.PP_T60_2022; SET A.T60_202201-A.T60_202212; RUN;
 
-/*T60: ¾àÁ¦ÄÚµå Á¸ÀçÇÏ´Â ´ë»ó ½Äº°*/
-/*PP´ë»óÀÚÁß 0~10¼¼±îÁö °í·ÁÇßÀ¸´Ï Àú ¿¬·É¿¡¼­ ¾àÁ¦ 0°ÇÀÎ°Ç ÀÌÇØ°¨, ÁÖ·Î 6¼¼ ÀÌÈÄ ¸¹À» µí
-  ±× ÀÌÀü¿¡ ÇØ´ç ¾àÁ¦»ç¿ëÀº ´Ù¸¥ ±âÁúÀûÀÎ ¿øÀÎÀÇ PPÀÌ°Å³ª, ´Ù¸¥ ÁúÈ¯¿¡¼­ ¾àÁ¦°¡ °í·ÁµÇ¾úÀ»°ÍÀ¸·Î º¸ÀÓ */
+/*T60: ì•½ì œì½”ë“œ ì¡´ìž¬í•˜ëŠ” ëŒ€ìƒ ì‹ë³„*/
+/*PPëŒ€ìƒìžì¤‘ 0~10ì„¸ê¹Œì§€ ê³ ë ¤í–ˆìœ¼ë‹ˆ ì € ì—°ë ¹ì—ì„œ ì•½ì œ 0ê±´ì¸ê±´ ì´í•´ê°, ì£¼ë¡œ 6ì„¸ ì´í›„ ë§Žì„ ë“¯
+  ê·¸ ì´ì „ì— í•´ë‹¹ ì•½ì œì‚¬ìš©ì€ ë‹¤ë¥¸ ê¸°ì§ˆì ì¸ ì›ì¸ì˜ PPì´ê±°ë‚˜, ë‹¤ë¥¸ ì§ˆí™˜ì—ì„œ ì•½ì œê°€ ê³ ë ¤ë˜ì—ˆì„ê²ƒìœ¼ë¡œ ë³´ìž„ */
 DATA A.PP_T60_DRUG_2007; SET SAPTMP.PP_T60_2007; IF MCARE_DIV_CD IN ("182602BIJ","182604BIJ","182611BIJ","244902BIJ","467501BIJ","467502BIJ"); RUN; 
 DATA A.PP_T60_DRUG_2008; SET SAPTMP.PP_T60_2008; IF MCARE_DIV_CD IN ("182602BIJ","182604BIJ","182611BIJ","244902BIJ","467501BIJ","467502BIJ"); RUN; 
 DATA A.PP_T60_DRUG_2009; SET SAPTMP.PP_T60_2009; IF MCARE_DIV_CD IN ("182602BIJ","182604BIJ","182611BIJ","244902BIJ","467501BIJ","467502BIJ"); RUN; 
@@ -269,9 +269,9 @@ DATA A.PP_T60_DRUG_2022; SET SAPTMP.PP_T60_2022; IF MCARE_DIV_CD IN ("182602BIJ"
 
 DATA A.PP_T60_DRUG; SET A.PP_T60_DRUG_2007-A.PP_T60_DRUG_2022; RUN;  /*2,583*/
 PROC SORT DATA=A.PP_T60_DRUG; BY INDI_DSCM_NO MDCARE_STRT_YYYYMM; RUN;
-PROC SORT DATA=A.PP_T60_DRUG NODUPKEY OUT=A.PP_T60_DRUG_INDI; BY INDI_DSCM_NO; RUN; /*350¸í*/
+PROC SORT DATA=A.PP_T60_DRUG NODUPKEY OUT=A.PP_T60_DRUG_INDI; BY INDI_DSCM_NO; RUN; /*350ëª…*/
 
-/*T30, T60´ë»óÀÚ Áß PP ¾àÁ¦ ½Äº°µÇ´Â »ç¶÷ => SAPTMP ¿Å±è*/
+/*T30, T60ëŒ€ìƒìž ì¤‘ PP ì•½ì œ ì‹ë³„ë˜ëŠ” ì‚¬ëžŒ => SAPTMP ì˜®ê¹€*/
 DATA SAPTMP.PP_T30_DRUG; SET A.PP_T30_DRUG; RUN;
 DATA SAPTMP.PP_T60_DRUG; SET A.PP_T60_DRUG; RUN;
 
@@ -279,7 +279,7 @@ PROC FREQ DATA=SAPTMP.PP_T60_DRUG; TABLES MCARE_DIV_CD ; RUN;
 
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
-/*±âÀú ÁúÈ¯ÀÚ ÃßÃâÇØ¼­ Á¦¿Ü, ¿ì¼± ³Ð°Ô »Ì°í µÚ¿¡°¡¼­ Á¤¸®*/
+/*ê¸°ì € ì§ˆí™˜ìž ì¶”ì¶œí•´ì„œ ì œì™¸, ìš°ì„  ë„“ê²Œ ë½‘ê³  ë’¤ì—ê°€ì„œ ì •ë¦¬*/
 %MACRO MONTHLY_T40(STRT, STP);
 %DO YYYYMM=&STRT. %TO &STP.;
 	%IF %SUBSTR(&YYYYMM, 5)=13 %THEN 
@@ -308,7 +308,7 @@ DATA A.T40_2012; SET A.T40_201201-A.T40_201212; KEEP MDCARE_STRT_YYYYMM MCEX_SIC
 DATA A.T40_2013; SET A.T40_201301-A.T40_201312; KEEP MDCARE_STRT_YYYYMM MCEX_SICK_SYM INDI_DSCM_NO;RUN;
 DATA A.T40_2014; SET A.T40_201401-A.T40_201412; KEEP MDCARE_STRT_YYYYMM MCEX_SICK_SYM INDI_DSCM_NO;RUN;
 
-/*±âÀú ÁúÈ¯ÀÚ ½Äº°: ½Å»ý¾Æ °¨¿°, ³úÇ÷°üÁúÈ¯, ¼ö¸·¿°, ¿Ü»ó¼Û ³ú¼Õ»ó, ¼öµÎÁõ*/
+/*ê¸°ì € ì§ˆí™˜ìž ì‹ë³„: ì‹ ìƒì•„ ê°ì—¼, ë‡Œí˜ˆê´€ì§ˆí™˜, ìˆ˜ë§‰ì—¼, ì™¸ìƒì†¡ ë‡Œì†ìƒ, ìˆ˜ë‘ì¦*/
 DATA POP_DIS_EX; SET A.t40_2007-A.T40_2014;
 IF SUBSTR(MCEX_SICK_SYM,1,4) IN ('P350','D332') OR 
    SUBSTR(MCEX_SICK_SYM,1,3) IN ('P91','I60','I61','I62','I63','I64','G00','G03','G91','S06') OR
@@ -317,21 +317,21 @@ DIS_YEAR=SUBSTR(MDCARE_STRT_YYYYMM,1,4);
 DROP MDCARE_STRT_YYYYMM;
 RUN;
 PROC SORT DATA=POP_DIS_EX; BY INDI_DSCM_NO DIS_YEAR; RUN;
-PROC SORT DATA=POP_DIS_EX NODUPKEY; BY INDI_DSCM_NO; RUN; /*24,642ÀÎµ¥, °¢ ±âÀú½ÃÁ¡¿¡ ¸Â°Ô °í·Á */
+PROC SORT DATA=POP_DIS_EX NODUPKEY; BY INDI_DSCM_NO; RUN; /*24,642ì¸ë°, ê° ê¸°ì €ì‹œì ì— ë§žê²Œ ê³ ë ¤ */
 
 DATA A.POP_DIS_EX; SET POP_DIS_EX; RUN;
 DATA SAPTMP.POP_DIS_EX; SET POP_DIS_EX; RUN;
 
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
-/*Á¤¸®ÇÑ ´ë»óÀÚÁß ÀÚ·á °¡Á®¿À±â */
-/*T20, T30, T60 ¸ÕÀú ¿¬°èÇÏ°í Á¤¸® ÈÄ¿¡ ÀÚ°Ý ÀÚ·á ºÙÀÌ±â*/
+/*ì •ë¦¬í•œ ëŒ€ìƒìžì¤‘ ìžë£Œ ê°€ì ¸ì˜¤ê¸° */
+/*T20, T30, T60 ë¨¼ì € ì—°ê³„í•˜ê³  ì •ë¦¬ í›„ì— ìžê²© ìžë£Œ ë¶™ì´ê¸°*/
 
 DATA PP_T20;  RETAIN REMAIN YYYY;SET SAPTMP.PP_T20; 
 KEEP YYYY CMN_KEY INDI_DSCM_NO MDCARE_STRT_YYYYMM MDCARE_STRT_DT ; RUN;
 PROC SORT DATA= PP_T20; BY INDI_DSCM_NO MDCARE_STRT_DT; RUN;
 
-/*EVENT1: »óº´ÄÚµå¸¸ °í·Á½Ã event ¹ß»ý ´ë»óÀÚ (N=47,568)*/
+/*EVENT1: ìƒë³‘ì½”ë“œë§Œ ê³ ë ¤ì‹œ event ë°œìƒ ëŒ€ìƒìž (N=47,568)*/
 PROC SORT DATA=PP_T20 NODUPKEY OUT=PP_EVENT1 ; BY INDI_DSCM_NO; RUN;
 
 DATA PP_T30_DRUG_CMN_KEY; SET A.PP_T30_DRUG; T30_DRUG=1; KEEP CMN_KEY T30_DRUG; RUN;
@@ -345,7 +345,7 @@ PROC SQL; CREATE TABLE PP_T20_T30_T60 AS SELECT * FROM PP_T20_T30 AS A LEFT JOIN
 
 PROC SORT DATA=PP_T20_T30_T60; BY INDI_DSCM_NO MDCARE_STRT_DT; RUN;
 
-/*EVENT2: »óº´ÄÚµå+¾àÁ¦ */
+/*EVENT2: ìƒë³‘ì½”ë“œ+ì•½ì œ */
 DATA PP_T20_T30_T60; SET PP_T20_T30_T60;
 IF T30_DRUG="." THEN T30_DRUG=0; 
 IF T60_DRUG="." THEN T60_DRUG=0;
@@ -353,7 +353,7 @@ IF T30_DRUG+T60_DRUG>=1 THEN DRUG=1 ; ELSE DRUG=0;
 IF DRUG=1; 
 RUN;
 
-/*EVENT1: »óº´ÄÚµå¸¸ °í·Á½Ã event ¹ß»ý ´ë»óÀÚ (N=5,353)*/
+/*EVENT1: ìƒë³‘ì½”ë“œë§Œ ê³ ë ¤ì‹œ event ë°œìƒ ëŒ€ìƒìž (N=5,353)*/
 PROC SORT DATA= PP_T20_T30_T60 NODUPKEY OUT=PP_EVENT2; BY INDI_DSCM_NO; RUN;
 
 
@@ -365,7 +365,7 @@ DATA PP_EVENT2_REV; SET PP_EVENT2;
 RENAME MDCARE_STRT_DT=EVENT2_DATE;
 KEEP INDI_DSCM_NO MDCARE_STRT_DT; RUN;
 
-/*¿¬±¸´ë»óÀÚ ÀÚ°ÝÀÌ¶û ¿¬°è */
+/*ì—°êµ¬ëŒ€ìƒìž ìžê²©ì´ëž‘ ì—°ê³„ */
 PROC SQL; CREATE TABLE A.DAT AS SELECT * FROM A.POP AS A LEFT JOIN PP_EVENT1_REV AS B ON A.INDI_DSCM_NO=B.INDI_DSCM_NO; QUIT;
 PROC SQL; CREATE TABLE A.DAT AS SELECT * FROM A.DAT AS A LEFT JOIN PP_EVENT2_REV AS B ON A.INDI_DSCM_NO=B.INDI_DSCM_NO; QUIT;
 
@@ -373,10 +373,10 @@ DATA DAT; SET A.DAT; RUN;
 
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
-/*»ç¸ÁÀÚ·á (5,024)*/
+/*ì‚¬ë§ìžë£Œ (5,024)*/
 PROC SQL;&CONNECT.; CREATE TABLE DTH AS SELECT * FROM CONNECTION TO X1(SELECT * FROM NHISBDA.HHDV_DEATH where byear BETWEEN 2007 AND 2009); DISCONNECT FROM X1; QUIT;
 
-/*2007~2009³â Ãâ»ýÀÚ Áß 2013~2019³â »çÀÌ »ç¸ÁÇÑ ´ë»ó (n=902); ½Äº°; time °è»ê½Ã °í·ÁÇØÁÖ±â */
+/*2007~2009ë…„ ì¶œìƒìž ì¤‘ 2013~2019ë…„ ì‚¬ì´ ì‚¬ë§í•œ ëŒ€ìƒ (n=902); ì‹ë³„; time ê³„ì‚°ì‹œ ê³ ë ¤í•´ì£¼ê¸° */
 data dth; set dth;
 dth_year=substr(dth_assmd_dt,1,4);
 dth_age=dth_year-byear;
@@ -388,7 +388,7 @@ DATA DTH; SET SAPTMP.DTH; RUN;
 
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
-/*¿µÀ¯¾Æ °ËÁø1-7Â÷ Á¶È¸*/
+/*ì˜ìœ ì•„ ê²€ì§„1-7ì°¨ ì¡°íšŒ*/
 PROC SQL; &CONNECT.;CREATE TABLE A.GQ1 AS SELECT EXMD_BZ_YYYY, INDI_DSCM_NO, HME_DT, I1Q_BTH_DATE, I1Q_BTH_WGHT
 FROM CONNECTION TO X1 (SELECT * FROM NHISBDA.HMDV_I1Q_RST WHERE EXMD_BZ_YYYY>=2007); DISCONNECT FROM X1; QUIT;
 PROC SQL; &CONNECT.;CREATE TABLE A.GQ2 AS SELECT EXMD_BZ_YYYY, INDI_DSCM_NO, HME_DT, I2Q_BTH_DATE, I2Q_BTH_WGHT
@@ -404,7 +404,7 @@ FROM CONNECTION TO X1 (SELECT * FROM NHISBDA.HMDV_I6Q_RST WHERE EXMD_BZ_YYYY>=20
 PROC SQL; &CONNECT.;CREATE TABLE A.GQ7 AS SELECT EXMD_BZ_YYYY, INDI_DSCM_NO, HME_DT, I7Q_BTH_DATE, I7Q_BTH_WGHT
 FROM CONNECTION TO X1 (SELECT * FROM NHISBDA.HMDV_I7Q_RST WHERE EXMD_BZ_YYYY>=2007); DISCONNECT FROM X1; QUIT;
 
-/*Ãâ»ý½Ã Ã¼Áß ÀÀ´äÃ¼Å©ÇÑ ±â·Ï ÀÌ¿ëÇÏ¿© Ãâ»ý½Ã Ã¼Áßº¯¼ö ÀÌ¿ë*/
+/*ì¶œìƒì‹œ ì²´ì¤‘ ì‘ë‹µì²´í¬í•œ ê¸°ë¡ ì´ìš©í•˜ì—¬ ì¶œìƒì‹œ ì²´ì¤‘ë³€ìˆ˜ ì´ìš©*/
 DATA A.GQ1; SET A.GQ1; KEEP INDI_DSCM_NO I1Q_BTH_WGHT; RUN;
 DATA A.GQ2; SET A.GQ2; KEEP INDI_DSCM_NO I2Q_BTH_WGHT; RUN;
 DATA A.GQ3; SET A.GQ3; KEEP INDI_DSCM_NO I3Q_BTH_WGHT; RUN;
@@ -431,7 +431,7 @@ PROC SQL; CREATE TABLE POP_GQ AS SELECT * FROM POP_GQ AS A LEFT JOIN A.GQ6 AS B 
 PROC SQL; CREATE TABLE POP_GQ AS SELECT * FROM POP_GQ AS A LEFT JOIN A.GQ7 AS B ON A.INDI_DSCM_NO = B.INDI_DSCM_NO; QUIT;
 
 data POP_GQ; SET POP_GQ;
-/*1-7Â÷ °ËÁø ÀÀ´ä½Ã Æò±ÕÄ¡ ¾²±â (ÀÌ»ó°ª Á¦¿Ü ÈÄ)*/
+/*1-7ì°¨ ê²€ì§„ ì‘ë‹µì‹œ í‰ê· ì¹˜ ì“°ê¸° (ì´ìƒê°’ ì œì™¸ í›„)*/
 IF I1Q_BTH_WGHT=0  OR I1Q_BTH_WGHT>6 THEN I1Q_BTH_WGHT=.;
 IF I2Q_BTH_WGHT=0  OR I2Q_BTH_WGHT>6 THEN I2Q_BTH_WGHT=.;
 IF I3Q_BTH_WGHT=0  OR I3Q_BTH_WGHT>6 THEN I3Q_BTH_WGHT=.;
@@ -455,10 +455,10 @@ PROC SQL; CREATE TABLE A.DAT AS SELECT * FROM A.DAT AS A LEFT JOIN A.POP_GQ_REV 
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
 
-/*°ÅÁÖÁö, Ãâ»ý½Ã Ã¼Áß, °áÃø Á¦¿Ü, ¿Ü±¹ÀÎÀÎ °æ¿ì Á¦¿Ü*/
+/*ê±°ì£¼ì§€, ì¶œìƒì‹œ ì²´ì¤‘, ê²°ì¸¡ ì œì™¸, ì™¸êµ­ì¸ì¸ ê²½ìš° ì œì™¸*/
 DATA A.DAT; SET A.DAT;
-IF EVENT1_DATE^="." & EVENT1_DATE^="" THEN EVENT1=1; ELSE EVENT1=0; /*»óº´ÄÚµå ±âÁØ first onset*/
-IF EVENT2_DATE^="." & EVENT2_DATE^="" THEN EVENT2=1; ELSE EVENT2=0; /*»óº´ÄÚµå+¾àÁ¦ ±âÁØ first onset*/
+IF EVENT1_DATE^="." & EVENT1_DATE^="" THEN EVENT1=1; ELSE EVENT1=0; /*ìƒë³‘ì½”ë“œ ê¸°ì¤€ first onset*/
+IF EVENT2_DATE^="." & EVENT2_DATE^="" THEN EVENT2=1; ELSE EVENT2=0; /*ìƒë³‘ì½”ë“œ+ì•½ì œ ê¸°ì¤€ first onset*/
 EVENT1_AGE=SUBSTR(EVENT1_DATE,1,4)-BYEAR;
 EVENT2_AGE=SUBSTR(EVENT2_DATE,1,4)-BYEAR;
 IF EVENT1=1 THEN EVENT1_Year=SUBSTR(EVENT1_DATE,1,4);
@@ -466,22 +466,22 @@ IF EVENT1=1 THEN EVENT1_Mon=SUBSTR(EVENT1_DATE,5,2);
 IF EVENT2=1 THEN EVENT2_Year=SUBSTR(EVENT2_DATE,1,4);
 IF EVENT2=1 THEN EVENT2_Mon=SUBSTR(EVENT2_DATE,5,2);
 
-/*TIMEÀº ¿¬¿ùº°·Î °í·Á*/
+/*TIMEì€ ì—°ì›”ë³„ë¡œ ê³ ë ¤*/
 IF EVENT1=1 THEN EVENT1_TIME=(EVENT1_YEAR-STD_YYYY)*12+EVENT1_MON; ELSE EVENT1_TIME=60;
 IF EVENT2=1 THEN EVENT2_TIME=(EVENT2_YEAR-STD_YYYY)*12+EVENT2_MON; ELSE EVENT2_TIME=60;
 
-/*Áß°£¿¡ »ç¸ÁÇÏ´Â °æ¿ì °í·ÁÇØÁÜ*/
+/*ì¤‘ê°„ì— ì‚¬ë§í•˜ëŠ” ê²½ìš° ê³ ë ¤í•´ì¤Œ*/
 IF EVENT1=0 & DTH_YEAR^="" THEN EVENT1_TIME=(dth_year-STD_YYYY)*12+SUBSTR(DTH_ASSMD_DT,5,2);
 IF EVENT2=0 & DTH_YEAR^="" THEN EVENT2_TIME=(dth_year-STD_YYYY)*12+SUBSTR(DTH_ASSMD_DT,5,2);
 
-/*41195, 41197, 41199 => 41190 °æ±â ºÎÃµ½Ã */
-/*48123, 48125, 48127 => 48121 Ã¢¿ø½Ã */
+/*41195, 41197, 41199 => 41190 ê²½ê¸° ë¶€ì²œì‹œ */
+/*48123, 48125, 48127 => 48121 ì°½ì›ì‹œ */
 /*
-41730: ¿©ÁÖ±º -> 41670
-43710: Ã»¿ø±º -> 43114
+41730: ì—¬ì£¼êµ° -> 41670
+43710: ì²­ì›êµ° -> 43114
 
-41463 -> 41461 (¿ëÀÎ½Ã)
-41171 -> 41173 (¾È¾ç½Ã)
+41463 -> 41461 (ìš©ì¸ì‹œ)
+41171 -> 41173 (ì•ˆì–‘ì‹œ)
 45190 -> 45180
 */
 IF SGG=41195 THEN SGG=41190;
@@ -497,14 +497,14 @@ IF SGG=41463 THEN SGG=41461;
 IF SGG=41171 THEN SGG=41173;
 IF SGG=45190 THEN SGG=45180;
 
-if FOREIGNER_Y^="Y"; /*¿Ü±¹ÀÎ Á¦¿Ü*/
+if FOREIGNER_Y^="Y"; /*ì™¸êµ­ì¸ ì œì™¸*/
 IF BW^=".";
 IF STD_YYYY=2013 THEN KEY=COMPRESS("201301")||("-")||COMPRESS(SGG); 
 IF STD_YYYY=2014 THEN KEY=COMPRESS("201401")||("-")||COMPRESS(SGG); 
 IF STD_YYYY=2015 THEN KEY=COMPRESS("201501")||("-")||COMPRESS(SGG); 
 RUN;
 
-/*ÀÚ·á º¹»ç*/
+/*ìžë£Œ ë³µì‚¬*/
 DATA SAPTMP.DAT; SET A.DAT; RUN;
 Data DAT; SET A.DAT; RUN;
 
@@ -540,14 +540,14 @@ PROC FREQ DATA=D15_F; TABLES EVENT1_AGE*EVENT1/LIST; RUN;
 PROC FREQ DATA=D15_F; TABLES EVENT2_AGE*EVENT2/LIST; RUN;
 /*****************************************************************************************************************************************/
 /*****************************************************************************************************************************************/
-/*Á¤¸®ÇÑ ÀÚ·á & ±âÀúÁúÈ¯ ÀÚ·á °ËÅä */
+/*ì •ë¦¬í•œ ìžë£Œ & ê¸°ì €ì§ˆí™˜ ìžë£Œ ê²€í†  */
 PROC SQL; CREATE TABLE DAT2 AS SELECT * FROM DAT AS A LEFT JOIN A.POP_DIS_EX AS B ON A.INDI_DSCM_NO=B.INDI_DSCM_NO; QUIT;
 
 
-DATA DAT2; SET DAT2; IF SES05^="" & SES05^="";IF SGG^=""; RUN;          /*°ÅÁÖÁö Á¤º¸ ¾ø´Â°æ¿ì Á¦¿Ü*/
-DATA DAT3; SET DAT2; IF DIS_YEAR=""  OR DIS_YEAR>=STD_YYYY ; RUN; /*±âÀú½ÃÁ¡ ÀÌÀü¿¡ ±âÀúÁúÈ¯ÀÚ Á¦¿Ü*/
+DATA DAT2; SET DAT2; IF SES05^="" & SES05^="";IF SGG^=""; RUN;          /*ê±°ì£¼ì§€ ì •ë³´ ì—†ëŠ”ê²½ìš° ì œì™¸*/
+DATA DAT3; SET DAT2; IF DIS_YEAR=""  OR DIS_YEAR>=STD_YYYY ; RUN; /*ê¸°ì €ì‹œì  ì´ì „ì— ê¸°ì €ì§ˆí™˜ìž ì œì™¸*/
 
-/*6¼¼ ÀÌÀü ¼ºÁ¶¼÷Áõ ¹ß»ý Á¦¿Ü*/
+/*6ì„¸ ì´ì „ ì„±ì¡°ìˆ™ì¦ ë°œìƒ ì œì™¸*/
 DATA DAT3_1; SET DAT3; IF EVENT1=1 & EVENT1_AGE<6 THEN DELETE; RUN;
 DATA DAT3_2; SET DAT3; IF EVENT2=1 & EVENT1_AGE<6 THEN DELETE; RUN;
 
@@ -564,7 +564,7 @@ PROC FREQ DATA=DAT3_1; TABLES STD_YYYY ;RUN;
 
 /*****************************************************************************************************************************************/
 /*****************************************************************************************************************************************/
-/*»óº´ÄÚµå¸¸ °í·ÁÇÑ ´ë»óÀÚ */
+/*ìƒë³‘ì½”ë“œë§Œ ê³ ë ¤í•œ ëŒ€ìƒìž */
 DATA D13_M_EVENT1; SET DAT3_1;
 IF STD_YYYY=2013; IF SEX_TYPE=1;
 IF EVENT1_YEAR>2017 THEN EVENT1=0;
@@ -614,7 +614,7 @@ IF EVENT1=0 & DTH_YEAR^="" THEN EVENT1_TIME=(dth_year-STD_YYYY)*12+SUBSTR(DTH_AS
 IF EVENT1=0 & DTH_YEAR^="" & EVENT1_TIME>48 THEN EVENT1_TIME=48;
 RUN;
 
-/*»óº´+¾àÁ¦ °í·ÁÇÑ ´ë»óÀÚ */
+/*ìƒë³‘+ì•½ì œ ê³ ë ¤í•œ ëŒ€ìƒìž */
 DATA D13_M_EVENT2; SET DAT3_2;
 IF STD_YYYY=2013; IF SEX_TYPE=1;
 IF EVENT2_YEAR>2017 THEN EVENT2=0;
@@ -724,7 +724,7 @@ IF STD_YYYY=2014 THEN KEY=COMPRESS("201401")||("-")||COMPRESS(SGG);
 IF STD_YYYY=2015 THEN KEY=COMPRESS("201501")||("-")||COMPRESS(SGG); 
 run;
 
-/*¿¬·Éº°·Î event Å½»ö */
+/*ì—°ë ¹ë³„ë¡œ event íƒìƒ‰ */
 PROC FREQ DATA=d1; TABLES std_yyyy*event1/LIST; RUN;
 PROC FREQ DATA=d2; TABLES std_yyyy*event1/LIST; RUN;
 PROC FREQ DATA=d3; TABLES std_yyyy*event2/LIST; RUN;
@@ -732,7 +732,7 @@ PROC FREQ DATA=d4; TABLES std_yyyy*event2/LIST; RUN;
 
 /*****************************************************************************************************************************************/
 /*****************************************************************************************************************************************/
-/*¼ºº° event ¹ß»ý ½Ã°£ ¿ä¾àÅë°è*/
+/*ì„±ë³„ event ë°œìƒ ì‹œê°„ ìš”ì•½í†µê³„*/
 PROC MEANS DATA=D1 N MEAN STD MIN P1 P5 P10 P25 P50 P75 P90 P95 MAX ; VAR EVENT1_TIME; CLASS EVENT1; RUN;
 PROC MEANS DATA=D2 N MEAN STD MIN P1 P5 P10 P25 P50 P75 P90 P95 MAX ; VAR EVENT1_TIME; CLASS EVENT1; RUN;
 PROC MEANS DATA=D3 N MEAN STD MIN P1 P5 P10 P25 P50 P75 P90 P95 MAX ; VAR EVENT2_TIME; CLASS EVENT2; RUN;
@@ -740,7 +740,7 @@ PROC MEANS DATA=D4 N MEAN STD MIN P1 P5 P10 P25 P50 P75 P90 P95 MAX ; VAR EVENT2
 
 data zz; set d1; if DTH_ASSMD_DT^=""; if event1_time <60 ;run;
 
-/*±â»ó, ´ë±â¿À¿° ³ëÃâ ÀÚ·á*/
+/*ê¸°ìƒ, ëŒ€ê¸°ì˜¤ì—¼ ë…¸ì¶œ ìžë£Œ*/
 DATA TEMP_1019; SET NHIS_SGG_TEMP;
 KEEP NHIS_SGG YYYYMM YEAR MONTH mtemp_s0-mtemp_s48; RUN;
 
@@ -783,7 +783,7 @@ DATA Z2; SET PM10_CMAQ_0619; SGG=SUBSTR(KEY,8,12); keep sgg; run;
 proc sort data=z1 nodupkey; by sgg; run;
 proc sort data=z2 nodupkey; by sgg; run;
 
-/*ÀÎÃµ ¹ÌÃßÈ¦±¸  ½Ã±º±¸ ÄÚµå ¾È¸Â´Â°Å Ã£¾Æ¼­ ¸ÂÃçÁÜ*/
+/*ì¸ì²œ ë¯¸ì¶”í™€êµ¬  ì‹œêµ°êµ¬ ì½”ë“œ ì•ˆë§žëŠ”ê±° ì°¾ì•„ì„œ ë§žì¶°ì¤Œ*/
 DATA PM25_CMAQ_0619; SET SAPTMP.PM25_CMAQ_0619;RUN;
 DATA PM10_CMAQ_0619; SET SAPTMP.PM10_CMAQ_0619; IF SUBSTR(KEY,8,12)=28177 THEN KEY=COMPRESS(SUBSTR(KEY,1,7))||COMPRESS(28170);RUN;
 DATA SO2_CMAQ_0619; SET SAPTMP.SO2_CMAQ_0619; IF SUBSTR(KEY,8,12)=28177 THEN KEY=COMPRESS(SUBSTR(KEY,1,7))||COMPRESS(28170);RUN;
@@ -796,7 +796,7 @@ IF NHIS_SGG=28177 THEN NHIS_SGG=28170;
 KEY=COMPRESS(LEFT(YYYYMM))||("-")||COMPRESS(LEFT(NHIS_SGG)); 
 DROP YYYYMM REF SGG NHIS_SGG LEVEL1 LEVEL2 LEVEL3; RUN;
 
-/*Air pollution ÀÚ·á ºÒ·¯¿À±âÇÔ (ÆÄÀÏ-> µ¥ÀÌÅÍ °¡Á®¿À±â) CMAQ PM2.5 ÀÚ·á (06~19)*/
+/*Air pollution ìžë£Œ ë¶ˆëŸ¬ì˜¤ê¸°í•¨ (íŒŒì¼-> ë°ì´í„° ê°€ì ¸ì˜¤ê¸°) CMAQ PM2.5 ìžë£Œ (06~19)*/
 /*DATA SAPTMP.PM25_CMAQ_0619; SET PM25_CMAQ_0619; RUN;*/
 
 /*DATA SAPTMP.PM10_CMAQ_0619; SET PM10_CMAQ_0619; RUN;*/
@@ -811,7 +811,7 @@ KEY=COMPRESS(LEFT(YEAR))||COMPRESS(MTH)||("-")||COMPRESS(LEFT(NHIS_SGG));
 DROP YYYYMM YEAR MONTH NHIS_SGG MTH;
 RUN;
 
-/*³ëÃâÀÚ·á ´Ù ¿¬°è ÇØµÎ±â */
+/*ë…¸ì¶œìžë£Œ ë‹¤ ì—°ê³„ í•´ë‘ê¸° */
 PROC SQL; CREATE TABLE Exposure AS SELECT * FROM PM25_CMAQ_0619 AS A LEFT JOIN PM10_CMAQ_0619 AS B ON A.KEY=B.KEY; QUIT;
 PROC SQL; CREATE TABLE Exposure AS SELECT * FROM Exposure AS A LEFT JOIN SO2_CMAQ_0619 AS B ON A.KEY=B.KEY; QUIT;
 PROC SQL; CREATE TABLE Exposure AS SELECT * FROM Exposure AS A LEFT JOIN NO2_CMAQ_0619 AS B ON A.KEY=B.KEY; QUIT;
@@ -877,7 +877,7 @@ drop df chisq _name_ _label_;
 RUN;
 %mend;
 
-/*Model2: Adjusted model: º¸Çè°¡ÀÔÀÚ, Áö¿ª, Ãâ»ýÃ¼Áß,*/
+/*Model2: Adjusted model: ë³´í—˜ê°€ìž…ìž, ì§€ì—­, ì¶œìƒì²´ì¤‘,*/
 %macro mod2(data,out,event,time,exp,exp_text);
 proc phreg data=&data.; 
 CLASS SEX_TYPE  SES05 SIDO/ PARAM=REF REF=FIRST;
@@ -894,7 +894,7 @@ drop df chisq _name_ _label_;
 RUN;
 %mend;
 
-/*Model3: Adjusted model: º¸Çè°¡ÀÔÀÚ, Áö¿ª, Ãâ»ýÃ¼Áß, ±âÁØ³âµµ, ¿¬Æò±Õ ±â¿Â*/
+/*Model3: Adjusted model: ë³´í—˜ê°€ìž…ìž, ì§€ì—­, ì¶œìƒì²´ì¤‘, ê¸°ì¤€ë…„ë„, ì—°í‰ê·  ê¸°ì˜¨*/
 %macro mod3(data,out,event,time,exp,exp_text);
 proc phreg data=&data.; 
 CLASS STD_YYYY SEX_TYPE  SES05 SIDO/ PARAM=REF REF=FIRST;
@@ -1031,11 +1031,11 @@ proc freq data=a.d4; tables std_yyyy*event2/list; run;
 proc freq data=a.d1; tables std_yyyy*event1_time/list; run;
 
 /********************************************************************************************************************************************/
-/*ºñ·ÊÀ§Çè °¡Á¤ °ËÅä*/
+/*ë¹„ë¡€ìœ„í—˜ ê°€ì • ê²€í† */
 /* PROC LIFETEST DATA=DAT1; TIME EVENT1_TIME*EVENT1(0); STRATA SEX_TYPE; RUN;*/
 /* PROC LIFETEST DATA=DAT2; TIME EVENT2_TIME*EVENT2(0); STRATA SEX_TYPE; RUN;*/
 
-/*ºñ·ÊÀ§Çè °¡Á¤ °ËÅä Schoenfeld ÀÜÂ÷*/
+/*ë¹„ë¡€ìœ„í—˜ ê°€ì • ê²€í†  Schoenfeld ìž”ì°¨*/
 PROC PHREG DATA=z4; 
 CLASS SEX_TYPE  SES05 SIDO/ PARAM=REF REF=FIRST;
 MODEL event2_time*event2(0)=PM25_M12 SEX_TYPE  SES05 SIDO BW /RL;
@@ -1051,11 +1051,11 @@ CLASS SEX_TYPE  SES05 SIDO/ PARAM=REF REF=FIRST;
 MODEL event2_time*event2(0)=PM25_M48 SEX_TYPE  SES05 SIDO BW/ RL;
 OUTPUT OUT=SCH RESSCH=PM25; RUN;
 RUN;
-/*ÀÚ·á°¡ Ä¿¼­ ±×¸²»ó º¸±â Èûµë */
+/*ìžë£Œê°€ ì»¤ì„œ ê·¸ë¦¼ìƒ ë³´ê¸° íž˜ë“¬ */
 /* PROC LOESS DATA=SCH; MODEL PM25=EVENT2_TIME/SMOOTH=(0.2,0.4,0.6,0.8); RUN;*/
 /*PROC SGPLOT DATA=SCH; LOESS X=EVENT2_TIME Y=PM25/CLM; RUN;*/
 
-/*SplineÇ× Æ÷ÇÔÇÑ µÚ ³ëÃâ ¿¹Ãø°ª ¹ÝÈ¯ÇÏ±â*/
+/*Splineí•­ í¬í•¨í•œ ë’¤ ë…¸ì¶œ ì˜ˆì¸¡ê°’ ë°˜í™˜í•˜ê¸°*/
 proc means data=z1; var pm25_m12; run;
 proc means data=z1; var pm25_m24; run;
 proc means data=z1; var pm25_m36; run;
@@ -1085,7 +1085,7 @@ proc plm restore=spl;
 
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
-/*PM10: ´Ù¸¥ ´ë±â¿À¿°¹°Áú*/
+/*PM10: ë‹¤ë¥¸ ëŒ€ê¸°ì˜¤ì—¼ë¬¼ì§ˆ*/
 %mod1(A.D1,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod1(A.D1,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod1(A.D1,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -1200,7 +1200,7 @@ DATA MOD3_RES; SET MOD3_RES1_M MOD3_RES1_F MOD3_RES2_M MOD3_RES2_F; RUN;
 
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
-/*SO2: ´Ù¸¥ ´ë±â¿À¿°¹°Áú*/
+/*SO2: ë‹¤ë¥¸ ëŒ€ê¸°ì˜¤ì—¼ë¬¼ì§ˆ*/
 %mod1(A.D1,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod1(A.D1,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod1(A.D1,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -1313,7 +1313,7 @@ DATA mod3_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4;  if total^="."; RUN;
 
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
-/*NO2: ´Ù¸¥ ´ë±â¿À¿°¹°Áú*/
+/*NO2: ë‹¤ë¥¸ ëŒ€ê¸°ì˜¤ì—¼ë¬¼ì§ˆ*/
 %mod1(A.D1,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod1(A.D1,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod1(A.D1,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -1427,7 +1427,7 @@ DATA mod3_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4;  if total^="."; RUN;
 DATA MOD3_RES; SET MOD3_RES1_M MOD3_RES1_F MOD3_RES2_M MOD3_RES2_F; RUN;
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
-/*O3: ´Ù¸¥ ´ë±â¿À¿°¹°Áú*/
+/*O3: ë‹¤ë¥¸ ëŒ€ê¸°ì˜¤ì—¼ë¬¼ì§ˆ*/
 %mod1(A.D1,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod1(A.D1,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod1(A.D1,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -1542,7 +1542,7 @@ DATA MOD3_RES; SET MOD3_RES1_M MOD3_RES1_F MOD3_RES2_M MOD3_RES2_F; RUN;
 
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
-/*³»º¸³»±â*/
+/*ë‚´ë³´ë‚´ê¸°*/
 DATA DD1; SET A.D1; 
 KEEP STD_YYYY INDI_DSCM_NO YEND_STD_AGE GAIBJA_TYPE SES05 SIDO SGG BW LBW EVENT1 EVENT2 EVENT1_TIME EVENT2_TIME KEY 
 PM25_M12 PM25_M24 PM25_M36 PM25_M48 PM10_M12 PM10_M24 PM10_M36 PM10_M48
@@ -1565,7 +1565,7 @@ SO2_M12 SO2_M24 SO2_M36 SO2_M48 NO2_M12 NO2_M24 NO2_M36 NO2_M48
 O3_M12 O3_M24 O3_M36 O3_M48 MTEMP_M12 MTEMP_M24 MTEMP_M36 MTEMP_M48; RUN;
 
 /********************************************************************************************************************************************/
-/*ÀúÃ¼Áß¾Æ ±¸ºÐÇØ¼­ ºÐ¼® */
+/*ì €ì²´ì¤‘ì•„ êµ¬ë¶„í•´ì„œ ë¶„ì„ */
 PROC FREQ DATA=A.D1; TABLES LBW; RUN;
 
 DATA A.D1_LBW0; SET A.D1; IF LBW=0; RUN;
@@ -1971,8 +1971,8 @@ DATA LBW1_RES; SET LBW1_RES1_M LBW1_RES1_F LBW1_RES2_M LBW1_RES2_F; RUN;
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
 
-/*Model4: Adjusted model: º¸Çè°¡ÀÔÀÚ, Áö¿ª, Ãâ»ýÃ¼Áß, ±âÁØ³âµµ, ¿¬Æò±Õ ±â¿Â*/
-/*strata °í·Á */
+/*Model4: Adjusted model: ë³´í—˜ê°€ìž…ìž, ì§€ì—­, ì¶œìƒì²´ì¤‘, ê¸°ì¤€ë…„ë„, ì—°í‰ê·  ê¸°ì˜¨*/
+/*strata ê³ ë ¤ */
 %macro mod4(data,out,event,time,exp,exp_text);
 proc phreg data=&data.; 
 CLASS STD_YYYY SEX_TYPE  SES05 SIDO/ PARAM=REF REF=FIRST;
@@ -2135,9 +2135,9 @@ DATA mod4_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod4_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
-/*Model6: Adjusted model: º¸Çè°¡ÀÔÀÚ, Áö¿ª, Ãâ»ýÃ¼Áß, ±âÁØ³âµµ, ¿¬Æò±Õ ±â¿Â*/
-/*strata °í·Á */
-/*µµ½Ã ÃþÈ­ ¸ðµ¨*/
+/*Model6: Adjusted model: ë³´í—˜ê°€ìž…ìž, ì§€ì—­, ì¶œìƒì²´ì¤‘, ê¸°ì¤€ë…„ë„, ì—°í‰ê·  ê¸°ì˜¨*/
+/*strata ê³ ë ¤ */
+/*ë„ì‹œ ì¸µí™” ëª¨ë¸*/
 %macro mod6(data,out,event,time,exp,exp_text);
 proc phreg data=&data.; 
 CLASS STD_YYYY SEX_TYPE  SES05 SIDO/ PARAM=REF REF=FIRST;
@@ -2186,10 +2186,10 @@ data a.DAT2_YR2; SET A.DAT2; IF STD_YYYY=2014; RUN;
 data a.DAT2_YR3; SET A.DAT2; IF STD_YYYY=2015; RUN;
 
 
-/*½Ã°ñ */
+/*ì‹œê³¨ */
 %MOD6(A.D3_SIDO2,dat2_m_res1,event2,event2_time,PM25_M12,"PM25_M12");
 %MOD6(A.D3_SIDO2,dat2_m_res2,event2,event2_time,PM25_M24,"PM25_M24");
-%MOD6(A.D3_SIDO2,dat2_m_res3,event2,event2_time,PM25_M36,"PM25_M36");/*µµ½Ã */
+%MOD6(A.D3_SIDO2,dat2_m_res3,event2,event2_time,PM25_M36,"PM25_M36");/*ë„ì‹œ */
 %MOD6(A.D3_SIDO1,dat2_m_res1,event2,event2_time,PM25_M12,"PM25_M12");
 %MOD6(A.D3_SIDO1,dat2_m_res2,event2,event2_time,PM25_M24,"PM25_M24");
 %MOD6(A.D3_SIDO1,dat2_m_res3,event2,event2_time,PM25_M36,"PM25_M36");
@@ -2226,7 +2226,7 @@ DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
 
-/*µµ½Ã */
+/*ë„ì‹œ */
 %MOD6(A.D3_SIDO1,dat2_m_res1,event2,event2_time,PM10_M12,"PM10_M12");
 %MOD6(A.D3_SIDO1,dat2_m_res2,event2,event2_time,PM10_M24,"PM10_M24");
 %MOD6(A.D3_SIDO1,dat2_m_res3,event2,event2_time,PM10_M36,"PM10_M36");
@@ -2246,7 +2246,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*½Ã°ñ */
+/*ì‹œê³¨ */
 %MOD6(A.D3_SIDO2,dat2_m_res1,event2,event2_time,PM10_M12,"PM10_M12");
 %MOD6(A.D3_SIDO2,dat2_m_res2,event2,event2_time,PM10_M24,"PM10_M24");
 %MOD6(A.D3_SIDO2,dat2_m_res3,event2,event2_time,PM10_M36,"PM10_M36");
@@ -2268,7 +2268,7 @@ DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
 
 
-/*µµ½Ã */
+/*ë„ì‹œ */
 %MOD6(A.D3_SIDO1,dat2_m_res1,event2,event2_time,SO2_M12,"SO2_M12");
 %MOD6(A.D3_SIDO1,dat2_m_res2,event2,event2_time,SO2_M24,"SO2_M24");
 %MOD6(A.D3_SIDO1,dat2_m_res3,event2,event2_time,SO2_M36,"SO2_M36");
@@ -2288,7 +2288,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*½Ã°ñ */
+/*ì‹œê³¨ */
 %MOD6(A.D3_SIDO2,dat2_m_res1,event2,event2_time,SO2_M12,"SO2_M12");
 %MOD6(A.D3_SIDO2,dat2_m_res2,event2,event2_time,SO2_M24,"SO2_M24");
 %MOD6(A.D3_SIDO2,dat2_m_res3,event2,event2_time,SO2_M36,"SO2_M36");
@@ -2310,7 +2310,7 @@ DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
 
 
-/*µµ½Ã */
+/*ë„ì‹œ */
 %MOD6(A.D3_SIDO1,dat2_m_res1,event2,event2_time,NO2_M12,"NO2_M12");
 %MOD6(A.D3_SIDO1,dat2_m_res2,event2,event2_time,NO2_M24,"NO2_M24");
 %MOD6(A.D3_SIDO1,dat2_m_res3,event2,event2_time,NO2_M36,"NO2_M36");
@@ -2330,7 +2330,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*½Ã°ñ */
+/*ì‹œê³¨ */
 %MOD6(A.D3_SIDO2,dat2_m_res1,event2,event2_time,NO2_M12,"NO2_M12");
 %MOD6(A.D3_SIDO2,dat2_m_res2,event2,event2_time,NO2_M24,"NO2_M24");
 %MOD6(A.D3_SIDO2,dat2_m_res3,event2,event2_time,NO2_M36,"NO2_M36");
@@ -2351,7 +2351,7 @@ DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
 
-/*µµ½Ã */
+/*ë„ì‹œ */
 %MOD6(A.D3_SIDO1,dat2_m_res1,event2,event2_time,O3_M12,"O3_M12");
 %MOD6(A.D3_SIDO1,dat2_m_res2,event2,event2_time,O3_M24,"O3_M24");
 %MOD6(A.D3_SIDO1,dat2_m_res3,event2,event2_time,O3_M36,"O3_M36");
@@ -2371,7 +2371,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*½Ã°ñ */
+/*ì‹œê³¨ */
 %MOD6(A.D3_SIDO2,dat2_m_res1,event2,event2_time,O3_M12,"O3_M12");
 %MOD6(A.D3_SIDO2,dat2_m_res2,event2,event2_time,O3_M24,"O3_M24");
 %MOD6(A.D3_SIDO2,dat2_m_res3,event2,event2_time,O3_M36,"O3_M36");
@@ -2394,7 +2394,7 @@ DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
 
-/*2007³â Ãâ»ý  */
+/*2007ë…„ ì¶œìƒ  */
 %MOD6(A.D3_YR1,dat2_m_res1,event2,event2_time,PM25_M12,"PM25_M12");
 %MOD6(A.D3_YR1,dat2_m_res2,event2,event2_time,PM25_M24,"PM25_M24");
 %MOD6(A.D3_YR1,dat2_m_res3,event2,event2_time,PM25_M36,"PM25_M36");
@@ -2414,7 +2414,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*2008³â Ãâ»ý */
+/*2008ë…„ ì¶œìƒ */
 %MOD6(A.D3_YR2,dat2_m_res1,event2,event2_time,PM25_M12,"PM25_M12");
 %MOD6(A.D3_YR2,dat2_m_res2,event2,event2_time,PM25_M24,"PM25_M24");
 %MOD6(A.D3_YR2,dat2_m_res3,event2,event2_time,PM25_M36,"PM25_M36");
@@ -2434,7 +2434,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*2009³â Ãâ»ý */
+/*2009ë…„ ì¶œìƒ */
 %MOD6(A.D3_YR3,dat2_m_res1,event2,event2_time,PM25_M12,"PM25_M12");
 %MOD6(A.D3_YR3,dat2_m_res2,event2,event2_time,PM25_M24,"PM25_M24");
 %MOD6(A.D3_YR3,dat2_m_res3,event2,event2_time,PM25_M36,"PM25_M36");
@@ -2455,7 +2455,7 @@ DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
 
-/*2007³â Ãâ»ý  */
+/*2007ë…„ ì¶œìƒ  */
 %MOD6(A.D3_YR1,dat2_m_res1,event2,event2_time,PM10_M12,"PM10_M12");
 %MOD6(A.D3_YR1,dat2_m_res2,event2,event2_time,PM10_M24,"PM10_M24");
 %MOD6(A.D3_YR1,dat2_m_res3,event2,event2_time,PM10_M36,"PM10_M36");
@@ -2475,7 +2475,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*2008³â Ãâ»ý */
+/*2008ë…„ ì¶œìƒ */
 %MOD6(A.D3_YR2,dat2_m_res1,event2,event2_time,PM10_M12,"PM10_M12");
 %MOD6(A.D3_YR2,dat2_m_res2,event2,event2_time,PM10_M24,"PM10_M24");
 %MOD6(A.D3_YR2,dat2_m_res3,event2,event2_time,PM10_M36,"PM10_M36");
@@ -2495,7 +2495,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*2009³â Ãâ»ý */
+/*2009ë…„ ì¶œìƒ */
 %MOD6(A.D3_YR3,dat2_m_res1,event2,event2_time,PM10_M12,"PM10_M12");
 %MOD6(A.D3_YR3,dat2_m_res2,event2,event2_time,PM10_M24,"PM10_M24");
 %MOD6(A.D3_YR3,dat2_m_res3,event2,event2_time,PM10_M36,"PM10_M36");
@@ -2516,7 +2516,7 @@ DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
 
-/*2007³â Ãâ»ý  */
+/*2007ë…„ ì¶œìƒ  */
 %MOD6(A.D3_YR1,dat2_m_res1,event2,event2_time,SO2_M12,"SO2_M12");
 %MOD6(A.D3_YR1,dat2_m_res2,event2,event2_time,SO2_M24,"SO2_M24");
 %MOD6(A.D3_YR1,dat2_m_res3,event2,event2_time,SO2_M36,"SO2_M36");
@@ -2536,7 +2536,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*2008³â Ãâ»ý */
+/*2008ë…„ ì¶œìƒ */
 %MOD6(A.D3_YR2,dat2_m_res1,event2,event2_time,SO2_M12,"SO2_M12");
 %MOD6(A.D3_YR2,dat2_m_res2,event2,event2_time,SO2_M24,"SO2_M24");
 %MOD6(A.D3_YR2,dat2_m_res3,event2,event2_time,SO2_M36,"SO2_M36");
@@ -2556,7 +2556,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*2009³â Ãâ»ý */
+/*2009ë…„ ì¶œìƒ */
 %MOD6(A.D3_YR3,dat2_m_res1,event2,event2_time,SO2_M12,"SO2_M12");
 %MOD6(A.D3_YR3,dat2_m_res2,event2,event2_time,SO2_M24,"SO2_M24");
 %MOD6(A.D3_YR3,dat2_m_res3,event2,event2_time,SO2_M36,"SO2_M36");
@@ -2576,7 +2576,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*2007³â Ãâ»ý  */
+/*2007ë…„ ì¶œìƒ  */
 %MOD6(A.D3_YR1,dat2_m_res1,event2,event2_time,NO2_M12,"NO2_M12");
 %MOD6(A.D3_YR1,dat2_m_res2,event2,event2_time,NO2_M24,"NO2_M24");
 %MOD6(A.D3_YR1,dat2_m_res3,event2,event2_time,NO2_M36,"NO2_M36");
@@ -2596,7 +2596,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*2008³â Ãâ»ý */
+/*2008ë…„ ì¶œìƒ */
 %MOD6(A.D3_YR2,dat2_m_res1,event2,event2_time,NO2_M12,"NO2_M12");
 %MOD6(A.D3_YR2,dat2_m_res2,event2,event2_time,NO2_M24,"NO2_M24");
 %MOD6(A.D3_YR2,dat2_m_res3,event2,event2_time,NO2_M36,"NO2_M36");
@@ -2616,7 +2616,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*2009³â Ãâ»ý */
+/*2009ë…„ ì¶œìƒ */
 %MOD6(A.D3_YR3,dat2_m_res1,event2,event2_time,NO2_M12,"NO2_M12");
 %MOD6(A.D3_YR3,dat2_m_res2,event2,event2_time,NO2_M24,"NO2_M24");
 %MOD6(A.D3_YR3,dat2_m_res3,event2,event2_time,NO2_M36,"NO2_M36");
@@ -2636,7 +2636,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*2007³â Ãâ»ý  */
+/*2007ë…„ ì¶œìƒ  */
 %MOD6(A.D3_YR1,dat2_m_res1,event2,event2_time,O3_M12,"O3_M12");
 %MOD6(A.D3_YR1,dat2_m_res2,event2,event2_time,O3_M24,"O3_M24");
 %MOD6(A.D3_YR1,dat2_m_res3,event2,event2_time,O3_M36,"O3_M36");
@@ -2656,7 +2656,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*2008³â Ãâ»ý */
+/*2008ë…„ ì¶œìƒ */
 %MOD6(A.D3_YR2,dat2_m_res1,event2,event2_time,O3_M12,"O3_M12");
 %MOD6(A.D3_YR2,dat2_m_res2,event2,event2_time,O3_M24,"O3_M24");
 %MOD6(A.D3_YR2,dat2_m_res3,event2,event2_time,O3_M36,"O3_M36");
@@ -2676,7 +2676,7 @@ DATA MOD6_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA MOD6_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 
-/*2009³â Ãâ»ý */
+/*2009ë…„ ì¶œìƒ */
 %MOD6(A.D3_YR3,dat2_m_res1,event2,event2_time,O3_M12,"O3_M12");
 %MOD6(A.D3_YR3,dat2_m_res2,event2,event2_time,O3_M24,"O3_M24");
 %MOD6(A.D3_YR3,dat2_m_res3,event2,event2_time,O3_M36,"O3_M36");
@@ -2701,8 +2701,8 @@ DATA MOD6_RES; SET MOD6_RES_TOT MOD6_RES2_M MOD6_RES2_F; RUN;
 /********************************************************************************************************************************************/
 
 
-/*Model5: Adjusted model: º¸Çè°¡ÀÔÀÚ, Áö¿ª, Ãâ»ýÃ¼Áß, ±âÁØ³âµµ, ¿¬Æò±Õ ±â¿Â*/
-/*frailty °í·Á */
+/*Model5: Adjusted model: ë³´í—˜ê°€ìž…ìž, ì§€ì—­, ì¶œìƒì²´ì¤‘, ê¸°ì¤€ë…„ë„, ì—°í‰ê·  ê¸°ì˜¨*/
+/*frailty ê³ ë ¤ */
 %macro mod5(data,out,event,time,exp,exp_text);
 proc phreg data=&data.; 
 CLASS STD_YYYY SEX_TYPE  SES05 SIDO/ PARAM=REF REF=FIRST;
@@ -2901,7 +2901,7 @@ DATA mod5_RES; SET mod5_RES1_M mod5_RES1_F mod5_RES2_M mod5_RES2_F; RUN;
 
 /********************************************************************************************************************************************/
 /********************************************************************************************************************************************/
-/*µµ½ÃÃþÈ­ ¸ðµ¨*/
+/*ë„ì‹œì¸µí™” ëª¨ë¸*/
 DATA A.D1_S01; SET A.D1; IF SIDO=11; RUN;DATA A.D1_S02; SET A.D1; IF SIDO=26; RUN;
 DATA A.D1_S03; SET A.D1; IF SIDO=27; RUN;DATA A.D1_S04; SET A.D1; IF SIDO=28; RUN;
 DATA A.D1_S05; SET A.D1; IF SIDO=29; RUN;DATA A.D1_S06; SET A.D1; IF SIDO=30; RUN;
@@ -2962,7 +2962,7 @@ DATA A.DAT2_S13; SET A.DAT2; IF SIDO=45; RUN;DATA A.DAT2_S14; SET A.DAT2; IF SID
 DATA A.DAT2_S15; SET A.DAT2; IF SIDO=47; RUN;DATA A.DAT2_S16; SET A.DAT2; IF SIDO=48; RUN;
 DATA A.DAT2_S17; SET A.DAT2; IF SIDO=50; RUN;
 
-/*¼­¿ï*/
+/*ì„œìš¸*/
 %mod4(A.D1_S01,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S01,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S01,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3002,7 +3002,7 @@ DATA mod4_S01_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S01_RESULT; SET MOD4_S01_RES_TOT MOD4_S01_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*ºÎ»ê*/
+/*ë¶€ì‚°*/
 %mod4(A.D1_S02,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S02,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S02,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3042,7 +3042,7 @@ DATA mod4_S02_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S02_RESULT; SET MOD4_S02_RES_TOT MOD4_S02_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*´ë±¸*/
+/*ëŒ€êµ¬*/
 %mod4(A.D1_S03,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S03,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S03,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3082,7 +3082,7 @@ DATA mod4_S03_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S03_RESULT; SET MOD4_S03_RES_TOT MOD4_S03_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*ÀÎÃµ*/
+/*ì¸ì²œ*/
 %mod4(A.D1_S04,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S04,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S04,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3122,7 +3122,7 @@ DATA mod4_S04_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S04_RESULT; SET MOD4_S04_RES_TOT MOD4_S04_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*±¤ÁÖ*/
+/*ê´‘ì£¼*/
 %mod4(A.D1_S05,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S05,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S05,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3162,7 +3162,7 @@ DATA mod4_S05_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S05_RESULT; SET MOD4_S05_RES_TOT MOD4_S05_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*´ëÀü*/
+/*ëŒ€ì „*/
 %mod4(A.D1_S06,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S06,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S06,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3202,7 +3202,7 @@ DATA mod4_S06_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S06_RESULT; SET MOD4_S06_RES_TOT MOD4_S06_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*¿ï»ê*/
+/*ìš¸ì‚°*/
 %mod4(A.D1_S07,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S07,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S07,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3242,7 +3242,7 @@ DATA mod4_S07_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S07_RESULT; SET MOD4_S07_RES_TOT MOD4_S07_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*¼¼Á¾*/
+/*ì„¸ì¢…*/
 %mod4(A.D1_S08,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S08,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S08,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3282,7 +3282,7 @@ DATA mod4_S08_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S08_RESULT; SET MOD4_S08_RES_TOT MOD4_S08_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*°­¿ø*/
+/*ê°•ì›*/
 %mod4(A.D1_S10,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S10,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S10,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3322,7 +3322,7 @@ DATA mod4_S10_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S10_RESULT; SET MOD4_S10_RES_TOT MOD4_S10_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*ÃæºÏ*/
+/*ì¶©ë¶*/
 %mod4(A.D1_S11,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S11,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S11,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3362,7 +3362,7 @@ DATA mod4_S11_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S11_RESULT; SET MOD4_S11_RES_TOT MOD4_S11_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*Ãæ³²*/
+/*ì¶©ë‚¨*/
 %mod4(A.D1_S12,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S12,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S12,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3402,7 +3402,7 @@ DATA mod4_S12_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S12_RESULT; SET MOD4_S12_RES_TOT MOD4_S12_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*ÀüºÏ*/
+/*ì „ë¶*/
 %mod4(A.D1_S13,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S13,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S13,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3442,7 +3442,7 @@ DATA mod4_S13_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S13_RESULT; SET MOD4_S13_RES_TOT MOD4_S13_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*Àü³²*/
+/*ì „ë‚¨*/
 %mod4(A.D1_S14,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S14,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S14,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3482,7 +3482,7 @@ DATA mod4_S14_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S14_RESULT; SET MOD4_S14_RES_TOT MOD4_S14_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*°æºÏ*/
+/*ê²½ë¶*/
 %mod4(A.D1_S15,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S15,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S15,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3522,7 +3522,7 @@ DATA mod4_S15_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S15_RESULT; SET MOD4_S15_RES_TOT MOD4_S15_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*°æ³²*/
+/*ê²½ë‚¨*/
 %mod4(A.D1_S16,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S16,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S16,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3562,7 +3562,7 @@ DATA mod4_S16_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S16_RESULT; SET MOD4_S16_RES_TOT MOD4_S16_RES;
 IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
-/*Á¦ÁÖ*/
+/*ì œì£¼*/
 %mod4(A.D1_S17,dat1_m_res1,event1,event1_time,PM25_M12,"PM25_M12");
 %mod4(A.D1_S17,dat1_m_res2,event1,event1_time,PM25_M24,"PM25_M24");
 %mod4(A.D1_S17,dat1_m_res3,event1,event1_time,PM25_M36,"PM25_M36");
@@ -3604,7 +3604,7 @@ IF PARAMETER IN ("PM25_M12","PM25_M24","PM25_M36","PM25_M48"); RUN;
 
 /*********************************************************************************************************/
 /*********************************************************************************************************/
-/*¼­¿ï*/
+/*ì„œìš¸*/
 %mod4(A.D1_S01,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S01,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S01,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -3644,7 +3644,7 @@ DATA mod4_S01_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S01_RESULT; SET MOD4_S01_RES_TOT MOD4_S01_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*ºÎ»ê*/
+/*ë¶€ì‚°*/
 %mod4(A.D1_S02,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S02,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S02,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -3684,7 +3684,7 @@ DATA mod4_S02_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S02_RESULT; SET MOD4_S02_RES_TOT MOD4_S02_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*´ë±¸*/
+/*ëŒ€êµ¬*/
 %mod4(A.D1_S03,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S03,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S03,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -3724,7 +3724,7 @@ DATA mod4_S03_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S03_RESULT; SET MOD4_S03_RES_TOT MOD4_S03_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*ÀÎÃµ*/
+/*ì¸ì²œ*/
 %mod4(A.D1_S04,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S04,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S04,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -3764,7 +3764,7 @@ DATA mod4_S04_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S04_RESULT; SET MOD4_S04_RES_TOT MOD4_S04_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*±¤ÁÖ*/
+/*ê´‘ì£¼*/
 %mod4(A.D1_S05,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S05,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S05,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -3804,7 +3804,7 @@ DATA mod4_S05_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S05_RESULT; SET MOD4_S05_RES_TOT MOD4_S05_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*´ëÀü*/
+/*ëŒ€ì „*/
 %mod4(A.D1_S06,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S06,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S06,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -3844,7 +3844,7 @@ DATA mod4_S06_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S06_RESULT; SET MOD4_S06_RES_TOT MOD4_S06_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*¿ï»ê*/
+/*ìš¸ì‚°*/
 %mod4(A.D1_S07,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S07,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S07,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -3884,7 +3884,7 @@ DATA mod4_S07_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S07_RESULT; SET MOD4_S07_RES_TOT MOD4_S07_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*¼¼Á¾*/
+/*ì„¸ì¢…*/
 %mod4(A.D1_S08,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S08,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S08,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -3924,7 +3924,7 @@ DATA mod4_S08_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S08_RESULT; SET MOD4_S08_RES_TOT MOD4_S08_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*°æ±â*/
+/*ê²½ê¸°*/
 %mod4(A.D1_S09,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S09,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S09,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -3964,7 +3964,7 @@ DATA mod4_S09_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S09_RESULT; SET MOD4_S09_RES_TOT MOD4_S09_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*°­¿ø*/
+/*ê°•ì›*/
 %mod4(A.D1_S10,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S10,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S10,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -4004,7 +4004,7 @@ DATA mod4_S10_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S10_RESULT; SET MOD4_S10_RES_TOT MOD4_S10_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*ÃæºÏ*/
+/*ì¶©ë¶*/
 %mod4(A.D1_S11,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S11,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S11,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -4044,7 +4044,7 @@ DATA mod4_S11_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S11_RESULT; SET MOD4_S11_RES_TOT MOD4_S11_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*Ãæ³²*/
+/*ì¶©ë‚¨*/
 %mod4(A.D1_S12,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S12,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S12,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -4084,7 +4084,7 @@ DATA mod4_S12_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S12_RESULT; SET MOD4_S12_RES_TOT MOD4_S12_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*ÀüºÏ*/
+/*ì „ë¶*/
 %mod4(A.D1_S13,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S13,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S13,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -4124,7 +4124,7 @@ DATA mod4_S13_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S13_RESULT; SET MOD4_S13_RES_TOT MOD4_S13_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*Àü³²*/
+/*ì „ë‚¨*/
 %mod4(A.D1_S14,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S14,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S14,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -4164,7 +4164,7 @@ DATA mod4_S14_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S14_RESULT; SET MOD4_S14_RES_TOT MOD4_S14_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*°æºÏ*/
+/*ê²½ë¶*/
 %mod4(A.D1_S15,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S15,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S15,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -4204,7 +4204,7 @@ DATA mod4_S15_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S15_RESULT; SET MOD4_S15_RES_TOT MOD4_S15_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*°æ³²*/
+/*ê²½ë‚¨*/
 %mod4(A.D1_S16,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S16,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S16,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -4244,7 +4244,7 @@ DATA mod4_S16_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S16_RESULT; SET MOD4_S16_RES_TOT MOD4_S16_RES;
 IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
-/*Á¦ÁÖ*/
+/*ì œì£¼*/
 %mod4(A.D1_S17,dat1_m_res1,event1,event1_time,PM10_M12,"PM10_M12");
 %mod4(A.D1_S17,dat1_m_res2,event1,event1_time,PM10_M24,"PM10_M24");
 %mod4(A.D1_S17,dat1_m_res3,event1,event1_time,PM10_M36,"PM10_M36");
@@ -4286,7 +4286,7 @@ IF PARAMETER IN ("PM10_M12","PM10_M24","PM10_M36","PM10_M48"); RUN;
 
 /*********************************************************************************************************/
 /*********************************************************************************************************/
-/*¼­¿ï*/
+/*ì„œìš¸*/
 %mod4(A.D1_S01,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S01,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S01,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4326,7 +4326,7 @@ DATA mod4_S01_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S01_RESULT; SET MOD4_S01_RES_TOT MOD4_S01_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*ºÎ»ê*/
+/*ë¶€ì‚°*/
 %mod4(A.D1_S02,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S02,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S02,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4366,7 +4366,7 @@ DATA mod4_S02_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S02_RESULT; SET MOD4_S02_RES_TOT MOD4_S02_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*´ë±¸*/
+/*ëŒ€êµ¬*/
 %mod4(A.D1_S03,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S03,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S03,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4406,7 +4406,7 @@ DATA mod4_S03_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S03_RESULT; SET MOD4_S03_RES_TOT MOD4_S03_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*ÀÎÃµ*/
+/*ì¸ì²œ*/
 %mod4(A.D1_S04,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S04,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S04,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4446,7 +4446,7 @@ DATA mod4_S04_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S04_RESULT; SET MOD4_S04_RES_TOT MOD4_S04_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*±¤ÁÖ*/
+/*ê´‘ì£¼*/
 %mod4(A.D1_S05,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S05,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S05,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4486,7 +4486,7 @@ DATA mod4_S05_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S05_RESULT; SET MOD4_S05_RES_TOT MOD4_S05_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*´ëÀü*/
+/*ëŒ€ì „*/
 %mod4(A.D1_S06,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S06,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S06,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4526,7 +4526,7 @@ DATA mod4_S06_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S06_RESULT; SET MOD4_S06_RES_TOT MOD4_S06_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*¿ï»ê*/
+/*ìš¸ì‚°*/
 %mod4(A.D1_S07,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S07,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S07,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4566,7 +4566,7 @@ DATA mod4_S07_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S07_RESULT; SET MOD4_S07_RES_TOT MOD4_S07_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*¼¼Á¾*/
+/*ì„¸ì¢…*/
 %mod4(A.D1_S08,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S08,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S08,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4606,7 +4606,7 @@ DATA mod4_S08_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S08_RESULT; SET MOD4_S08_RES_TOT MOD4_S08_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*°æ±â*/
+/*ê²½ê¸°*/
 %mod4(A.D1_S09,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S09,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S09,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4646,7 +4646,7 @@ DATA mod4_S09_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S09_RESULT; SET MOD4_S09_RES_TOT MOD4_S09_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*°­¿ø*/
+/*ê°•ì›*/
 %mod4(A.D1_S10,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S10,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S10,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4686,7 +4686,7 @@ DATA mod4_S10_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S10_RESULT; SET MOD4_S10_RES_TOT MOD4_S10_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*ÃæºÏ*/
+/*ì¶©ë¶*/
 %mod4(A.D1_S11,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S11,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S11,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4726,7 +4726,7 @@ DATA mod4_S11_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S11_RESULT; SET MOD4_S11_RES_TOT MOD4_S11_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*Ãæ³²*/
+/*ì¶©ë‚¨*/
 %mod4(A.D1_S12,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S12,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S12,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4766,7 +4766,7 @@ DATA mod4_S12_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S12_RESULT; SET MOD4_S12_RES_TOT MOD4_S12_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*ÀüºÏ*/
+/*ì „ë¶*/
 %mod4(A.D1_S13,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S13,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S13,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4806,7 +4806,7 @@ DATA mod4_S13_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S13_RESULT; SET MOD4_S13_RES_TOT MOD4_S13_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*Àü³²*/
+/*ì „ë‚¨*/
 %mod4(A.D1_S14,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S14,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S14,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4846,7 +4846,7 @@ DATA mod4_S14_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S14_RESULT; SET MOD4_S14_RES_TOT MOD4_S14_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*°æºÏ*/
+/*ê²½ë¶*/
 %mod4(A.D1_S15,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S15,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S15,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4886,7 +4886,7 @@ DATA mod4_S15_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S15_RESULT; SET MOD4_S15_RES_TOT MOD4_S15_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*°æ³²*/
+/*ê²½ë‚¨*/
 %mod4(A.D1_S16,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S16,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S16,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4926,7 +4926,7 @@ DATA mod4_S16_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S16_RESULT; SET MOD4_S16_RES_TOT MOD4_S16_RES;
 IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
-/*Á¦ÁÖ*/
+/*ì œì£¼*/
 %mod4(A.D1_S17,dat1_m_res1,event1,event1_time,SO2_M12,"SO2_M12");
 %mod4(A.D1_S17,dat1_m_res2,event1,event1_time,SO2_M24,"SO2_M24");
 %mod4(A.D1_S17,dat1_m_res3,event1,event1_time,SO2_M36,"SO2_M36");
@@ -4968,7 +4968,7 @@ IF PARAMETER IN ("SO2_M12","SO2_M24","SO2_M36","SO2_M48"); RUN;
 
 /*********************************************************************************************************/
 /*********************************************************************************************************/
-/*¼­¿ï*/
+/*ì„œìš¸*/
 %mod4(A.D1_S01,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S01,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S01,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5008,7 +5008,7 @@ DATA mod4_S01_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S01_RESULT; SET MOD4_S01_RES_TOT MOD4_S01_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*ºÎ»ê*/
+/*ë¶€ì‚°*/
 %mod4(A.D1_S02,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S02,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S02,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5048,7 +5048,7 @@ DATA mod4_S02_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S02_RESULT; SET MOD4_S02_RES_TOT MOD4_S02_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*´ë±¸*/
+/*ëŒ€êµ¬*/
 %mod4(A.D1_S03,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S03,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S03,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5088,7 +5088,7 @@ DATA mod4_S03_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S03_RESULT; SET MOD4_S03_RES_TOT MOD4_S03_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*ÀÎÃµ*/
+/*ì¸ì²œ*/
 %mod4(A.D1_S04,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S04,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S04,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5128,7 +5128,7 @@ DATA mod4_S04_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S04_RESULT; SET MOD4_S04_RES_TOT MOD4_S04_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*±¤ÁÖ*/
+/*ê´‘ì£¼*/
 %mod4(A.D1_S05,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S05,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S05,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5168,7 +5168,7 @@ DATA mod4_S05_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S05_RESULT; SET MOD4_S05_RES_TOT MOD4_S05_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*´ëÀü*/
+/*ëŒ€ì „*/
 %mod4(A.D1_S06,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S06,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S06,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5208,7 +5208,7 @@ DATA mod4_S06_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S06_RESULT; SET MOD4_S06_RES_TOT MOD4_S06_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*¿ï»ê*/
+/*ìš¸ì‚°*/
 %mod4(A.D1_S07,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S07,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S07,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5248,7 +5248,7 @@ DATA mod4_S07_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S07_RESULT; SET MOD4_S07_RES_TOT MOD4_S07_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*¼¼Á¾*/
+/*ì„¸ì¢…*/
 %mod4(A.D1_S08,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S08,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S08,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5288,7 +5288,7 @@ DATA mod4_S08_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S08_RESULT; SET MOD4_S08_RES_TOT MOD4_S08_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*°æ±â*/
+/*ê²½ê¸°*/
 %mod4(A.D1_S09,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S09,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S09,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5328,7 +5328,7 @@ DATA mod4_S09_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S09_RESULT; SET MOD4_S09_RES_TOT MOD4_S09_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*°­¿ø*/
+/*ê°•ì›*/
 %mod4(A.D1_S10,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S10,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S10,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5368,7 +5368,7 @@ DATA mod4_S10_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S10_RESULT; SET MOD4_S10_RES_TOT MOD4_S10_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*ÃæºÏ*/
+/*ì¶©ë¶*/
 %mod4(A.D1_S11,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S11,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S11,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5408,7 +5408,7 @@ DATA mod4_S11_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S11_RESULT; SET MOD4_S11_RES_TOT MOD4_S11_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*Ãæ³²*/
+/*ì¶©ë‚¨*/
 %mod4(A.D1_S12,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S12,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S12,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5448,7 +5448,7 @@ DATA mod4_S12_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S12_RESULT; SET MOD4_S12_RES_TOT MOD4_S12_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*ÀüºÏ*/
+/*ì „ë¶*/
 %mod4(A.D1_S13,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S13,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S13,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5488,7 +5488,7 @@ DATA mod4_S13_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S13_RESULT; SET MOD4_S13_RES_TOT MOD4_S13_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*Àü³²*/
+/*ì „ë‚¨*/
 %mod4(A.D1_S14,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S14,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S14,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5528,7 +5528,7 @@ DATA mod4_S14_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S14_RESULT; SET MOD4_S14_RES_TOT MOD4_S14_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*°æºÏ*/
+/*ê²½ë¶*/
 %mod4(A.D1_S15,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S15,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S15,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5568,7 +5568,7 @@ DATA mod4_S15_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S15_RESULT; SET MOD4_S15_RES_TOT MOD4_S15_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*°æ³²*/
+/*ê²½ë‚¨*/
 %mod4(A.D1_S16,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S16,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S16,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5608,7 +5608,7 @@ DATA mod4_S16_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S16_RESULT; SET MOD4_S16_RES_TOT MOD4_S16_RES;
 IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
-/*Á¦ÁÖ*/
+/*ì œì£¼*/
 %mod4(A.D1_S17,dat1_m_res1,event1,event1_time,NO2_M12,"NO2_M12");
 %mod4(A.D1_S17,dat1_m_res2,event1,event1_time,NO2_M24,"NO2_M24");
 %mod4(A.D1_S17,dat1_m_res3,event1,event1_time,NO2_M36,"NO2_M36");
@@ -5650,7 +5650,7 @@ IF PARAMETER IN ("NO2_M12","NO2_M24","NO2_M36","NO2_M48"); RUN;
 
 /*********************************************************************************************************/
 /*********************************************************************************************************/
-/*¼­¿ï*/
+/*ì„œìš¸*/
 %mod4(A.D1_S01,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S01,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S01,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -5690,7 +5690,7 @@ DATA mod4_S01_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S01_RESULT; SET MOD4_S01_RES_TOT MOD4_S01_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*ºÎ»ê*/
+/*ë¶€ì‚°*/
 %mod4(A.D1_S02,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S02,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S02,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -5730,7 +5730,7 @@ DATA mod4_S02_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S02_RESULT; SET MOD4_S02_RES_TOT MOD4_S02_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*´ë±¸*/
+/*ëŒ€êµ¬*/
 %mod4(A.D1_S03,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S03,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S03,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -5770,7 +5770,7 @@ DATA mod4_S03_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S03_RESULT; SET MOD4_S03_RES_TOT MOD4_S03_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*ÀÎÃµ*/
+/*ì¸ì²œ*/
 %mod4(A.D1_S04,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S04,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S04,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -5810,7 +5810,7 @@ DATA mod4_S04_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S04_RESULT; SET MOD4_S04_RES_TOT MOD4_S04_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*±¤ÁÖ*/
+/*ê´‘ì£¼*/
 %mod4(A.D1_S05,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S05,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S05,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -5850,7 +5850,7 @@ DATA mod4_S05_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S05_RESULT; SET MOD4_S05_RES_TOT MOD4_S05_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*´ëÀü*/
+/*ëŒ€ì „*/
 %mod4(A.D1_S06,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S06,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S06,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -5890,7 +5890,7 @@ DATA mod4_S06_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S06_RESULT; SET MOD4_S06_RES_TOT MOD4_S06_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*¿ï»ê*/
+/*ìš¸ì‚°*/
 %mod4(A.D1_S07,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S07,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S07,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -5930,7 +5930,7 @@ DATA mod4_S07_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S07_RESULT; SET MOD4_S07_RES_TOT MOD4_S07_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*¼¼Á¾*/
+/*ì„¸ì¢…*/
 %mod4(A.D1_S08,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S08,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S08,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -5970,7 +5970,7 @@ DATA mod4_S08_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S08_RESULT; SET MOD4_S08_RES_TOT MOD4_S08_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*°æ±â*/
+/*ê²½ê¸°*/
 %mod4(A.D1_S09,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S09,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S09,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -6010,7 +6010,7 @@ DATA mod4_S09_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S09_RESULT; SET MOD4_S09_RES_TOT MOD4_S09_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*°­¿ø*/
+/*ê°•ì›*/
 %mod4(A.D1_S10,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S10,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S10,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -6050,7 +6050,7 @@ DATA mod4_S10_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S10_RESULT; SET MOD4_S10_RES_TOT MOD4_S10_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*ÃæºÏ*/
+/*ì¶©ë¶*/
 %mod4(A.D1_S11,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S11,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S11,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -6090,7 +6090,7 @@ DATA mod4_S11_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S11_RESULT; SET MOD4_S11_RES_TOT MOD4_S11_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*Ãæ³²*/
+/*ì¶©ë‚¨*/
 %mod4(A.D1_S12,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S12,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S12,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -6130,7 +6130,7 @@ DATA mod4_S12_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S12_RESULT; SET MOD4_S12_RES_TOT MOD4_S12_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*ÀüºÏ*/
+/*ì „ë¶*/
 %mod4(A.D1_S13,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S13,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S13,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -6170,7 +6170,7 @@ DATA mod4_S13_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S13_RESULT; SET MOD4_S13_RES_TOT MOD4_S13_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*Àü³²*/
+/*ì „ë‚¨*/
 %mod4(A.D1_S14,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S14,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S14,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -6210,7 +6210,7 @@ DATA mod4_S14_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S14_RESULT; SET MOD4_S14_RES_TOT MOD4_S14_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*°æºÏ*/
+/*ê²½ë¶*/
 %mod4(A.D1_S15,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S15,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S15,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -6250,7 +6250,7 @@ DATA mod4_S15_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S15_RESULT; SET MOD4_S15_RES_TOT MOD4_S15_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*°æ³²*/
+/*ê²½ë‚¨*/
 %mod4(A.D1_S16,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S16,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S16,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -6290,7 +6290,7 @@ DATA mod4_S16_RES; SET mod4_RES1_M mod4_RES1_F mod4_RES2_M mod4_RES2_F; RUN;
 DATA MOD4_S16_RESULT; SET MOD4_S16_RES_TOT MOD4_S16_RES;
 IF PARAMETER IN ("O3_M12","O3_M24","O3_M36","O3_M48"); RUN;
 
-/*Á¦ÁÖ*/
+/*ì œì£¼*/
 %mod4(A.D1_S17,dat1_m_res1,event1,event1_time,O3_M12,"O3_M12");
 %mod4(A.D1_S17,dat1_m_res2,event1,event1_time,O3_M24,"O3_M24");
 %mod4(A.D1_S17,dat1_m_res3,event1,event1_time,O3_M36,"O3_M36");
@@ -6337,12 +6337,12 @@ PROC MEANS DATA=a.d4 N MEAN STD MIN P1 P5 P10 P25 P50 P75 P90 P95 MAX ; VAR EVEN
 data z1; set a.d3; FY=event2_time/12; run;
 data z2; set a.d4; FY=event2_time/12; run;
 
-/*person-month(PY), person-year (FY) °ËÅä */
+/*person-month(PY), person-year (FY) ê²€í†  */
 proc sql; create table PY_boys as select suM(event2_time) as PY, sum(FY) AS FY from Z1 ; quit;
 proc sql; create table Py_GIRLS as select sum(event2_time) as PY, sum(FY) AS FY from Z2; quit;
 
-/*¹Î°¨µµ ºÐ¼®*/
-/*ÃßÀû°üÂû ±â°£ 1³â~3³â ÀÌ³» Á¦¿ÜÈÄ ºÐ¼®*/
+/*ë¯¼ê°ë„ ë¶„ì„*/
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 1ë…„~3ë…„ ì´ë‚´ ì œì™¸í›„ ë¶„ì„*/
 DATA A.D3_SEN1; SET A.D3; IF EVENT2_TIME>=12;RUN;
 DATA A.D3_SEN2; SET A.D3; IF EVENT2_TIME>=24;RUN;
 DATA A.D3_SEN3; SET A.D3; IF EVENT2_TIME>=36;RUN;
@@ -6364,7 +6364,7 @@ proc freq data=a.d4_sen2; tables event2; run;
 proc freq data=a.d3_sen3; tables event2; run;
 proc freq data=a.d4_sen3; tables event2; run;
 
-/*¹Î°¨µµ ºÐ¼®*/
+/*ë¯¼ê°ë„ ë¶„ì„*/
 %macro mod4(data,out,event,time,exp,exp_text);
 proc phreg data=&data.; 
 CLASS STD_YYYY SEX_TYPE  SES05 SIDO/ PARAM=REF REF=FIRST;
@@ -6382,7 +6382,7 @@ drop df chisq _name_ _label_;
 RUN;
 %mend;
 
-/*ÃßÀû°üÂû ±â°£ 3³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 3ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen3,dat2_m_res1,event2,event2_time,PM25_M12,"PM25_M12");
 %mod4(A.D3_sen3,dat2_m_res2,event2,event2_time,PM25_M24,"PM25_M24");
 %mod4(A.D3_sen3,dat2_m_res3,event2,event2_time,PM25_M36,"PM25_M36");
@@ -6402,7 +6402,7 @@ DATA mod7_RES_TOT; SET res5-res8;  IF TOTAL^=".";  RUN;
 DATA mod7_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
-/*ÃßÀû°üÂû ±â°£ 3³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 3ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen3,dat2_m_res1,event2,event2_time,PM10_M12,"PM10_M12");
 %mod4(A.D3_sen3,dat2_m_res2,event2,event2_time,PM10_M24,"PM10_M24");
 %mod4(A.D3_sen3,dat2_m_res3,event2,event2_time,PM10_M36,"PM10_M36");
@@ -6422,7 +6422,7 @@ DATA mod7_RES_TOT; SET res5-res8;  IF TOTAL^=".";  RUN;
 DATA mod7_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
-/*ÃßÀû°üÂû ±â°£ 3³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 3ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen3,dat2_m_res1,event2,event2_time,SO2_M12,"SO2_M12");
 %mod4(A.D3_sen3,dat2_m_res2,event2,event2_time,SO2_M24,"SO2_M24");
 %mod4(A.D3_sen3,dat2_m_res3,event2,event2_time,SO2_M36,"SO2_M36");
@@ -6442,7 +6442,7 @@ DATA mod7_RES_TOT; SET res5-res8;  IF TOTAL^=".";  RUN;
 DATA mod7_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
-/*ÃßÀû°üÂû ±â°£ 3³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 3ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen3,dat2_m_res1,event2,event2_time,NO2_M12,"NO2_M12");
 %mod4(A.D3_sen3,dat2_m_res2,event2,event2_time,NO2_M24,"NO2_M24");
 %mod4(A.D3_sen3,dat2_m_res3,event2,event2_time,NO2_M36,"NO2_M36");
@@ -6462,7 +6462,7 @@ DATA mod7_RES_TOT; SET res5-res8;  IF TOTAL^=".";  RUN;
 DATA mod7_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
-/*ÃßÀû°üÂû ±â°£ 3³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 3ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen3,dat2_m_res1,event2,event2_time,O3_M12,"O3_M12");
 %mod4(A.D3_sen3,dat2_m_res2,event2,event2_time,O3_M24,"O3_M24");
 %mod4(A.D3_sen3,dat2_m_res3,event2,event2_time,O3_M36,"O3_M36");
@@ -6484,7 +6484,7 @@ DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
 
 
-/*ÃßÀû°üÂû ±â°£ 2³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 2ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen2,dat2_m_res1,event2,event2_time,PM25_M12,"PM25_M12");
 %mod4(A.D3_sen2,dat2_m_res2,event2,event2_time,PM25_M24,"PM25_M24");
 %mod4(A.D3_sen2,dat2_m_res3,event2,event2_time,PM25_M36,"PM25_M36");
@@ -6504,7 +6504,7 @@ DATA mod7_RES_TOT; SET res5-res8;  IF TOTAL^=".";  RUN;
 DATA mod7_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
-/*ÃßÀû°üÂû ±â°£ 2³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 2ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen2,dat2_m_res1,event2,event2_time,PM10_M12,"PM10_M12");
 %mod4(A.D3_sen2,dat2_m_res2,event2,event2_time,PM10_M24,"PM10_M24");
 %mod4(A.D3_sen2,dat2_m_res3,event2,event2_time,PM10_M36,"PM10_M36");
@@ -6524,7 +6524,7 @@ DATA mod7_RES_TOT; SET res5-res8;  IF TOTAL^=".";  RUN;
 DATA mod7_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
-/*ÃßÀû°üÂû ±â°£ 2³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 2ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen2,dat2_m_res1,event2,event2_time,SO2_M12,"SO2_M12");
 %mod4(A.D3_sen2,dat2_m_res2,event2,event2_time,SO2_M24,"SO2_M24");
 %mod4(A.D3_sen2,dat2_m_res3,event2,event2_time,SO2_M36,"SO2_M36");
@@ -6544,7 +6544,7 @@ DATA mod7_RES_TOT; SET res5-res8;  IF TOTAL^=".";  RUN;
 DATA mod7_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
-/*ÃßÀû°üÂû ±â°£ 2³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 2ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen2,dat2_m_res1,event2,event2_time,NO2_M12,"NO2_M12");
 %mod4(A.D3_sen2,dat2_m_res2,event2,event2_time,NO2_M24,"NO2_M24");
 %mod4(A.D3_sen2,dat2_m_res3,event2,event2_time,NO2_M36,"NO2_M36");
@@ -6564,7 +6564,7 @@ DATA mod7_RES_TOT; SET res5-res8;  IF TOTAL^=".";  RUN;
 DATA mod7_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
-/*ÃßÀû°üÂû ±â°£ 2³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 2ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen2,dat2_m_res1,event2,event2_time,O3_M12,"O3_M12");
 %mod4(A.D3_sen2,dat2_m_res2,event2,event2_time,O3_M24,"O3_M24");
 %mod4(A.D3_sen2,dat2_m_res3,event2,event2_time,O3_M36,"O3_M36");
@@ -6586,7 +6586,7 @@ DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
 
 
-/*ÃßÀû°üÂû ±â°£ 1³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 1ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen1,dat2_m_res1,event2,event2_time,PM25_M12,"PM25_M12");
 %mod4(A.D3_sen1,dat2_m_res2,event2,event2_time,PM25_M24,"PM25_M24");
 %mod4(A.D3_sen1,dat2_m_res3,event2,event2_time,PM25_M36,"PM25_M36");
@@ -6606,7 +6606,7 @@ DATA mod7_RES_TOT; SET res5-res8;  IF TOTAL^=".";  RUN;
 DATA mod7_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
-/*ÃßÀû°üÂû ±â°£ 1³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 1ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen1,dat2_m_res1,event2,event2_time,PM10_M12,"PM10_M12");
 %mod4(A.D3_sen1,dat2_m_res2,event2,event2_time,PM10_M24,"PM10_M24");
 %mod4(A.D3_sen1,dat2_m_res3,event2,event2_time,PM10_M36,"PM10_M36");
@@ -6626,7 +6626,7 @@ DATA mod7_RES_TOT; SET res5-res8;  IF TOTAL^=".";  RUN;
 DATA mod7_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
-/*ÃßÀû°üÂû ±â°£ 1³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 1ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen1,dat2_m_res1,event2,event2_time,SO2_M12,"SO2_M12");
 %mod4(A.D3_sen1,dat2_m_res2,event2,event2_time,SO2_M24,"SO2_M24");
 %mod4(A.D3_sen1,dat2_m_res3,event2,event2_time,SO2_M36,"SO2_M36");
@@ -6646,7 +6646,7 @@ DATA mod7_RES_TOT; SET res5-res8;  IF TOTAL^=".";  RUN;
 DATA mod7_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
-/*ÃßÀû°üÂû ±â°£ 1³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 1ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen1,dat2_m_res1,event2,event2_time,NO2_M12,"NO2_M12");
 %mod4(A.D3_sen1,dat2_m_res2,event2,event2_time,NO2_M24,"NO2_M24");
 %mod4(A.D3_sen1,dat2_m_res3,event2,event2_time,NO2_M36,"NO2_M36");
@@ -6666,7 +6666,7 @@ DATA mod7_RES_TOT; SET res5-res8;  IF TOTAL^=".";  RUN;
 DATA mod7_RES2_M; SET DAT2_M_RES1-DAT2_M_RES4; RUN;
 DATA mod7_RES2_F; SET DAT2_F_RES1-DAT2_F_RES4; RUN;
 DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
-/*ÃßÀû°üÂû ±â°£ 1³â ¹Ì¸¸ Á¦¿Ü */
+/*ì¶”ì ê´€ì°° ê¸°ê°„ 1ë…„ ë¯¸ë§Œ ì œì™¸ */
 %mod4(A.D3_sen1,dat2_m_res1,event2,event2_time,O3_M12,"O3_M12");
 %mod4(A.D3_sen1,dat2_m_res2,event2,event2_time,O3_M24,"O3_M24");
 %mod4(A.D3_sen1,dat2_m_res3,event2,event2_time,O3_M36,"O3_M36");
@@ -6739,7 +6739,7 @@ PROC FREQ DATA=A.D3; TABLES PM25_M48_C PM10_M48_C SO2_M48_C NO2_M48_C O3_M48_C; 
 PROC FREQ DATA=A.D4; TABLES PM25_M48_C PM10_M48_C SO2_M48_C NO2_M48_C O3_M48_C; RUN;
 
 
-/*¹üÁÖ*/
+/*ë²”ì£¼*/
 %macro mod7(data,out,exp,exp_text);
 proc phreg data=&data.; 
 CLASS PM25_M48_C PM10_M48_C SO2_M48_C NO2_M48_C O3_M48_C STD_YYYY SEX_TYPE  SES05 SIDO/ PARAM=REF REF=FIRST;
@@ -6775,7 +6775,7 @@ DATA mod7_RES; SET mod7_RES2_M mod7_RES2_F; RUN;
 
 /********************************************************************************************************************************************/
 
-/*¿µÀ¯¾Æ °ËÁø1-7Â÷ Á¶È¸*/
+/*ì˜ìœ ì•„ ê²€ì§„1-7ì°¨ ì¡°íšŒ*/
 PROC SQL; &CONNECT.;CREATE TABLE A.GQ1 AS SELECT EXMD_BZ_YYYY, INDI_DSCM_NO, HME_DT, I1Q_BTH_DATE, I1Q_BTH_WGHT
 FROM CONNECTION TO X1 (SELECT * FROM NHISBDA.HMDV_I1Q_RST WHERE EXMD_BZ_YYYY>=2007); DISCONNECT FROM X1; QUIT;
 
