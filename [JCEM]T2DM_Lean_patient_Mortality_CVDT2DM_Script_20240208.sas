@@ -1,10 +1,10 @@
-/*∂Û¿Ã∫Í∑Ø∏Æ*/
+/*ÎùºÏù¥Î∏åÎü¨Î¶¨*/
 Libname raw '/userdata08/room369/data_source/user_data';
 Libname A '/userdata08/room369/a';
 
 
 
-/*ø¯Ω√¿⁄∑· ¡°∞À*/
+/*ÏõêÏãúÏûêÎ£å Ï†êÍ≤Ä*/
 PROC SQL; 
 CREATE TABLE TABLE_STR 
 AS SELECT MEMNAME AS THABLE_NAME, NOBS AS NROW, NVAR AS NCOL
@@ -12,7 +12,7 @@ FROM SASHELP.VTABLE
 WHERE LIBNAME="RAW"; 
 QUIT;
 
-/*¿⁄∞› ¿⁄∑· ¡§∏Æ, « ø‰«— ¿⁄∑·∏∏ ∞°∞¯*/
+/*ÏûêÍ≤© ÏûêÎ£å Ï†ïÎ¶¨, ÌïÑÏöîÌïú ÏûêÎ£åÎßå Í∞ÄÍ≥µ*/
 data a.bfc_2009; set raw.bfc_2009; run;
 DATA A.BFC_2009 ;
 RETAIN PKEY STD_YYYY INDI_DSCM_NO SEX_TYPE AGE GAIBJA_TYPE SIDO SGG CALC_CTRB_VTILE_FD;
@@ -24,7 +24,7 @@ PKEY=COMPRESS(STD_YYYY)||("-")||COMPRESS(INDI_DSCM_NO);
 DROP CALC_CTRB_FD CNT_ID_HHHI_FD CMPR_DSB_GRADE MAIN_DSB_TYPE INDTP_CD RVSN_ADDR_CD;
 RUN;
 
-/*¿⁄∞›¿⁄∑· ¡§∏Æ ∏≈≈©∑Œ*/
+/*ÏûêÍ≤©ÏûêÎ£å Ï†ïÎ¶¨ Îß§ÌÅ¨Î°ú*/
 %MACRO BFC(YY);
 DATA A.BFC_20&YY. ;
 RETAIN PKEY STD_YYYY INDI_DSCM_NO SEX_TYPE AGE GAIBJA_TYPE SIDO RVSN_ADDR_CD CALC_CTRB_VTILE_FD;
@@ -39,9 +39,9 @@ RUN;
 %BFC(10);%BFC(11);%BFC(12);%BFC(13);%BFC(14);
 %BFC(15);%BFC(16);%BFC(17);%BFC(18);%BFC(19);
 
-/*¥ÎªÛ¿⁄ ¿⁄∑·*/
-/*2009~2014≥‚ø° ªı∑”∞‘ 2«¸ ¥Á¥¢ ¡¯¥‹πﬁ¿∫ 19ºº ¿ÃªÛ*/
-/*2002~2008≥‚, ..., 2002≥‚~2013≥‚ø° 2«¸¥Á¥¢, Ω…«˜∞¸, 1«¸ ¥Á¥¢ ¡¯¥‹πﬁ¿∫ »Ø¿⁄ ¡¶ø‹µ«æ˙¿Ω*/
+/*ÎåÄÏÉÅÏûê ÏûêÎ£å*/
+/*2009~2014ÎÖÑÏóê ÏÉàÎ°≠Í≤å 2Ìòï ÎãπÎá® ÏßÑÎã®Î∞õÏùÄ 19ÏÑ∏ Ïù¥ÏÉÅ*/
+/*2002~2008ÎÖÑ, ..., 2002ÎÖÑ~2013ÎÖÑÏóê 2ÌòïÎãπÎá®, Ïã¨ÌòàÍ¥Ä, 1Ìòï ÎãπÎá® ÏßÑÎã®Î∞õÏùÄ ÌôòÏûê Ï†úÏô∏ÎêòÏóàÏùå*/
 DATA A.TG; SET RAW.TARGET_REQ202301117; RUN;
 DATA A.BFC; SET A.BFC_2009-A.BFC_2019; RUN;
 
@@ -49,12 +49,12 @@ PROC SORT DATA=A.BFC NODUPKEY OUT=BFC_U ; BY INDI_DSCM_NO;RUN;
 DATA BFC_U; SET BFC_U;
 KEEP INDI_DSCM_NO SEX BYEAR; RUN;
 
-/*¥ÎªÛ¿⁄ & ¿⁄∞› ¿⁄∑· ø¨∞Ë*/
+/*ÎåÄÏÉÅÏûê & ÏûêÍ≤© ÏûêÎ£å Ïó∞Í≥Ñ*/
 PROC SQL; CREATE TABLE A.TG_BFC AS SELECT * FROM A.TG AS A LEFT JOIN BFC_U AS B ON A.INDI_DSCM_NO=B.INDI_DSCM_NO; QUIT;
 DATA A.TG_BFC2; SET A.TG_BFC;
 IF SEX IN (1,2); RUN;
 
-/*ªÁ∏¡¿⁄∑· ¡§∏Æ*/
+/*ÏÇ¨ÎßùÏûêÎ£å Ï†ïÎ¶¨*/
 DATA A.DTH; SET RAW.DTH;
 DTH_YYYY    =SUBSTR(DTH_ASSMD_DT,1,4);
 DTH_YYYYMM=SUBSTR(DTH_ASSMD_DT,1,6); 
@@ -62,14 +62,14 @@ IF DTH_YYYY <2009 THEN DELETE;
 RUN;
 PROC FREQ DATA=A.DTH; TABLES DTH_YYYY ;RUN;
 
-/*¥ÎªÛ¿⁄ & ¿⁄∞›, ªÁ∏¡ ¿⁄∑· ø¨∞Ë*/
+/*ÎåÄÏÉÅÏûê & ÏûêÍ≤©, ÏÇ¨Îßù ÏûêÎ£å Ïó∞Í≥Ñ*/
 PROC SQL; CREATE TABLE A.TG_BFC3 AS SELECT * FROM A.TG_BFC2 AS A LEFT JOIN A.DTH AS B ON A.INDI_DSCM_NO=B.INDI_DSCM_NO; QUIT;
 DATA A.TG_BFC3; 
 RETAIN INDI_DSCM_NO BYEAR SEX DTH_EVENT;
 SET A.TG_BFC3; 
 IF DTH_ASSMD_DT="" THEN DTH_EVENT=0 ; ELSE DTH_EVENT=1;RUN;
 
-/*T20¿⁄∑· « ø‰«— ∫Øºˆ∏∏, ø˘ -> ≥‚∫∞∑Œ MERGE*/
+/*T20ÏûêÎ£å ÌïÑÏöîÌïú Î≥ÄÏàòÎßå, Ïõî -> ÎÖÑÎ≥ÑÎ°ú MERGE*/
 %MACRO T20(YY);
 DATA A.T20_20&YY.; SET RAW.T20_20&YY.01-RAW.T20_20&YY.12;
 DROP DISP_SUBJ_TYPE HSPTZ_PATH_TYPE TOT_PRSC_DD_CNT OPRTN_YN;
@@ -78,7 +78,7 @@ RUN;
 %T20(09);%T20(10);%T20(11);%T20(12);%T20(13);
 %T20(14);%T20(15);%T20(16);%T20(17);%T20(18);%T20(19);
 
-/*T30¿⁄∑· « ø‰«— ∫Øºˆ∏∏, ø˘ -> ≥‚∫∞∑Œ MERGE*/
+/*T30ÏûêÎ£å ÌïÑÏöîÌïú Î≥ÄÏàòÎßå, Ïõî -> ÎÖÑÎ≥ÑÎ°ú MERGE*/
 %MACRO T30(YY);
 DATA A.T30_TRT20&YY.; SET RAW.T30_20&YY.01-RAW.T30_20&YY.12;
 IF MCARE_DIV_CD_ADJ IN ("HTN","DM","HLD","Hormon");
@@ -88,7 +88,7 @@ RUN;
 %T30(09);%T30(10);%T30(11);%T30(12);%T30(13);
 %T30(14);%T30(15);%T30(16);%T30(17);%T30(18);%T30(19);
 
-/*09~14≥‚ ¥Á¥¢ æ‡¡¶ ªÁøÎ«— ªÁ∂˜*/
+/*09~14ÎÖÑ ÎãπÎá® ÏïΩÏ†ú ÏÇ¨Ïö©Ìïú ÏÇ¨Îûå*/
 DATA A.T30_TRT_DM2009; SET A.T30_TRT2009; IF MCARE_DIV_CD_ADJ IN ("DM"); RUN;
 DATA A.T30_TRT_DM2010; SET A.T30_TRT2010; IF MCARE_DIV_CD_ADJ IN ("DM"); RUN;
 DATA A.T30_TRT_DM2011; SET A.T30_TRT2011; IF MCARE_DIV_CD_ADJ IN ("DM"); RUN;
@@ -96,7 +96,7 @@ DATA A.T30_TRT_DM2012; SET A.T30_TRT2012; IF MCARE_DIV_CD_ADJ IN ("DM"); RUN;
 DATA A.T30_TRT_DM2013; SET A.T30_TRT2013; IF MCARE_DIV_CD_ADJ IN ("DM"); RUN;
 DATA A.T30_TRT_DM2014; SET A.T30_TRT2014; IF MCARE_DIV_CD_ADJ IN ("DM"); RUN;
 
-/*∫∏∞Ì¿⁄ «œ¥¬ ∏µÁ æ‡¡¶ ªÁøÎ«— ªÁ∂˜ Ωƒ∫∞*/
+/*Î≥¥Í≥†Ïûê ÌïòÎäî Î™®Îì† ÏïΩÏ†ú ÏÇ¨Ïö©Ìïú ÏÇ¨Îûå ÏãùÎ≥Ñ*/
 %MACRO TRT(YY);
 PROC SQL;CREATE TABLE TRT&YY. AS SELECT * FROM A.T20_20&YY. WHERE CMN_KEY IN (SELECT CMN_KEY FROM A.T30_TRT20&YY.); QUIT;
 DATA TRT&YY.; SET  TRT&YY.;DROP  MCARE_SUBJ_CD MDCARE_DD_CNT FST_HSPTZ_DT; RUN;
@@ -104,7 +104,7 @@ DATA TRT&YY.; SET  TRT&YY.;DROP  MCARE_SUBJ_CD MDCARE_DD_CNT FST_HSPTZ_DT; RUN;
 %TRT(09);%TRT(10);%TRT(11);%TRT(12);%TRT(13);
 %TRT(14);%TRT(15);%TRT(16);%TRT(17);%TRT(18);%TRT(19);
 
-/*09~14≥‚ø° ¥Á¥¢ æ‡¡¶ ªÁøÎ«— ªÁ∂˜ Ωƒ∫∞ */
+/*09~14ÎÖÑÏóê ÎãπÎá® ÏïΩÏ†ú ÏÇ¨Ïö©Ìïú ÏÇ¨Îûå ÏãùÎ≥Ñ */
 %MACRO TRT_DM(YY);
 PROC SQL;CREATE TABLE TRT_DM&YY. AS SELECT * FROM A.T20_20&YY. WHERE CMN_KEY IN (SELECT CMN_KEY FROM A.T30_TRT_DM20&YY.); QUIT;
 DATA TRT_DM&YY.; SET  TRT_DM&YY.;DROP  MCARE_SUBJ_CD MDCARE_DD_CNT FST_HSPTZ_DT; RUN;
@@ -117,13 +117,13 @@ TRT_DM_YYYYMM=SUBSTR(MDCARE_STRT_DT,1,6);
 KEEP CMN_KEY INDI_DSCM_NO TRT_DM_YYYY TRT_DM_YYYYMM;
 RUN;
 
-/*¡ﬂ∫π ¿÷¿ªºˆ ¿÷¿Ω*/
+/*Ï§ëÎ≥µ ÏûàÏùÑÏàò ÏûàÏùå*/
 DATA A.TRT09_19; SET TRT09-TRT19; 
 TRT=1;
 TRT_YYYY=SUBSTR(MDCARE_STRT_DT,1,4);
 KEEP CMN_KEY INDI_DSCM_NO TRT TRT_YYYY;
 RUN;
-/*æ‡¡¶ ªÁøÎ ±∫*/
+/*ÏïΩÏ†ú ÏÇ¨Ïö© Íµ∞*/
 proc sort data=a.TRT09_19 NODUPKEY OUT=A.TRT09_19_U ;BY indi_dscm_no trt_yyyy; RUN;
 DATA A.TRT09_19_U; 
 RETAIN TRT_KEY TRT;
@@ -132,19 +132,19 @@ TRT_KEY=COMPRESS(TRT_YYYY)||("-")||COMPRESS(INDI_DSCM_NO);
 KEEP CMN_KEY TRT_KEY TRT;
 RUN;
 
-/*T40¿⁄∑· « ø‰«— ∫Øºˆ∏∏, ø˘ -> ≥‚∫∞∑Œ MERGE*/
+/*T40ÏûêÎ£å ÌïÑÏöîÌïú Î≥ÄÏàòÎßå, Ïõî -> ÎÖÑÎ≥ÑÎ°ú MERGE*/
 %MACRO T40(YY);
 DATA A.T40_20&YY.; SET RAW.T40_20&YY.01-RAW.T40_20&YY.12;
 KEEP CMN_KEY MCEX_SICK_SYM;RUN;
 
-/*2«¸ ¥Á¥¢*/
+/*2Ìòï ÎãπÎá®*/
 DATA A.T40_DM20&YY.; SET A.T40_20&YY.; 
 IF SUBSTR(MCEX_SICK_SYM,1,3) IN ("E11","E12","E13","E14"); RUN;
 %MEND;
 %T40(09);%T40(10);%T40(11);%T40(12);%T40(13);
 %T40(14);%T40(15);%T40(16);%T40(17);%T40(18);%T40(19);
 
-/*T60¿⁄∑· « ø‰«— ∫Øºˆ∏∏, ø˘ -> ≥‚∫∞∑Œ MERGE*/
+/*T60ÏûêÎ£å ÌïÑÏöîÌïú Î≥ÄÏàòÎßå, Ïõî -> ÎÖÑÎ≥ÑÎ°ú MERGE*/
 %MACRO T60(YY);
 DATA A.T60_20&YY.; SET RAW.T60_20&YY.01-RAW.T60_20&YY.12;
 KEEP CMN_KEY MCARE_DIV_CD_ADJ;
@@ -153,22 +153,22 @@ RUN;
 %T60(09);%T60(10);%T60(11);%T60(12);%T60(13);
 %T60(14);%T60(15);%T60(16);%T60(17);%T60(18);%T60(19);
 
-/*T20ø°º≠ ¥Á¥¢ ªÛ∫¥ƒ⁄µÂ (ICD-10, E10-E14)ø° «ÿ¥Á«œ¥¬ ªÁ∂˜ √ﬂ√‚*/
+/*T20ÏóêÏÑú ÎãπÎá® ÏÉÅÎ≥ëÏΩîÎìú (ICD-10, E10-E14)Ïóê Ìï¥ÎãπÌïòÎäî ÏÇ¨Îûå Ï∂îÏ∂ú*/
 %MACRO DM(YY);
 PROC SQL;CREATE TABLE DM&YY. AS SELECT * FROM A.T20_20&YY. WHERE CMN_KEY IN (SELECT CMN_KEY FROM A.T40_DM20&YY.); QUIT;
 DATA DM&YY.; SET  DM&YY.;DROP  MCARE_SUBJ_CD MDCARE_DD_CNT FST_HSPTZ_DT; RUN;
-/*ID, ∫¥ø¯ πÊπÆ º¯¿∏∑Œ ¡§∑ƒ*/
+/*ID, Î≥ëÏõê Î∞©Î¨∏ ÏàúÏúºÎ°ú Ï†ïÎ†¨*/
 PROC SORT DATA=DM&YY.; BY INDI_DSCM_NO MDCARE_STRT_DT; RUN;
-/*∏«√≥¿Ω ø¬ ªÁ∂˜¿∏∑Œ ¡§¿«*/
+/*Îß®Ï≤òÏùå Ïò® ÏÇ¨ÎûåÏúºÎ°ú Ï†ïÏùò*/
 PROC SORT DATA=DM&YY. NODUPKEY OUT=A.DM_U_&YY.; BY INDI_DSCM_NO; RUN;
 %MEND;
-/*ø¨±∏¥ÎªÛ¿⁄: 2009~2014≥‚ø° ¥Á¥¢ ¡¯¥‹πﬁ¿∫ »Ø¿⁄*/
+/*Ïó∞Íµ¨ÎåÄÏÉÅÏûê: 2009~2014ÎÖÑÏóê ÎãπÎá® ÏßÑÎã®Î∞õÏùÄ ÌôòÏûê*/
 %DM(09);%DM(10);%DM(11);%DM(12);%DM(13);%DM(14);
 
 DATA A.DM_U; SET A.DM_U_09-A.DM_U_14;RUN;
 PROC SORT DATA=A.DM_U NODUPKEY; BY INDI_DSCM_NO; RUN;
 
-/*¥ÎªÛ¿⁄ & ¿⁄∞›, ªÁ∏¡ ¿⁄∑·, ¥Á¥¢ ªÛ∫¥Ωƒ∫∞ ø¨∞Ë*/
+/*ÎåÄÏÉÅÏûê & ÏûêÍ≤©, ÏÇ¨Îßù ÏûêÎ£å, ÎãπÎá® ÏÉÅÎ≥ëÏãùÎ≥Ñ Ïó∞Í≥Ñ*/
 PROC SQL; CREATE TABLE A.TG_BFC4 AS SELECT * FROM A.TG_BFC3 AS A LEFT JOIN A.DM_U AS B ON A.INDI_DSCM_NO=B.INDI_DSCM_NO; QUIT;
 
 DATA A.TG_BFC4; 
@@ -184,8 +184,8 @@ PROC FREQ DATA=A.TG_BFC4; TABLES MDCARE_YYYY; RUN;
 PROC FREQ DATA=A.TG_BFC4; TABLES MDCARE_YYYY*STD_AGE/LIST; RUN;
 
 
-/*Outcome ∞À≈‰*/
-/*¿¸√º Ω…«˜∞¸*/
+/*Outcome Í≤ÄÌÜ†*/
+/*Ï†ÑÏ≤¥ Ïã¨ÌòàÍ¥Ä*/
 DATA A.T40_CVD2009; SET A.T40_2009; IF SUBSTR(MCEX_SICK_SYM,1,1)="I"; RUN;
 DATA A.T40_CVD2010; SET A.T40_2010; IF SUBSTR(MCEX_SICK_SYM,1,1)="I"; RUN;
 DATA A.T40_CVD2011; SET A.T40_2011; IF SUBSTR(MCEX_SICK_SYM,1,1)="I"; RUN;
@@ -198,7 +198,7 @@ DATA A.T40_CVD2017; SET A.T40_2017; IF SUBSTR(MCEX_SICK_SYM,1,1)="I"; RUN;
 DATA A.T40_CVD2018; SET A.T40_2018; IF SUBSTR(MCEX_SICK_SYM,1,1)="I"; RUN;
 DATA A.T40_CVD2019; SET A.T40_2019; IF SUBSTR(MCEX_SICK_SYM,1,1)="I"; RUN;
 
-/*1«¸ ¥Á¥¢*/
+/*1Ìòï ÎãπÎá®*/
 DATA A.T40_T1DM2009; SET A.T40_2009; IF SUBSTR(MCEX_SICK_SYM,1,3)="E10"; RUN;
 DATA A.T40_T1DM2010; SET A.T40_2010; IF SUBSTR(MCEX_SICK_SYM,1,3)="E10"; RUN;
 DATA A.T40_T1DM2011; SET A.T40_2011; IF SUBSTR(MCEX_SICK_SYM,1,3)="E10"; RUN;
@@ -211,8 +211,8 @@ DATA A.T40_T1DM2017; SET A.T40_2017; IF SUBSTR(MCEX_SICK_SYM,1,3)="E10"; RUN;
 DATA A.T40_T1DM2018; SET A.T40_2018; IF SUBSTR(MCEX_SICK_SYM,1,3)="E10"; RUN;
 DATA A.T40_T1DM2019; SET A.T40_2019; IF SUBSTR(MCEX_SICK_SYM,1,3)="E10"; RUN;
 
-/* ∞·∞˙∫Øºˆ √ﬂ∞°ø¨∞·, TIME ∞ËªÍ, øπ∫Ò ∫–ºÆ*/
-/*retinopathy (E113 or E143) ¥Á¥¢ ∏¡∏∑∫¥¡ı*/
+/* Í≤∞Í≥ºÎ≥ÄÏàò Ï∂îÍ∞ÄÏó∞Í≤∞, TIME Í≥ÑÏÇ∞, ÏòàÎπÑ Î∂ÑÏÑù*/
+/*retinopathy (E113 or E143) ÎãπÎá® ÎßùÎßâÎ≥ëÏ¶ù*/
 /*neuropathy (E114 or E144)*/
 /*CVD evnets (I00-I99),
   CHD(I20-I25), 
@@ -263,7 +263,7 @@ DATA A.T40_&OUT.; SET A.T40_&OUT.2009-A.T40_&OUT.2019; RUN;
 %T40_OUT2(retinopathy,4,"E113","E143");
 %T40_OUT2(neuropathy,4,"E114","E144");
 
-/*T20ø°º≠ ∞·∞˙∫Øºˆ ¥ÎªÛ Ωƒ∫∞*/
+/*T20ÏóêÏÑú Í≤∞Í≥ºÎ≥ÄÏàò ÎåÄÏÉÅ ÏãùÎ≥Ñ*/
 %MACRO T20_OUT1(OUT);
 PROC SQL; CREATE TABLE D09 AS SELECT CMN_KEY, INDI_DSCM_NO, MDCARE_STRT_DT, FORM_CD FROM A.T20_2009 WHERE CMN_KEY IN (SELECT CMN_KEY FROM A.T40_&OUT.);QUIT;
 PROC SQL; CREATE TABLE D10 AS SELECT CMN_KEY, INDI_DSCM_NO, MDCARE_STRT_DT, FORM_CD FROM A.T20_2010 WHERE CMN_KEY IN (SELECT CMN_KEY FROM A.T40_&OUT.);QUIT;
@@ -280,7 +280,7 @@ PROC SQL; CREATE TABLE D19 AS SELECT CMN_KEY, INDI_DSCM_NO, MDCARE_STRT_DT, FORM
 DATA A.T20_&OUT.; SET D09-D19; RUN;
 PROC SORT DATA=A.T20_&OUT. ;BY INDI_DSCM_NO MDCARE_STRT_DT; RUN;
 %MEND;
-/*T20ø°º≠ ∞·∞˙∫Øºˆ ¥ÎªÛ Ωƒ∫∞*/
+/*T20ÏóêÏÑú Í≤∞Í≥ºÎ≥ÄÏàò ÎåÄÏÉÅ ÏãùÎ≥Ñ*/
 %T20_OUT1(Stroke); 
 %T20_OUT1(HemoStroke); 
 %T20_OUT1(IschStroke); 
@@ -312,8 +312,8 @@ RUN;
 %T20_CVD(18);
 %T20_CVD(19);
 
-/*ªÛ∫¥¿Ã≥™ ∞À¡¯¿∏∑Œ Ωƒ∫∞«— T2DM ¿Ã¿¸ø° CVD, T1DM¡∏¿Á«œ¥¬¡ˆ 
-=> ¡∏¿Á«œ∏È ¡¶ø‹ */
+/*ÏÉÅÎ≥ëÏù¥ÎÇò Í≤ÄÏßÑÏúºÎ°ú ÏãùÎ≥ÑÌïú T2DM Ïù¥Ï†ÑÏóê CVD, T1DMÏ°¥Ïû¨ÌïòÎäîÏßÄ 
+=> Ï°¥Ïû¨ÌïòÎ©¥ Ï†úÏô∏ */
 PROC SQL; CREATE TABLE CVD09 AS SELECT * FROM A.T20_2009 WHERE CMN_KEY IN (SELECT CMN_KEY FROM A.T40_CVD2009); QUIT;
 PROC SQL; CREATE TABLE CVD10 AS SELECT * FROM A.T20_2010 WHERE CMN_KEY IN (SELECT CMN_KEY FROM A.T40_CVD2010); QUIT;
 PROC SQL; CREATE TABLE CVD11 AS SELECT * FROM A.T20_2011 WHERE CMN_KEY IN (SELECT CMN_KEY FROM A.T40_CVD2011); QUIT;
@@ -334,8 +334,8 @@ DATA T1DM09_14; SET T1DM09-T1DM14; GUBUN="T1DM"; RUN;
 DATA A.CVD_T1DM09_14; SET CVD09_14 T1DM09_14; RUN;
 PROC SORT DATA=A.CVD_T1DM09_14; BY INDI_DSCM_NO MDCARE_STRT_DT; RUN;
 
-/*09~14≥‚ ªÁ¿Ã CVD, 1«¸ ¥Á¥¢ ¿÷¥¬ ªÁ∂˜¡ﬂ ∞°¿Â ª°∏Æ¡¯µ»≥Ø Ωƒ∫∞«ÿº≠ 2«¸ ¥Á¥¢ Ω√¡°¿Ã∂˚ ∫Ò±≥, 
-  2«¸ ¥Á¥¢ ¿Ã¿¸ø° Ωƒ∫∞µ«∏È ¡¶ø‹ */
+/*09~14ÎÖÑ ÏÇ¨Ïù¥ CVD, 1Ìòï ÎãπÎá® ÏûàÎäî ÏÇ¨ÎûåÏ§ë Í∞ÄÏû• Îπ®Î¶¨ÏßÑÎêúÎÇ† ÏãùÎ≥ÑÌï¥ÏÑú 2Ìòï ÎãπÎá® ÏãúÏ†êÏù¥Îûë ÎπÑÍµê, 
+  2Ìòï ÎãπÎá® Ïù¥Ï†ÑÏóê ÏãùÎ≥ÑÎêòÎ©¥ Ï†úÏô∏ */
 PROC SORT DATA=A.CVD_T1DM09_14 NODUPKEY OUT=A.CVD_T1DM09_14_U; BY INDI_DSCM_NO;RUN;
 DATA A.CVD_T1DM09_14_U; 
 RENAME MDCARE_STRT_DT=MDCARE_CVD_T1DM;
@@ -344,41 +344,41 @@ KEEP INDI_DSCM_NO MDCARE_STRT_DT GUBUN; RUN;
 
 
 
-/*¥Á»≠«˜ªˆº“ 6.5% ¿ÃªÛ-> «˜ªˆº“∏∏ ¿÷¿Ω, ∞¯∫π«˜¥Á 126¿ÃªÛ, «˜¥Á∞≠«œ¡¶ ªÁøÎ¡ﬂ¿Œ ªÁ∂˜*/
+/*ÎãπÌôîÌòàÏÉâÏÜå 6.5% Ïù¥ÏÉÅ-> ÌòàÏÉâÏÜåÎßå ÏûàÏùå, Í≥µÎ≥µÌòàÎãπ 126Ïù¥ÏÉÅ, ÌòàÎãπÍ∞ïÌïòÏ†ú ÏÇ¨Ïö©Ï§ëÏù∏ ÏÇ¨Îûå*/
 %MACRO GQ(YY);
 DATA A.G1EQ_20&YY.; SET RAW.G1EQ_20&YY.;
 RENAME G1E_BMI=BMI G1E_BP_SYS=SBP G1E_BP_DIA=DBP G1E_FBS=FBS G1E_TOT_CHOL=TCHOL 
 G1E_TG=TG G1E_HDL=HDL G1E_LDL=LDL G1E_GFR=GFR Q_DRK_FRQ_V09N=DRK;
 
-/*BMI ±◊∑Ï 3∞≥*/
+/*BMI Í∑∏Î£π 3Í∞ú*/
 if G1E_BMI <18.5 THEN BMI_G=1; ELSE IF 
 G1E_BMI >=23 THEN BMI_G=3; ELSE BMI_G=2;
 
-/*BMI ±◊∑Ï 4∞≥*/
+/*BMI Í∑∏Î£π 4Í∞ú*/
 IF G1E_BMI <18.5 THEN BMI_G2=1; ELSE IF
 G1E_BMI>=18.5 & G1E_BMI<23 THEN BMI_G2=2; ELSE IF
 G1E_BMI>=25 THEN BMI_G2=4; ELSE BMI_G2=3;
 
-/*∞¯∫π «˜¥Áø° µ˚∏• ¥Á¥¢ ±∏∫–*/
+/*Í≥µÎ≥µ ÌòàÎãπÏóê Îî∞Î•∏ ÎãπÎá® Íµ¨Î∂Ñ*/
 IF G1E_FBS>=126 THEN FBS_DM=1; ELSE FBS_DM=0;
 
-/*»Ìø¨∑¬*/
+/*Ìù°Ïó∞Î†•*/
 IF Q_SMK_YN=1 THEN SMK=1; ELSE IF Q_SMK_YN IN (2,3) THEN SMK=2; /*non-smoker, ex smoker*/
 
 KEEP INDI_DSCM_NO HME_DT
 G1E_BMI             /*BMI*/  
 G1E_BP_SYS        /*SBP*/
 G1E_BP_DIA        /*DBP*/
-G1E_FBS            /*∞¯∫π«˜¥Á*/
-G1E_TOT_CHOL  /*√—ƒ›∑πΩ∫≈◊∑—*/
+G1E_FBS            /*Í≥µÎ≥µÌòàÎãπ*/
+G1E_TOT_CHOL  /*Ï¥ùÏΩúÎ†àÏä§ÌÖåÎ°§*/
 G1E_TG            /*TG*/
 G1E_HDL          /*HDL*/
 G1E_LDL           /*LDL*/
-G1E_GFR          /*ªÁ±∏√ºø©∞˙¿≤*/
-Q_SMK_YN      /*»Ìø¨¿Øπ´*/
+G1E_GFR          /*ÏÇ¨Íµ¨Ï≤¥Ïó¨Í≥ºÏú®*/
+Q_SMK_YN      /*Ìù°Ïó∞Ïú†Î¨¥*/
 BMI_G BMI_G2  FBS_DM SMK Q_DRK_FRQ_V09N
-Q_PA_VD      /*Ω≈√º»∞µø ∞Ì∞≠µµ*/
-Q_PA_MD     /*Ω≈√º»∞µø ¡ﬂµÓµµ*/
+Q_PA_VD      /*Ïã†Ï≤¥ÌôúÎèô Í≥†Í∞ïÎèÑ*/
+Q_PA_MD     /*Ïã†Ï≤¥ÌôúÎèô Ï§ëÎì±ÎèÑ*/
 ;
 RUN;
 %MEND;
@@ -396,28 +396,28 @@ DATA A.GE_RST_2018; SET RAW.G1E_RST_2018;
 RENAME G1E_BMI=BMI HC_DT=HME_DT G1E_BP_SYS=SBP G1E_BP_DIA=DBP G1E_FBS=FBS G1E_TOT_CHOL=TCHOL 
 G1E_TG=TG G1E_HDL=HDL G1E_LDL_CALC  =LDL G1E_GFR=GFR ;
 
-/*BMI ±◊∑Ï*/
+/*BMI Í∑∏Î£π*/
 if G1E_BMI <18.5 THEN BMI_G=1; ELSE IF 
 G1E_BMI >=23 THEN BMI_G=3; ELSE BMI_G=2;
 
-/*BMI ±◊∑Ï 4∞≥*/
+/*BMI Í∑∏Î£π 4Í∞ú*/
 IF G1E_BMI <18.5 THEN BMI_G2=1; ELSE IF
 G1E_BMI>=18.5 & G1E_BMI<23 THEN BMI_G2=2; ELSE IF
 G1E_BMI>=25 THEN BMI_G2=4; ELSE BMI_G2=3;
 
-/*∞¯∫π «˜¥Áø° µ˚∏• ¥Á¥¢ ±∏∫–*/
+/*Í≥µÎ≥µ ÌòàÎãπÏóê Îî∞Î•∏ ÎãπÎá® Íµ¨Î∂Ñ*/
 IF G1E_FBS>=126 THEN FBS_DM=1; ELSE FBS_DM=0;
 
 KEEP INDI_DSCM_NO HME_DT
 G1E_BMI             /*BMI*/  
 G1E_BP_SYS        /*SBP*/
 G1E_BP_DIA        /*DBP*/
-G1E_FBS            /*∞¯∫π«˜¥Á*/
-G1E_TOT_CHOL  /*√—ƒ›∑πΩ∫≈◊∑—*/
+G1E_FBS            /*Í≥µÎ≥µÌòàÎãπ*/
+G1E_TOT_CHOL  /*Ï¥ùÏΩúÎ†àÏä§ÌÖåÎ°§*/
 G1E_TG            /*TG*/
 G1E_HDL          /*HDL*/
 G1E_LDL_CALC          /*LDL*/
-G1E_GFR          /*ªÁ±∏√ºø©∞˙¿≤*/
+G1E_GFR          /*ÏÇ¨Íµ¨Ï≤¥Ïó¨Í≥ºÏú®*/
 
 BMI_G BMI_G2  FBS_DM;
 RUN;
@@ -427,42 +427,42 @@ DATA A.GE_RST_2019; SET RAW.G1E_RST_2019;
 RENAME G1E_BMI=BMI HC_DT=HME_DT G1E_BP_SYS=SBP G1E_BP_DIA=DBP G1E_FBS=FBS G1E_TOT_CHOL=TCHOL 
 G1E_TG=TG G1E_HDL=HDL G1E_LDL_CALC  =LDL G1E_GFR=GFR ;
 
-/*BMI ±◊∑Ï*/
+/*BMI Í∑∏Î£π*/
 if G1E_BMI <18.5 THEN BMI_G=1; ELSE IF 
 G1E_BMI >=23 THEN BMI_G=3; ELSE BMI_G=2;
 
-/*BMI ±◊∑Ï 4∞≥*/
+/*BMI Í∑∏Î£π 4Í∞ú*/
 IF G1E_BMI <18.5 THEN BMI_G2=1; ELSE IF
 G1E_BMI>=18.5 & G1E_BMI<23 THEN BMI_G2=2; ELSE IF
 G1E_BMI>=25 THEN BMI_G2=4; ELSE BMI_G2=3;
 
-/*∞¯∫π «˜¥Áø° µ˚∏• ¥Á¥¢ ±∏∫–*/
+/*Í≥µÎ≥µ ÌòàÎãπÏóê Îî∞Î•∏ ÎãπÎá® Íµ¨Î∂Ñ*/
 IF G1E_FBS>=126 THEN FBS_DM=1; ELSE FBS_DM=0;
 
 KEEP INDI_DSCM_NO HC_DT
 G1E_BMI             /*BMI*/  
 G1E_BP_SYS        /*SBP*/
 G1E_BP_DIA        /*DBP*/
-G1E_FBS            /*∞¯∫π«˜¥Á*/
-G1E_TOT_CHOL  /*√—ƒ›∑πΩ∫≈◊∑—*/
+G1E_FBS            /*Í≥µÎ≥µÌòàÎãπ*/
+G1E_TOT_CHOL  /*Ï¥ùÏΩúÎ†àÏä§ÌÖåÎ°§*/
 G1E_TG            /*TG*/
 G1E_HDL          /*HDL*/
 G1E_LDL_CALC          /*LDL*/
-G1E_GFR          /*ªÁ±∏√ºø©∞˙¿≤*/
+G1E_GFR          /*ÏÇ¨Íµ¨Ï≤¥Ïó¨Í≥ºÏú®*/
 BMI_G BMI_G2  FBS_DM ;
 RUN;
 
 
 DATA A.GQ_RST_2018; SET RAW.GQ_RST_2018;
 RENAME  Q_DRK_FRQ=DRK Q_PA_VD_FRQ=Q_PA_VD Q_PA_MD_FRQ=Q_PA_MD;
-/*»Ìø¨∑¬*/
+/*Ìù°Ïó∞Î†•*/
 IF Q_SMK_YN=1 THEN SMK=1; ELSE IF Q_SMK_YN IN (2,3) THEN SMK=2; /*non-smoker, ex smoker*/
 KEEP INDI_DSCM_NO Q_SMK_YN  SMK Q_DRK_FRQ Q_PA_VD_FRQ Q_PA_MD_FRQ;
 RUN;
 
 DATA A.GQ_RST_2019; SET RAW.GQ_RST_2019; 
 RENAME Q_DRK_FRQ=DRK Q_PA_VD_FRQ=Q_PA_VD Q_PA_MD_FRQ=Q_PA_MD;
-/*»Ìø¨∑¬*/
+/*Ìù°Ïó∞Î†•*/
 IF Q_SMK_YN=1 THEN SMK=1; ELSE IF Q_SMK_YN IN (2,3) THEN SMK=2; /*non-smoker, ex smoker*/
 
 KEEP INDI_DSCM_NO Q_SMK_YN  SMK Q_DRK_FRQ Q_PA_VD_FRQ Q_PA_MD_FRQ;
@@ -495,12 +495,12 @@ PROC SORT DATA=A.G1EQ_DM NODUPKEY OUT=A.G1EQ_DM_U; BY INDI_DSCM_NO; RUN;
 DATA A.G1EQ_DM_U; SET A.G1EQ_DM_U;
 KEEP INDI_DSCM_NO FBS_DM HME_YYYY HME_YYYYMM; RUN;
 
-/*¥ÎªÛ¿⁄ & ¿⁄∞›, ªÁ∏¡ ¿⁄∑·, ¥Á¥¢ ªÛ∫¥Ωƒ∫∞, ∞À¡¯ ¥Á¥¢ Ωƒ∫∞  ø¨∞Ë*/
+/*ÎåÄÏÉÅÏûê & ÏûêÍ≤©, ÏÇ¨Îßù ÏûêÎ£å, ÎãπÎá® ÏÉÅÎ≥ëÏãùÎ≥Ñ, Í≤ÄÏßÑ ÎãπÎá® ÏãùÎ≥Ñ  Ïó∞Í≥Ñ*/
 PROC SQL; CREATE TABLE A.TG_BFC5 AS SELECT * FROM A.TG_BFC4 AS A LEFT JOIN A.G1EQ_DM_U AS B ON A.INDI_DSCM_NO=B.INDI_DSCM_NO; QUIT;
-/*¥ÎªÛ¿⁄ & ¿⁄∞›, ªÁ∏¡ ¿⁄∑·, ¥Á¥¢ ªÛ∫¥Ωƒ∫∞, ∞À¡¯ ¥Á¥¢ Ωƒ∫∞, ±‚¿˙¡˙»Ø  ø¨∞Ë*/
+/*ÎåÄÏÉÅÏûê & ÏûêÍ≤©, ÏÇ¨Îßù ÏûêÎ£å, ÎãπÎá® ÏÉÅÎ≥ëÏãùÎ≥Ñ, Í≤ÄÏßÑ ÎãπÎá® ÏãùÎ≥Ñ, Í∏∞Ï†ÄÏßàÌôò  Ïó∞Í≥Ñ*/
 PROC SQL; CREATE TABLE A.TG_BFC6 AS SELECT * FROM A.TG_BFC5 AS A LEFT JOIN A.CVD_T1DM09_14_U AS B ON A.INDI_DSCM_NO=B.INDI_DSCM_NO; QUIT;
 
-/*¥ÎªÛ¿⁄ & ¿⁄∞›, ªÁ∏¡ ¿⁄∑·, ¥Á¥¢ ªÛ∫¥Ωƒ∫∞, ∞À¡¯ ¥Á¥¢ Ωƒ∫∞, ±‚¿˙¡˙»Ø, ¥Á¥¢æ‡¡¶ ªÁøÎø©∫Œ ø¨∞Ë*/
+/*ÎåÄÏÉÅÏûê & ÏûêÍ≤©, ÏÇ¨Îßù ÏûêÎ£å, ÎãπÎá® ÏÉÅÎ≥ëÏãùÎ≥Ñ, Í≤ÄÏßÑ ÎãπÎá® ÏãùÎ≥Ñ, Í∏∞Ï†ÄÏßàÌôò, ÎãπÎá®ÏïΩÏ†ú ÏÇ¨Ïö©Ïó¨Î∂Ä Ïó∞Í≥Ñ*/
 PROC SORT DATA=A.TRT_DM09_14; BY INDI_DSCM_NO TRT_DM_YYYYMM;RUN;
 PROC SORT DATA=A.TRT_DM09_14 NODUPKEY OUT=A.TRT_DM09_14_U ; BY INDI_DSCM_NO; RUN;
 
@@ -524,7 +524,7 @@ DATA A.TG_FINAL; SET A.TG_BFC9;
 IF SUBSTR(DM_YYYYMM,1,4) >=2010; RUN;
 
 DATA A.TG_FINAL2; SET A.TG_FINAL;
-IF STD_AGE>=19; /*19ºº ¿ÃªÛ*/
+IF STD_AGE>=19; /*19ÏÑ∏ Ïù¥ÏÉÅ*/
 IF SEX IN (1,2);
 IF SIDO NOT IN (".",""); 
 IF GAIBJA NOT IN (".",""); 
@@ -538,9 +538,9 @@ MDCARE_STRT_DT MDCARE_YYYY MDCARE_YYYYMM FBS_DM
 GQ_KEY BMI SBP DBP FBS TCHOL TG HDL LDL GFR SMK BMI_G BMI_G2 DRK Q_PA_MD Q_PA_VD;
 RUN;
 
-/*∞À¡¯ ¥ŸΩ√ ∫Ÿ»˜±‚ */
-/*¥Á¥¢ √≥¿Ω ¡¯¥‹ ¿Ã»ƒ √÷√  ∞À¡¯ Ω√¡° ∞Ì∑¡*/
-/*index date¥¬ ¥Á¥¢ »Ø¿⁄ ¡¯¥‹ ¿Ã»ƒ √÷√  ∞«∞≠∞À¡¯¿œ*/
+/*Í≤ÄÏßÑ Îã§Ïãú Î∂ôÌûàÍ∏∞ */
+/*ÎãπÎá® Ï≤òÏùå ÏßÑÎã® Ïù¥ÌõÑ ÏµúÏ¥à Í≤ÄÏßÑ ÏãúÏ†ê Í≥†Î†§*/
+/*index dateÎäî ÎãπÎá® ÌôòÏûê ÏßÑÎã® Ïù¥ÌõÑ ÏµúÏ¥à Í±¥Í∞ïÍ≤ÄÏßÑÏùº*/
 DATA A.TG_FINAL3_10 ; SET A.TG_FINAL3; IF SUBSTR(PKEY,1,4)=2010; RUN;
 DATA A.TG_FINAL3_11 ; SET A.TG_FINAL3; IF SUBSTR(PKEY,1,4)=2011; RUN;
 DATA A.TG_FINAL3_12 ; SET A.TG_FINAL3; IF SUBSTR(PKEY,1,4)=2012; RUN;
@@ -583,11 +583,11 @@ DATA A.TG_FINAL4; SET A.TG_GQ_FINAL10-A.TG_GQ_FINAL14;
 IF HME_DT NOT IN (".", "");
 RUN;
 
-/*æ‡¡¶ ªÁøÎ¿Øπ´ ø¨∞·*/
+/*ÏïΩÏ†ú ÏÇ¨Ïö©Ïú†Î¨¥ Ïó∞Í≤∞*/
 PROC SQL; CREATE TABLE A.TG_FINAL5 AS SELECT * FROM A.TG_FINAL4 AS A LEFT JOIN  A.TRT09_19_U AS B ON A.PKEY=B.TRT_KEY;QUIT;
 
-/*STD_~ : √≥¿Ω ¥Á¥¢ ¡¯¥‹ (ªÛ∫¥ƒ⁄µÂ ∂«¥¬ ∞À¡¯ ¡§∫∏µÁ)µ» Ω√¡°¿« ¿⁄∞› ¡§∫∏*/
-/*HME_~: ¥Á¥¢ ¡¯¥‹ ¿Ã»ƒ √÷√  ∞À¡¯ Ω√¡°¿« ¿⁄∞›¡§∫∏*/
+/*STD_~ : Ï≤òÏùå ÎãπÎá® ÏßÑÎã® (ÏÉÅÎ≥ëÏΩîÎìú ÎòêÎäî Í≤ÄÏßÑ Ï†ïÎ≥¥Îì†)Îêú ÏãúÏ†êÏùò ÏûêÍ≤© Ï†ïÎ≥¥*/
+/*HME_~: ÎãπÎá® ÏßÑÎã® Ïù¥ÌõÑ ÏµúÏ¥à Í≤ÄÏßÑ ÏãúÏ†êÏùò ÏûêÍ≤©Ï†ïÎ≥¥*/
 DATA A.TG_FINAL5 ; 
 RETAIN INDI_DSCM_NO BYEAR STD_AGE HME_AGE;
 RENAME SIDO=STD_SIDO SGG=STD_SGG GAIBJA=STD_GAIBJA INCOME_G=STD_INCOME_G;
@@ -606,8 +606,8 @@ SET A.BFC; DROP AGE STD_YYYY; RUN;
 
 PROC SQL; CREATE TABLE A.TG_FINAL6 AS SELECT * FROM A.TG_FINAL5 AS A LEFT JOIN  A.BFC_HME AS B ON A.HME_KEY=B.PKEY;QUIT;
 
-/* ∞·∞˙∫Øºˆ √ﬂ∞°ø¨∞·, TIME ∞ËªÍ, øπ∫Ò ∫–ºÆ*/
-/*retinopathy (E113 or E143) ¥Á¥¢ ∏¡∏∑∫¥¡ı*/
+/* Í≤∞Í≥ºÎ≥ÄÏàò Ï∂îÍ∞ÄÏó∞Í≤∞, TIME Í≥ÑÏÇ∞, ÏòàÎπÑ Î∂ÑÏÑù*/
+/*retinopathy (E113 or E143) ÎãπÎá® ÎßùÎßâÎ≥ëÏ¶ù*/
 /*neuropathy (E114 or E144)*/
 /*CVD evnets (I00-I99),
   CHD(I20-I25), 
@@ -616,9 +616,9 @@ PROC SQL; CREATE TABLE A.TG_FINAL6 AS SELECT * FROM A.TG_FINAL5 AS A LEFT JOIN  
   Ischmeic (I63)
   Heart failure (I50)
 */
-/*index data: ¥Á¥¢ ¡¯¥‹ ¿Ã»ƒ √÷√  ∞À¡¯¿œ*/
+/*index data: ÎãπÎá® ÏßÑÎã® Ïù¥ÌõÑ ÏµúÏ¥à Í≤ÄÏßÑÏùº*/
 
-/*¿⁄∞› & ∞À¡¯ MISSING ∞Ì∑¡Ω√ */
+/*ÏûêÍ≤© & Í≤ÄÏßÑ MISSING Í≥†Î†§Ïãú */
 DATA A.TG_FINAL7; SET A.TG_FINAL6;
 
 IF STD_AGE<30 THEN STD_AGE_G="<30    " ; ELSE IF
@@ -648,13 +648,13 @@ RUN;
 
 PROC FREQ DATA=A.TG_FINAL7; TABLES Q_PA_VD; RUN;
 
-/*∞À¡¯ ¡ˆ«• ¿ÃªÛƒ° ¡¶ø‹ */
+/*Í≤ÄÏßÑ ÏßÄÌëú Ïù¥ÏÉÅÏπò Ï†úÏô∏ */
 DATA A.TG_FINAL8; SET A.TG_FINAL7;
-IF FBS      >=600   THEN DELETE; /*600¿ÃªÛ¿∫ ¿¿±ﬁΩ« ºˆ¡ÿ*/
-IF TCHOL  >=1000 THEN DELETE; /*1000 ¿ÃªÛ ¡¶ø‹*/
-IF TG        >=1000 THEN DELETE; /*3~4000 ¡§µµ ∞™¿Ã ≥™ø√ºˆ¥¬ ¿÷¿∏≥™ ø‹±πø°º≠¥¬ ±ﬁº∫ √È¿Âø∞ ºˆ¡ÿ*/
+IF FBS      >=600   THEN DELETE; /*600Ïù¥ÏÉÅÏùÄ ÏùëÍ∏âÏã§ ÏàòÏ§Ä*/
+IF TCHOL  >=1000 THEN DELETE; /*1000 Ïù¥ÏÉÅ Ï†úÏô∏*/
+IF TG        >=1000 THEN DELETE; /*3~4000 Ï†ïÎèÑ Í∞íÏù¥ ÎÇòÏò¨ÏàòÎäî ÏûàÏúºÎÇò Ïô∏Íµ≠ÏóêÏÑúÎäî Í∏âÏÑ± Ï∑åÏû•Ïóº ÏàòÏ§Ä*/
 IF HDL      >=200  THEN DELETE; 
-IF LDL       >=400 THEN DELETE; /*4~500¿∫ ∞£¡˙»Ø¿Œ ∞ÊøÏ, 300¡§µµ∏È ¿Ø¿¸∑¬*/
+IF LDL       >=400 THEN DELETE; /*4~500ÏùÄ Í∞ÑÏßàÌôòÏù∏ Í≤ΩÏö∞, 300Ï†ïÎèÑÎ©¥ Ïú†Ï†ÑÎ†•*/
 RUN;
 
 /**/
@@ -681,7 +681,7 @@ DTH_DATE=MDY(SUBSTR(DTH_ASSMD_DT,5,2),SUBSTR(DTH_ASSMD_DT,7,2),SUBSTR(DTH_ASSMD_
 HME_DATE=MDY(SUBSTR(HME_DT,5,2),SUBSTR(HME_DT,7,2),SUBSTR(HME_DT,1,4));
 TIME=DTH_DATE-HME_DATE;
 IF DTH_ASSMD_DT="" THEN TIME=MDY(12,31,2019)-HME_DATE;
-IF HME_SIDO <=31 THEN HME_SIDO_G=1; ELSE HME_SIDO_G=2; /*¥ÎµµΩ√/±◊ø‹ */
+IF HME_SIDO <=31 THEN HME_SIDO_G=1; ELSE HME_SIDO_G=2; /*ÎåÄÎèÑÏãú/Í∑∏Ïô∏ */
 IF HME_INCOME_G <17 THEN HME_INCOME_G2=1; ELSE HME_INCOME_G2=2;
 DROP DROP DTH_DATE FBS_DM HMD_DT GFR PKEY DTH_YYYYMM DTH_YYYY DM_YYYYMM HME_DATE;
 RUN;
@@ -689,26 +689,26 @@ RUN;
 PROC MEANS DATA=DAT N MEAN STD MIN P1 P5 P10 P25 P50 P75 P90 P95 P99 MAX; VAR TIME; RUN;
 PROC MEANS DATA=DAT N MEAN STD MIN P1 P5 P10 P25 P50 P75 P90 P95 P99 MAX; VAR TIME; CLASS DTH_EVENT; RUN;
 
-/*ªÁ∏¡ø° ¥Î«ÿº≠ ºˆ«‡*/
+/*ÏÇ¨ÎßùÏóê ÎåÄÌï¥ÏÑú ÏàòÌñâ*/
 PROC PHREG DATA=DAT;
 CLASS SEX STD_YYYY HME_SIDO_G HME_GAIBJA HME_INCOME_G2 TRT SMK;
 MODEL TIME*DTH_EVENT(0)=BMI SEX STD_YYYY HME_SIDO_G HME_GAIBJA HME_INCOME_G2 TRT SMK STD_AGE SBP DBP; RUN;
 
-/*ªÁ∏¡ø° ¥Î«ÿº≠ ºˆ«‡*/
+/*ÏÇ¨ÎßùÏóê ÎåÄÌï¥ÏÑú ÏàòÌñâ*/
 PROC PHREG DATA=DAT;
 CLASS BMI_G SEX STD_YYYY HME_SIDO_G HME_GAIBJA HME_INCOME_G2 TRT SMK;
 MODEL TIME*DTH_EVENT(0)=BMI_G SEX STD_YYYY HME_SIDO_G HME_GAIBJA HME_INCOME_G2 TRT SMK STD_AGE SBP DBP; RUN;
 
-/*ªÁ∏¡ø° ¥Î«ÿº≠ ºˆ«‡*/
+/*ÏÇ¨ÎßùÏóê ÎåÄÌï¥ÏÑú ÏàòÌñâ*/
 PROC PHREG DATA=DAT;
 CLASS BMI_G SEX STD_YYYY HME_SIDO_G HME_GAIBJA HME_INCOME_G2 TRT SMK;
 MODEL TIME*DTH_EVENT(0)=BMI_G SEX STD_YYYY HME_SIDO_G HME_GAIBJA HME_INCOME_G2 TRT SMK STD_AGE SBP DBP FBS TCHOL TG HDL LDL; RUN;
 
 /*****************************************************************************************************************************/
 /*****************************************************************************************************************************/
-/*11/7 ƒ⁄µÂ ¿œ∫Œ∞° ¿˙¿Â¿Ã æ»µ»µÌ; TG_FINAL10 ¿⁄∑· ¿ÃæÓº≠ ¿ÃøÎ«œ±‚ */
+/*11/7 ÏΩîÎìú ÏùºÎ∂ÄÍ∞Ä Ï†ÄÏû•Ïù¥ ÏïàÎêúÎìØ; TG_FINAL10 ÏûêÎ£å Ïù¥Ïñ¥ÏÑú Ïù¥Ïö©ÌïòÍ∏∞ */
 
-/*¿¸√º Ω…«˜∞¸*/
+/*Ï†ÑÏ≤¥ Ïã¨ÌòàÍ¥Ä*/
 DATA A.T20_CVD; SET A.T20_CVD09-A.T20_CVD19; RUN;
 DATA A.T20_CVD_HOSP; SET A.T20_CVD; IF FORM_CD IN ("02"); RUN;
 PROC SORT DATA= A.T20_CVD_HOSP; BY INDI_DSCM_NO MDCARE_STRT_DT; RUN;
@@ -722,7 +722,7 @@ RUN;
 
 PROC SQL; CREATE TABLE A.TG_FINAL11 AS SELECT * FROM A.TG_FINAL10 AS A LEFT JOIN A.T20_CVD_HOSP AS B ON A.INDI_DSCM_NO=B.INDI_DSCM_NO; QUIT;
 
-/*æ‡¡¶ ªÁøÎ¿Øπ´ ø¨∞·*/
+/*ÏïΩÏ†ú ÏÇ¨Ïö©Ïú†Î¨¥ Ïó∞Í≤∞*/
 data trt09_19_u; set a.trt09_19_u; keep trt_key cmn_key; run;
 PROC SQL; CREATE TABLE A.TG_FINAL11 AS SELECT * FROM A.TG_FINAL11 AS A LEFT JOIN  TRT09_19_U AS B ON A.PKEY=B.TRT_KEY;QUIT;
 
@@ -783,7 +783,7 @@ PROC MEANS DATA=A.TG_FINAL11 N MEAN STD MIN P1 P5 P10 P25 P50 P75 P90 P95 P99 MA
 
 DATA A.T30_TRT09_19; SET A.T30_TRT2009-A.T30_TRT2019; RUN;
 
-/*æ‡¡¶ ¡ﬂ∫π¿Œ ∞ÊøÏ ¡¶ø‹*/
+/*ÏïΩÏ†ú Ï§ëÎ≥µÏù∏ Í≤ΩÏö∞ Ï†úÏô∏*/
 PROC SORT DATA=A.T30_TRT09_19 NODUPKEY OUT=A.T30_TRT09_19_U; BY CMN_KEY MCARE_DIV_CD_ADJ; RUN;
 
 data a.t30_trt09_19_u; set A.T30_TRT09_19_U;
@@ -963,7 +963,7 @@ PROC FREQ DATA=A.TG_FINAL11; TABLES BMI_G2*HEMOSTROKE_EVENT/LIST; RUN;
 PROC FREQ DATA=A.TG_FINAL11; TABLES BMI_G2*ISCHSTROKE_EVENT/LIST; RUN;
 
 /*****************************************************************************************************************************/
-/*¿¸√º*/
+/*Ï†ÑÏ≤¥*/
 PROC FREQ DATA=A.TG_FINAL11; TABLES DTH_EVENT*SEX/LIST; RUN;
 PROC FREQ DATA=A.TG_FINAL11; TABLES DTH_EVENT*STD_AGE_G/LIST; RUN;
 PROC FREQ DATA=A.TG_FINAL11; TABLES DTH_EVENT*TRT/LIST; RUN;
@@ -1015,12 +1015,12 @@ PROC FREQ DATA=A.TG_FINAL11; TABLES BMI_G2; RUN;
 PROC MEANS DATA=A.TG_FINAL11 N MEAN STD MIN P1 P5 P10 P25 P50 P75 P90 P95 P99 MAX; VAR CVD_TIME; CLASS CVD_EVENT;RUN;
 
 /*********************************************************************************************************/
-/*º∫∫∞, ø¨∑…, º“µÊ, ¡ˆø™ »Ìø¨∑¬, ¿Ω¡÷∑¬, Ω≈√º»∞µø¡§µµ, ≈ıæ‡¿Øπ´ ±∏*/
-/*º∫∫∞ ±∏∫–*/
+/*ÏÑ±Î≥Ñ, Ïó∞Î†π, ÏÜåÎìù, ÏßÄÏó≠ Ìù°Ïó∞Î†•, ÏùåÏ£ºÎ†•, Ïã†Ï≤¥ÌôúÎèôÏ†ïÎèÑ, Ìà¨ÏïΩÏú†Î¨¥ Íµ¨*/
+/*ÏÑ±Î≥Ñ Íµ¨Î∂Ñ*/
 DATA A.TG_FINAL11_M; SET A.TG_FINAL11; IF SEX=1; RUN;
 DATA A.TG_FINAL11_F; SET A.TG_FINAL11; IF SEX=2; RUN;
 
-/*ø¨∑…¿∫ æ∆¡˜ æ»¡§«ÿ¡Æº≠ ø©∑Ø∞≥ «ÿ∫∏±‚*/
+/*Ïó∞Î†πÏùÄ ÏïÑÏßÅ ÏïàÏ†ïÌï¥Ï†∏ÏÑú Ïó¨Îü¨Í∞ú Ìï¥Î≥¥Í∏∞*/
 
 proc freq data=a.tg_final11; tables 
 HME_INCOME_G2
@@ -1030,35 +1030,35 @@ SMK
 DRK_G
 PA; run;
 
-/*º“µÊºˆ¡ÿ*/
+/*ÏÜåÎìùÏàòÏ§Ä*/
 DATA a.sub_income1; set a.tg_final11; if HME_INCOME_G2=1; RUN;
 DATA a.sub_income2; set a.tg_final11; if HME_INCOME_G2=2; RUN;
 
-/*¡ˆø™*/
+/*ÏßÄÏó≠*/
 DATA a.sub_SIDO1; set a.tg_final11; if HME_SIDO_G=1; RUN;
 DATA a.sub_SIDO2; set a.tg_final11; if HME_SIDO_G=2; RUN;
 
-/*æ‡¡¶ø©∫Œ*/
+/*ÏïΩÏ†úÏó¨Î∂Ä*/
 DATA a.sub_TRT1; set a.tg_final11; if TRT=0; RUN;
 DATA a.sub_TRT2; set a.tg_final11; if TRT=1; RUN;
 
-/*»Ìø¨∑¬*/
+/*Ìù°Ïó∞Î†•*/
 DATA a.sub_SMK1; set a.tg_final11; if SMK=1; RUN;
 DATA a.sub_SMK2; set a.tg_final11; if SMK=2; RUN;
 
-/*¿Ω¡÷∑¬*/
+/*ÏùåÏ£ºÎ†•*/
 DATA a.sub_DRK1; set a.tg_final11; if DRK_G="Heavy"; RUN;
 DATA a.sub_DRK2; set a.tg_final11; if DRK_G="Non-h"; RUN;
 
-/*Ω≈√º»∞µø*/
+/*Ïã†Ï≤¥ÌôúÎèô*/
 DATA a.sub_PA1; set a.tg_final11; if PA=0; RUN;
 DATA a.sub_PA2; set a.tg_final11; if PA=1; RUN;
 
-/*ø¨∑… ±◊∑Ï 1: 65ºº ¿ÃªÛ, 65ºº πÃ∏∏*/
+/*Ïó∞Î†π Í∑∏Î£π 1: 65ÏÑ∏ Ïù¥ÏÉÅ, 65ÏÑ∏ ÎØ∏Îßå*/
 DATA a.sub_AG1; set a.tg_final11; if STD_AGE<65; RUN;
 DATA a.sub_AG2; set a.tg_final11; if STD_AGE>=65; RUN;
 
-/*ø¨∑… ±◊∑Ï 2: 40ºº ¿ÃªÛ, 40ºº πÃ∏∏*/
+/*Ïó∞Î†π Í∑∏Î£π 2: 40ÏÑ∏ Ïù¥ÏÉÅ, 40ÏÑ∏ ÎØ∏Îßå*/
 DATA a.sub2_AG1; set a.tg_final11; if STD_AGE<40; RUN;
 DATA a.sub2_AG2; set a.tg_final11; if STD_AGE>=40; RUN;
 
@@ -1159,7 +1159,7 @@ PROC MEANS DATA=A.TG_FINAL11_F N MEAN STD MIN P1 P5 P10 P25 P50 P75 P90 P95 P99 
 
 
 /*********************************************************************************************************/
-/*LEAN«— ±◊∑Ï*/
+/*LEANÌïú Í∑∏Î£π*/
 
 DATA A.TG_FINAL11; SET A.TG_FINAL11; 
 DTH_YR=DTH_TIME/365.25; 
@@ -1179,7 +1179,7 @@ DATA D2_2; SET A.TG_FINAL11; IF BMI_G2 IN (3); RUN;
 DATA D2_3; SET A.TG_FINAL11; IF BMI_G2 IN (4); RUN;
 
 /*********************************************************************************************************/
-/*æ‡¡¶ ¥ıπÃ √ﬂ∞°*/
+/*ÏïΩÏ†ú ÎçîÎØ∏ Ï∂îÍ∞Ä*/
 PROC FREQ DATA=D1; TABLES TRT_DM/LIST; RUN;
 PROC FREQ DATA=D1; TABLES TRT_HTN/LIST; RUN;
 PROC FREQ DATA=D1; TABLES TRT_HLD/LIST; RUN;
@@ -1353,7 +1353,7 @@ PROC MEANS DATA=D2_3 N MEAN STD; VAR DTH_YR; CLASS DTH_EVENT; RUN;
 
 /*****************************************************************************************************************************/
 /*****************************************************************************************************************************/
-/*√˛»≠∫–ºÆ: Lean T2DM patients*/
+/*Ï∏µÌôîÎ∂ÑÏÑù: Lean T2DM patients*/
 PROC PHREG DATA=D1;
 CLASS  SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT(REF="0") SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1378,7 +1378,7 @@ PROC PHREG DATA=D1;
 CLASS  SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT(REF="0") SMK DRK_G PA;
 MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
 
-/*√˛»≠∫–ºÆ:  Normal T2DM patients*/
+/*Ï∏µÌôîÎ∂ÑÏÑù:  Normal T2DM patients*/
 PROC PHREG DATA=D2_1;
 CLASS  SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT(REF="0") SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1403,7 +1403,7 @@ PROC PHREG DATA=D2_1;
 CLASS  SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT(REF="0") SMK DRK_G PA;
 MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
 
-/*√˛»≠∫–ºÆ:  Overweight T2DM patients*/
+/*Ï∏µÌôîÎ∂ÑÏÑù:  Overweight T2DM patients*/
 PROC PHREG DATA=D2_2;
 CLASS  SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT(REF="0") SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1428,7 +1428,7 @@ PROC PHREG DATA=D2_2;
 CLASS  SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT(REF="0") SMK DRK_G PA;
 MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
 
-/*√˛»≠∫–ºÆ:  Obese T2DM patients*/
+/*Ï∏µÌôîÎ∂ÑÏÑù:  Obese T2DM patients*/
 PROC PHREG DATA=D2_3;
 CLASS  SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT(REF="0") SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1454,7 +1454,7 @@ CLASS  SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT(REF="0") SMK DRK_G PA;
 MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
 
 /*******************************************************************************************************************************/
-/*º∫∫∞ √˛»≠∫–ºÆ */
+/*ÏÑ±Î≥Ñ Ï∏µÌôîÎ∂ÑÏÑù */
 PROC PHREG DATA=A.TG_FINAL11_M;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT(REF="0") SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1506,7 +1506,7 @@ MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_
 
 /*******************************************************************************************************************************/
 /*******************************************************************************************************************************/
-/*º“µÊºˆ¡ÿ √˛»≠∫–ºÆ */
+/*ÏÜåÎìùÏàòÏ§Ä Ï∏µÌôîÎ∂ÑÏÑù */
 PROC PHREG DATA=A.sub_income1;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT(REF="0") SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1557,7 +1557,7 @@ CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT(REF="0
 MODEL  ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
 /*******************************************************************************************************************************/
 /*******************************************************************************************************************************/
-/*¡ˆø™ √˛»≠∫–ºÆ */
+/*ÏßÄÏó≠ Ï∏µÌôîÎ∂ÑÏÑù */
 PROC PHREG DATA=A.sub_SIDO1;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT(REF="0") SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1609,7 +1609,7 @@ MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_
 
 /*******************************************************************************************************************************/
 /*******************************************************************************************************************************/
-/*æ‡¡¶ √˛»≠∫–ºÆ */
+/*ÏïΩÏ†ú Ï∏µÌôîÎ∂ÑÏÑù */
 PROC PHREG DATA=A.sub_TRT1;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1661,7 +1661,7 @@ MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_
 
 /*******************************************************************************************************************************/
 /*******************************************************************************************************************************/
-/*»Ìø¨∑¬ √˛»≠∫–ºÆ */
+/*Ìù°Ïó∞Î†• Ï∏µÌôîÎ∂ÑÏÑù */
 PROC PHREG DATA=A.sub_SMK1;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1713,7 +1713,7 @@ MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_
 
 /*******************************************************************************************************************************/
 /*******************************************************************************************************************************/
-/*¿Ω¡÷∑¬ √˛»≠∫–ºÆ */
+/*ÏùåÏ£ºÎ†• Ï∏µÌôîÎ∂ÑÏÑù */
 PROC PHREG DATA=A.sub_DRK1;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1765,7 +1765,7 @@ MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_
 
 /*******************************************************************************************************************************/
 /*******************************************************************************************************************************/
-/*Ω≈√º»∞µø √˛»≠∫–ºÆ */
+/*Ïã†Ï≤¥ÌôúÎèô Ï∏µÌôîÎ∂ÑÏÑù */
 PROC PHREG DATA=A.sub_PA1;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1817,7 +1817,7 @@ MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_
 
 /*******************************************************************************************************************************/
 /*******************************************************************************************************************************/
-/*ø¨∑…±◊∑Ï1: 65ºº ±‚¡ÿ √˛»≠∫–ºÆ */
+/*Ïó∞Î†πÍ∑∏Î£π1: 65ÏÑ∏ Í∏∞Ï§Ä Ï∏µÌôîÎ∂ÑÏÑù */
 PROC PHREG DATA=A.sub_AG1;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1869,7 +1869,7 @@ MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_
 
 /*******************************************************************************************************************************/
 /*******************************************************************************************************************************/
-/*ø¨∑…±◊∑Ï2: 40ºº ±‚¡ÿ √˛»≠∫–ºÆ */
+/*Ïó∞Î†πÍ∑∏Î£π2: 40ÏÑ∏ Í∏∞Ï§Ä Ï∏µÌôîÎ∂ÑÏÑù */
 PROC PHREG DATA=A.sub2_AG1;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G(REF="1") HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1921,7 +1921,7 @@ MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_
 
 /*********************************************************************************************************************************************************/
 /*********************************************************************************************************************************************************/
-/*ªÁ∏¡: BMI∂˚ interaction ¿Øπ´*/
+/*ÏÇ¨Îßù: BMIÎûë interaction Ïú†Î¨¥*/
 PROC PHREG DATA=A.tg_final11;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL DTH_TIME*DTH_EVENT(0)= BMI_G2*SEX BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1956,7 +1956,7 @@ MODEL DTH_TIME*DTH_EVENT(0)= BMI_G2*PA BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO
 
 
 
-/*CVD: BMI∂˚ interaction ¿Øπ´*/
+/*CVD: BMIÎûë interaction Ïú†Î¨¥*/
 PROC PHREG DATA=A.tg_final11;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL CVD_TIME*CVD_EVENT(0)= BMI_G2*SEX BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -1989,7 +1989,7 @@ PROC PHREG DATA=A.tg_final11;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL CVD_TIME*CVD_EVENT(0)= BMI_G2*PA BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
 
-/*CHD: BMI∂˚ interaction ¿Øπ´*/
+/*CHD: BMIÎûë interaction Ïú†Î¨¥*/
 PROC PHREG DATA=A.tg_final11;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL CHD_TIME*CHD_EVENT(0)= BMI_G2*SEX BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -2022,7 +2022,7 @@ PROC PHREG DATA=A.tg_final11;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL CHD_TIME*CHD_EVENT(0)= BMI_G2*PA BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
 
-/*HF: BMI∂˚ interaction ¿Øπ´*/
+/*HF: BMIÎûë interaction Ïú†Î¨¥*/
 PROC PHREG DATA=A.tg_final11;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL HF_TIME*HF_EVENT(0)= BMI_G2*SEX BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -2056,7 +2056,7 @@ CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL HF_TIME*HF_EVENT(0)= BMI_G2*PA BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
 
 
-/*STROKE: BMI∂˚ interaction ¿Øπ´*/
+/*STROKE: BMIÎûë interaction Ïú†Î¨¥*/
 PROC PHREG DATA=A.tg_final11;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL STROKE_TIME*STROKE_EVENT(0)= BMI_G2*SEX BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -2089,7 +2089,7 @@ PROC PHREG DATA=A.tg_final11;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL STROKE_TIME*STROKE_EVENT(0)= BMI_G2*PA BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
 
-/*HEMOSTROKE: BMI∂˚ interaction ¿Øπ´*/
+/*HEMOSTROKE: BMIÎûë interaction Ïú†Î¨¥*/
 PROC PHREG DATA=A.tg_final11;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL HEMOSTROKE_TIME*HEMOSTROKE_EVENT(0)= BMI_G2*SEX BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -2123,7 +2123,7 @@ CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL HEMOSTROKE_TIME*HEMOSTROKE_EVENT(0)= BMI_G2*PA BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
 
 
-/*ISCHSTROKE: BMI∂˚ interaction ¿Øπ´*/
+/*ISCHSTROKE: BMIÎûë interaction Ïú†Î¨¥*/
 PROC PHREG DATA=A.tg_final11;
 CLASS BMI_G2 (REF="2") SEX STD_YYYY HME_SIDO_G HME_INCOME_G2 TRT SMK DRK_G PA;
 MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI_G2*SEX BMI_G2 SEX STD_AGE HME_INCOME_G2 HME_SIDO_G TRT SMK DRK_G PA SBP DBP FBS TCHOL TG HDL LDL; RUN;
@@ -2198,7 +2198,7 @@ RUN;
 
 PROC SORT DATA=A.END_G1EQ NODUPKEY ;BY BMI_KEY; RUN;
 
-/*1≥‚ ¡ˆø¨ ∞…∞Ì ø¨∞Ë*/
+/*1ÎÖÑ ÏßÄÏó∞ Í±∏Í≥† Ïó∞Í≥Ñ*/
 DATA A.END_G1EQ10; SET A.END_G1EQ; IF END_YYYY IN (2009); RUN;
 DATA A.END_G1EQ11; SET A.END_G1EQ; IF END_YYYY IN (2010); RUN;
 DATA A.END_G1EQ12; SET A.END_G1EQ; IF END_YYYY IN (2011); RUN;
@@ -2298,7 +2298,7 @@ MODEL ISCHSTROKE_TIME*ISCHSTROKE_EVENT(0)= BMI_C SEX STD_AGE HME_INCOME_G2 HME_S
 /*****************************************************************************************************************/
 /*****************************************************************************************************************/
 /*sensitivity analysis*/
-/*±‚¿˙∫¥∑¬¡ﬂø° Cancer, COPD »Ø¿⁄ ¡¶ø‹ (1≥‚ wash-out)*/
+/*Í∏∞Ï†ÄÎ≥ëÎ†•Ï§ëÏóê Cancer, COPD ÌôòÏûê Ï†úÏô∏ (1ÎÖÑ wash-out)*/
 proc freq data=a.tg_final11; tables std_yyyy ; run;
 
 DATA A.T40_CANCER_COPD_2009; SET A.T40_2009; IF SUBSTR(MCEX_SICK_SYM,1,1)="C" or substr(MCEX_SICK_SYM,1,3)="J44"; RUN;
