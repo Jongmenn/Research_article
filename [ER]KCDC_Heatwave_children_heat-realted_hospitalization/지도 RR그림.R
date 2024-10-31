@@ -1,60 +1,60 @@
 #------------------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------------------#
-#¶óÀÌºê·¯¸®
+#ë¼ì´ë¸ŒëŸ¬ë¦¬
 pacman::p_load(ggmap,raster,rgeos,maptools,rgdal,dplyr,lubridate,ggrepel)
 
 
-rr.result<-read_excel("D:\\EUMC\\³í¹®\\¿¬±¸³í¹®\\KCDC_Heatwave\\Children\\KCDC_Heatwave_children_results.xlsx",sheet="TS_µµ½Ãº°_¹Ì¼¼¸ÕÁöº¸Á¤")
+rr.result<-read_excel("D:\\EUMC\\ë…¼ë¬¸\\ì—°êµ¬ë…¼ë¬¸\\KCDC_Heatwave\\Children\\KCDC_Heatwave_children_results.xlsx",sheet="TS_ë„ì‹œë³„_ë¯¸ì„¸ë¨¼ì§€ë³´ì •")
 rr.result<-rr.result %>% filter(exposure=="maxT")
 rr.result$RR=exp(rr.result$Estimate)
 
-rr.result$sido=ifelse(rr.result$sido==11,"¼­¿ï",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==26,"ºÎ»ê",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==27,"´ë±¸",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==28,"ÀÎÃµ",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==29,"±¤ÁÖ",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==30,"´ëÀü",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==31,"¿ï»ê",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==41,"°æ±â",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==42,"°­¿ø",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==43,"ÃæºÏ",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==44,"Ãæ³²",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==45,"ÀüºÏ",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==46,"Àü³²",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==47,"°æºÏ",rr.result$sido)
-rr.result$sido=ifelse(rr.result$sido==48,"°æ³²",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==11,"ì„œìš¸",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==26,"ë¶€ì‚°",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==27,"ëŒ€êµ¬",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==28,"ì¸ì²œ",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==29,"ê´‘ì£¼",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==30,"ëŒ€ì „",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==31,"ìš¸ì‚°",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==41,"ê²½ê¸°",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==42,"ê°•ì›",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==43,"ì¶©ë¶",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==44,"ì¶©ë‚¨",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==45,"ì „ë¶",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==46,"ì „ë‚¨",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==47,"ê²½ë¶",rr.result$sido)
+rr.result$sido=ifelse(rr.result$sido==48,"ê²½ë‚¨",rr.result$sido)
 
 effectsize<-rr.result %>% filter(exposure=="maxT" & gubun=="single")
 # effectsize$lag=paste0("lag",1:8-1)
 
 #---------------------------------------------------------------------------#
 #---------------------------------------------------------------------------#
-#Áöµµ
-korea<-shapefile("D:\\EUMC\\Áöµµ\\CTPRVN_201602\\TL_SCCO_CTPRVN.shp")
+#ì§€ë„
+korea<-shapefile("D:\\EUMC\\ì§€ë„\\CTPRVN_201602\\TL_SCCO_CTPRVN.shp")
 # korea<-spTransform(korea,CRS("+proj=longlat"))
 korea_map<-fortify(korea)
 
-#Áöµµ
-korea<-shapefile("D:\\EUMC\\Áöµµ\\CTPRVN_201405\\TL_SCCO_CTPRVN.shp")
+#ì§€ë„
+korea<-shapefile("D:\\EUMC\\ì§€ë„\\CTPRVN_201405\\TL_SCCO_CTPRVN.shp")
 korea_map<-fortify(korea)
 
-effectsize$sido=with(effectsize,ifelse(sido=="°­¿ø",0 ,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="°æ±â",1 ,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="°æ³²",2 ,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="°æºÏ",3 ,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="¼­¿ï",8 ,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="ºÎ»ê",7 ,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="´ë±¸",5 ,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="ÀÎÃµ",11,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="±¤ÁÖ",4 ,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="´ëÀü",6 ,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="¼¼Á¾",9 ,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="¿ï»ê",10,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="Àü³²",13,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="ÀüºÏ",12,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="Á¦ÁÖ",14,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="Ãæ³²",15,effectsize$sido))
-effectsize$sido=with(effectsize,ifelse(sido=="ÃæºÏ",16,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ê°•ì›",0 ,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ê²½ê¸°",1 ,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ê²½ë‚¨",2 ,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ê²½ë¶",3 ,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ì„œìš¸",8 ,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ë¶€ì‚°",7 ,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ëŒ€êµ¬",5 ,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ì¸ì²œ",11,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ê´‘ì£¼",4 ,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ëŒ€ì „",6 ,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ì„¸ì¢…",9 ,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ìš¸ì‚°",10,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ì „ë‚¨",13,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ì „ë¶",12,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ì œì£¼",14,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ì¶©ë‚¨",15,effectsize$sido))
+effectsize$sido=with(effectsize,ifelse(sido=="ì¶©ë¶",16,effectsize$sido))
 effectsize$sido=as.numeric(effectsize$sido)
 
 
@@ -62,7 +62,7 @@ effectsize$RR=exp(effectsize$Estimate)
 
 ifelse(korea_map$id=="0" ,subset(effectsize,lag==k & sido==0)$RR
        
-       #PM ³óµµ °ãÃÄ¼­ ±×¸®±â ÀüÃ¼ Áö¿ª  (¿¬±¸ Áö¿ª¸¸ Ç¥ÇöÇÒ ¶§)
+       #PM ë†ë„ ê²¹ì³ì„œ ê·¸ë¦¬ê¸° ì „ì²´ ì§€ì—­  (ì—°êµ¬ ì§€ì—­ë§Œ í‘œí˜„í•  ë•Œ)
        mapping_year_func<-function(k){
          korea_map$RR=NA
          
@@ -105,7 +105,7 @@ ifelse(korea_map$id=="0" ,subset(effectsize,lag==k & sido==0)$RR
          korea_map$label=factor(korea_map$label,levels=unique(korea_map$label))
          korea_map}
        
-       #¿¬µµº° ³ëÃâ³óµµ ºÙÀÌ´Â ÇÔ¼ö Àû¿ë 
+       #ì—°ë„ë³„ ë…¸ì¶œë†ë„ ë¶™ì´ëŠ” í•¨ìˆ˜ ì ìš© 
        korea_map0<-mapping_year_func("lag0");
        korea_map1<-mapping_year_func("lag1");
        korea_map2<-mapping_year_func("lag2");
@@ -115,7 +115,7 @@ ifelse(korea_map$id=="0" ,subset(effectsize,lag==k & sido==0)$RR
        korea_map6<-mapping_year_func("lag6");
        korea_map7<-mapping_year_func("lag7");
        
-       #´ÜÀÏ³âµµ ÇÑÇØ¸¸ Àâ¾Æ¼­ Áöµµ ·¹ÀÌºí ÀÌ¿ë
+       #ë‹¨ì¼ë…„ë„ í•œí•´ë§Œ ì¡ì•„ì„œ ì§€ë„ ë ˆì´ë¸” ì´ìš©
        mht.cent <- korea_map0 %>% group_by(label) %>% summarize(long = median(long), lat = median(lat))
        mht.cent<-cbind(aggregate(korea_map0$long,list(korea_map0$label),median),
                        lat=aggregate(korea_map0$lat,list(korea_map0$label),median)$x)
