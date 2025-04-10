@@ -25,9 +25,9 @@ g1<-ggplot(subset(dd,variable=="Body mass index"),
   scale_color_manual(values=c("blue","red","#800080","black"))+
   scale_fill_manual(values=c("blue","red","#800080","black"))+
   scale_linetype_manual(values=c("solid","solid","dashed","dashed"))
-
+  
 g2<-ggplot(subset(dd,variable=="Waist circumference"),
-           aes(age,Mean,col=sex,fill=sex,group=sex,linetype = sex))+stat_smooth(method="gam",se=F)+
+            aes(age,Mean,col=sex,fill=sex,group=sex,linetype = sex))+stat_smooth(method="gam",se=F)+
   scale_x_continuous(breaks = seq(40,80,5))+labs(x="Age",y="Waist circumference (cm)",
                                                  title="(B) Waist circumference")+theme_gray(base_size=15)+
   coord_cartesian(ylim=c(50,90),xlim=c(40,80))+
@@ -108,7 +108,7 @@ g9<-ggplot(subset(dd,variable=="GGT"),
   scale_linetype_manual(values=c("solid","solid","dashed","dashed"))
 
 g10<-ggplot(subset(dd,variable=="Total cholesterol"),
-            aes(age,Mean,col=sex,fill=sex,group=sex,linetype = sex))+stat_smooth(method="gam",se=F)+
+           aes(age,Mean,col=sex,fill=sex,group=sex,linetype = sex))+stat_smooth(method="gam",se=F)+
   scale_x_continuous(breaks = seq(40,80,5))+labs(x="Age",y="Total cholesterol (mg/dL)",
                                                  title="(J) Total cholesterol")+theme_gray(base_size=15)+
   coord_cartesian(ylim=c(150,250),xlim=c(40,80))+
@@ -1582,13 +1582,13 @@ bba$rank=factor(bba$rank,levels=unique(bba$rank))
 
 x11();grid.arrange(
   ggplot(subset(cca,g=="Total healthcare expenditure"),aes(LABEL,value,col=rank))+facet_wrap(~sex)+
-    stat_smooth(method="gam",se=F,size=1.1, formula = y ~ s(x, k = 3))+
-    guides(color = guide_legend(nrow = 2))+coord_cartesian(ylim=c(100000,1500000))+
-    labs(x="",y="Total Health Expenditure")+
-    theme_bw(base_size=25)+scale_y_continuous(labels = scales::comma)+
-    theme(legend.position = "top",legend.title = element_blank(),
-          panel.grid.major = element_blank(),  
-          panel.grid.minor = element_blank()) , 
+  stat_smooth(method="gam",se=F,size=1.1, formula = y ~ s(x, k = 3))+
+  guides(color = guide_legend(nrow = 2))+coord_cartesian(ylim=c(100000,1500000))+
+  labs(x="",y="Total Health Expenditure")+
+  theme_bw(base_size=25)+scale_y_continuous(labels = scales::comma)+
+  theme(legend.position = "top",legend.title = element_blank(),
+        panel.grid.major = element_blank(),  
+        panel.grid.minor = element_blank()) , 
   ggplot(subset(cca,g=="Out-of-pocket expenditure"),aes(LABEL,value,col=rank))+facet_wrap(~sex)+
     stat_smooth(method="gam",se=F,size=1.1, formula = y ~ s(x, k = 3))+
     guides(color = guide_legend(nrow = 2))+coord_cartesian(ylim=c(100000,1500000))+
@@ -2023,18 +2023,18 @@ ca_expend2<-ggplot(subset(cca,g=="Out-of-pocket expenditure"),
         panel.grid.minor = element_blank()) +
   scale_color_manual(values=c("1"="red","10"="orange","50"="#00BA38","90"="deepskyblue","100"="blue"))+
   scale_size_manual(values = c("1"=2, "10"=1.1, "50"=1.1,"90"=1.1,"100"=2))
-
+  
 ca_expend3<-ggplot(subset(cca,g=="Insurance-covered expenditure"),
                    aes(LABEL,value,col=rank,size=rank))+facet_wrap(~sex)+
   stat_smooth(method="gam",se=F, formula = y ~ s(x, k = 3))+
   guides(color = guide_legend(nrow = 1))+coord_cartesian(ylim=c(100000,1500000))+
   labs(x="Chronological age",title="(C) Insurance-covered expenditure",y="KRW")+
   theme_bw(base_size=25)+scale_y_continuous(labels = scales::comma)+
-  theme(legend.position = "top",legend.title = element_blank(),
-        panel.grid.major = element_blank(),  
-        panel.grid.minor = element_blank()) +
-  scale_color_manual(values=c("1"="red","10"="orange","50"="#00BA38","90"="deepskyblue","100"="blue"))+
-  scale_size_manual(values = c("1"=2, "10"=1.1, "50"=1.1,"90"=1.1,"100"=2))
+    theme(legend.position = "top",legend.title = element_blank(),
+          panel.grid.major = element_blank(),  
+          panel.grid.minor = element_blank()) +
+    scale_color_manual(values=c("1"="red","10"="orange","50"="#00BA38","90"="deepskyblue","100"="blue"))+
+    scale_size_manual(values = c("1"=2, "10"=1.1, "50"=1.1,"90"=1.1,"100"=2))
 
 # 📌 1️⃣ 개별 그래프에서 범례 제거 (theme(legend.position = "none"))
 plots <- list(ca_expend1,ca_expend2,ca_expend3)
@@ -2157,7 +2157,7 @@ aacc<-rbind(aa01,cc01)
 gaacc<-ggplot(aacc,aes(age,value,col=variable,group=variable))+facet_wrap(~sex)+
   stat_smooth(method="gam",se=F, formula = y ~ s(x, k = 3))+
   scale_x_continuous(breaks = seq(40,80,5))+labs(x="Chronological age",y="KRW",
-                                                 title="(A)  Total healthcare expenditure by Age and decile")+
+                                                 title="(A)  Total healthcare expenditure by age and decile")+
   theme_bw(base_size=22)+
   theme(legend.position = "top")+
   coord_cartesian(ylim=c(0,5000000))+
@@ -2167,10 +2167,12 @@ gaacc<-ggplot(aacc,aes(age,value,col=variable,group=variable))+facet_wrap(~sex)+
         panel.grid.major = element_blank(),  
         panel.grid.minor = element_blank())
 
+x11();gaacc
+x11();cca_t1
 cca_t1<-ggplot(subset(cca,g=="Total healthcare expenditure"),aes(LABEL,value,col=rank))+facet_wrap(~sex)+
   stat_smooth(method="gam",se=F,size=1.1, formula = y ~ s(x, k = 3))+
-  guides(color = guide_legend(nrow = 2))+coord_cartesian(ylim=c(100000,1500000))+
-  labs(x="Chronological age",y="KRW",title="(B) Total healthcare expenditure by chronological age and rank")+  
+  guides(color = guide_legend(nrow = 2))+coord_cartesian(ylim=c(100000,2000000))+
+  labs(x="Chronological age",y="KRW",title="(B) Median total healthcare expenditure by chronological age and rank")+  
   guides(color = guide_legend(ncol = 11,title="Rank"))+
   theme_bw(base_size=22)+scale_y_continuous(labels = scales::comma)+
   theme(legend.position = "top",
@@ -2179,8 +2181,8 @@ cca_t1<-ggplot(subset(cca,g=="Total healthcare expenditure"),aes(LABEL,value,col
 
 bba_t1<-ggplot(subset(bba,g=="Total healthcare expenditure"),aes(LABEL,value,col=rank))+facet_wrap(~sex)+
   stat_smooth(method="gam",se=F,size=1.1, formula = y ~ s(x, k = 3))+
-  guides(color = guide_legend(nrow = 2))+coord_cartesian(ylim=c(100000,1500000))+
-  labs(x="Biological age",y="KRW",title="(C) Total healthcare expenditure by biological age and rank")+ 
+  guides(color = guide_legend(nrow = 2))+coord_cartesian(ylim=c(100000,2000000))+
+  labs(x="Biological age",y="KRW",title="(C) Median total healthcare expenditure by biological age and rank")+ 
   guides(color = guide_legend(ncol = 11,title="Rank"))+
   theme_bw(base_size=22)+scale_y_continuous(labels = scales::comma)+
   theme(legend.position = "top",legend.title = element_blank(),
@@ -2208,12 +2210,15 @@ x11(); grid.arrange(
 
 x11(); grid.arrange(
   legend, 
-  do.call(arrangeGrob, c(plots_no_legend, ncol = 1)), 
+  do.call(arrangeGrob, c(plots_no_legend, ncol = 2)), 
   legend2, 
-  do.call(arrangeGrob, c(plots_no_legend2, ncol = 1)), 
-  ncol = 1, heights = c(1, 10, 1, 10)  # 범례와 그래프 비율 조정
+  do.call(arrangeGrob, c(plots_no_legend2, ncol = 2)), 
+  ncol = 2, heights = c(1, 10, 1, 10)  # 범례와 그래프 비율 조정
 )
-
+x11();gaacc
+x11();cca_t1
+x11();bba_t1
+grid
 
 tiff(filename="D:\\EUMC\\논문\\연구논문\\건강나이\\expenditure_250410.tiff",
      width=22,height=22,units="in",res=300,compression="lzw")
@@ -2224,7 +2229,111 @@ grid.arrange(
   do.call(arrangeGrob, c(plots_no_legend2, ncol = 1)), 
   ncol = 1, heights = c(1, 10, 1, 16)  # 범례와 그래프 비율 조정
 )
-
 dev.off()
 
 
+gaacc<-ggplot(aacc,aes(age,value,col=variable,group=variable))+facet_wrap(~sex,ncol=1)+
+  stat_smooth(method="gam",se=F, formula = y ~ s(x, k = 3))+
+  scale_x_continuous(breaks = seq(40,80,5))+labs(x="Chronological age",y="KRW",
+                                                 title="(A)  Total healthcare expenditure by age and decile")+
+  theme_bw(base_size=18)+
+  theme(legend.position = "top")+
+  coord_cartesian(ylim=c(0,5000000))+
+  scale_y_continuous(labels = scales::comma,breaks=seq(0,5000000,by=1000000))+coord_cartesian(ylim=c(0,5000000))+
+  guides(color = guide_legend(ncol = 9,title="Decile"))+
+  theme(legend.position = "top",
+        panel.grid.major = element_blank(),  
+        panel.grid.minor = element_blank())
+
+
+gaacc1<-ggplot(subset(aacc,sex=="Men"),aes(age,value,col=variable,group=variable))+
+  stat_smooth(method="gam",se=F, formula = y ~ s(x, k = 3))+
+  scale_x_continuous(breaks = seq(40,80,5))+labs(x="Chronological age",y="KRW",
+                                                 title="(A1) Men, total healthcare expenditure by age and decile")+
+  theme_bw(base_size=18)+
+  theme(legend.position = "top")+
+  coord_cartesian(ylim=c(0,5000000))+
+  scale_y_continuous(labels = scales::comma,breaks=seq(0,5000000,by=1000000))+coord_cartesian(ylim=c(0,5000000))+
+  guides(color = guide_legend(nrow = 1,title="Decile"))+
+  theme(legend.position = "top",panel.grid.major = element_blank(),  panel.grid.minor = element_blank())
+
+gaacc2<-ggplot(subset(aacc,sex=="Men"),aes(age,value,col=variable,group=variable))+
+  stat_smooth(method="gam",se=F, formula = y ~ s(x, k = 3))+
+  scale_x_continuous(breaks = seq(40,80,5))+labs(x="Chronological age",y="KRW",
+                                                 title="(A2) Women, total healthcare expenditure by age and decile")+
+  theme_bw(base_size=18)+
+  theme(legend.position = "top")+
+  coord_cartesian(ylim=c(0,5000000))+
+  scale_y_continuous(labels = scales::comma,breaks=seq(0,5000000,by=1000000))+coord_cartesian(ylim=c(0,5000000))+
+  guides(color = guide_legend(nrow = 1,title="Decile"))+
+  theme(legend.position = "top",panel.grid.major = element_blank(),  panel.grid.minor = element_blank())
+
+
+cca_t1<-ggplot(subset(cca,g=="Total healthcare expenditure" & sex=="Men"),aes(LABEL,value,col=rank))+
+  stat_smooth(method="gam",se=F,size=1.1, formula = y ~ s(x, k = 3))+
+  guides(color = guide_legend(nrow = 1))+coord_cartesian(ylim=c(100000,2000000))+
+  labs(x="Chronological age",y="KRW",title="(B1) Men, median total healthcare expenditure by chronological age and rank")+  
+  guides(color = guide_legend(nrow = 1,title="Rank"))+
+  theme_bw(base_size=18)+scale_y_continuous(labels = scales::comma)+
+  theme(legend.position = "top",panel.grid.major = element_blank(),  panel.grid.minor = element_blank())
+cca_t2<-ggplot(subset(cca,g=="Total healthcare expenditure" & sex=="Women"),aes(LABEL,value,col=rank))+
+  stat_smooth(method="gam",se=F,size=1.1, formula = y ~ s(x, k = 3))+
+  guides(color = guide_legend(nrow = 1))+coord_cartesian(ylim=c(100000,2000000))+
+  labs(x="Chronological age",y="KRW",title="(B2) Women, median total healthcare expenditure by chronological age and rank")+  
+  guides(color = guide_legend(nrow = 1,title="Rank"))+
+  theme_bw(base_size=18)+scale_y_continuous(labels = scales::comma)+
+  theme(legend.position = "top",panel.grid.major = element_blank(),  panel.grid.minor = element_blank())
+
+bba_t1<-ggplot(subset(bba,g=="Total healthcare expenditure"& sex=="Men"& LABEL %in% c(40:80)),aes(LABEL,value,col=rank))+
+  stat_smooth(method="gam",se=F,size=1.1, formula = y ~ s(x, k = 3))+
+  guides(color = guide_legend(nrow = 1))+coord_cartesian(ylim=c(100000,2000000))+
+  labs(x="Biological age",y="KRW",title="(C1) Men, median total healthcare expenditure by biological age and rank")+ 
+  guides(color = guide_legend(nrow = 1,title="Rank"))+
+  theme_bw(base_size=18)+scale_y_continuous(labels = scales::comma)+
+  theme(legend.position = "top",panel.grid.major = element_blank(),  panel.grid.minor = element_blank())
+
+ 
+bba_t2<-ggplot(subset(bba,g=="Total healthcare expenditure"& sex=="Women" & LABEL %in% c(40:80)),aes(LABEL,value,col=rank))+
+  stat_smooth(method="gam",se=F,size=1.1, formula = y ~ s(x, k = 3))+
+  guides(color = guide_legend(nrow = 1))+coord_cartesian(ylim=c(100000,2000000))+
+  labs(x="Biological age",y="KRW",title="(C2) Women, median total healthcare expenditure by biological age and rank")+ 
+  guides(color = guide_legend(nrow = 1,title="Rank"))+
+  theme_bw(base_size=18)+scale_y_continuous(labels = scales::comma)+
+  theme(legend.position = "top",panel.grid.major = element_blank(),  panel.grid.minor = element_blank())
+
+x11();grid.arrange(
+  gaacc1,cca_t1,bba_t1,
+  gaacc2,cca_t2,bba_t2,ncol=3)
+
+
+plots <- list(gaacc1,gaacc2)
+plots_no_legend <- lapply(plots, function(p) p + theme(legend.position = "none"))
+plots2 <- list(cca_t1,bba_t1,cca_t2,bba_t2)
+plots_no_legend2 <- lapply(plots2, function(p) p + theme(legend.position = "none"))
+
+# 📌 2️⃣ 하나의 그래프에서만 범례 가져오기 (g1 기준)
+legend  <- g_legend(gaacc1)
+legend2 <- g_legend(cca_t1)
+
+x11(); grid.arrange(
+  arrangeGrob(
+    arrangeGrob(legend, do.call(arrangeGrob, c(plots_no_legend, ncol = 1)), ncol = 1, 
+                heights = c(1, 10)),  # 첫 번째 그룹 (범례 작게)
+    arrangeGrob(legend2, do.call(arrangeGrob, c(plots_no_legend2, ncol = 2)), ncol = 1, 
+                heights = c(1, 10)),  # 두 번째 그룹 (범례 작게)
+    ncol = 2 , widths = c(2, 2) # 두 개의 그룹을 열로 정렬
+  )
+)
+
+tiff(filename="D:\\EUMC\\논문\\연구논문\\건강나이\\expenditure_250410_rev3.tiff",
+     width=36,height=16,units="in",res=300,compression="lzw")
+grid.arrange(
+  arrangeGrob(
+    arrangeGrob(legend, do.call(arrangeGrob, c(plots_no_legend, ncol = 1)), ncol = 1, 
+                heights = c(1, 10)),  # 첫 번째 그룹 (범례 작게)
+    arrangeGrob(legend2, do.call(arrangeGrob, c(plots_no_legend2, ncol = 2)), ncol = 1, 
+                heights = c(1, 10)),  # 두 번째 그룹 (범례 작게)
+    ncol = 2, widths = c(1, 2)  # 두 개의 그룹을 열로 정렬
+  )
+)
+dev.off()
