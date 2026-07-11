@@ -1,0 +1,9 @@
+                      HDP macro output: per-mother hypertensive-disorders-of-pregnancy window flag                      
+
+  Obs  DUPKEY  HDP_FLAG
+    1  D001           1
+    2  D002           1
+    3  D003           1
+    4  D004           1
+    5  D005           0
+

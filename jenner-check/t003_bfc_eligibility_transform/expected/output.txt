@@ -1,0 +1,9 @@
+                            BFC macro output: eligibility records with derived AGE/SIDO/PKEY                            
+
+  Obs       PKEY  STD_YYYY  INDI_DSCM_NO  SEX  AGE  GAIBJA  SIDO    SGG  INCOME_G  BYEAR
+    1  2010-3001      2010          3001    1   35       1  11    11010         6   1975
+    2  2010-3002      2010          3002    2   42       1  26    26030         8   1968
+    3  2010-3003      2010          3003    1   20       2  27    27010         3   1990
+    4  2010-3004      2010          3004    2   55       1  11    11020         9   1955
+    5  2010-3005      2010          3005    1   28       1  28    28010         5   1982
+

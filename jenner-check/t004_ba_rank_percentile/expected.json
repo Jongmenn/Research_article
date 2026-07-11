@@ -1,0 +1,15 @@
+{
+  "_captured_at": "2026-07-11T10:52:00Z",
+  "_captured_run_id": "r_a7b0ad0857824a29a89facd272a46166",
+  "status": "ok",
+  "exit_code": 0,
+  "log_contains": [
+    "NOTE: Wrote a.ha_m_final (8 rows, 20 columns).",
+    "NOTE: Wrote a.ha_f_final (6 rows, 20 columns).",
+    "NOTE: Output dataset A.SUMM_HA_M_FINAL has 72 observations and 22 variables.",
+    "NOTE: Output dataset A.SUMM_HA_F_FINAL has 56 observations and 22 variables.",
+    "NOTE: PROC PRINT completed: 8 observations printed, 21 variables"
+  ],
+  "log_does_not_contain": ["ERROR:", "[JENNER-ERROR"],
+  "diagnostics": {"parse_warnings": [], "runtime_warnings": []}
+}

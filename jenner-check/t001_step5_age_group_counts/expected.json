@@ -1,0 +1,15 @@
+{
+  "_captured_at": "2026-07-11T10:35:56Z",
+  "_captured_run_id": "r_db87c7c30c184e0bba35a0c45b0040a3",
+  "status": "ok",
+  "exit_code": 0,
+  "log_contains": [
+    "NOTE: Wrote a.aom_w1 (15 rows, 5 columns).",
+    "NOTE: Wrote A.AOM_W11 (4 rows, 27 columns).",
+    "NOTE: Table A.S1_W1_COUNT created.",
+    "NOTE: Wrote A.S1_W1_COUNT (2 rows, 23 columns).",
+    "NOTE: PROC PRINT completed: 2 observations printed, 23 variables"
+  ],
+  "log_does_not_contain": ["ERROR:", "[JENNER-ERROR"],
+  "diagnostics": {"parse_warnings": [], "runtime_warnings": []}
+}

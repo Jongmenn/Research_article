@@ -1,0 +1,7 @@
+{
+  "bundle": "t002_icd_flag_ihd",
+  "source_file": "[ER]PM2.5_Elderly_IHDP/M2.5_Elderly_IHD_SAS.sas",
+  "source_blob_sha": "ec4264d6425869970802d75bb5773cfdcb8dae2b",
+  "source_commit": "744b43a0d5a9755f8308d1872bb77aa900fb2417",
+  "notes": "IHD macro (ICD-10 range substring match on primary/secondary diagnosis codes -> K1/K2/ICD_RANK flag -> filter+drop) copied verbatim from M2.5_Elderly_IHD_SAS.sas lines 17-24. Mock 8-row inpatient claims table with FORM_CD/SICK_SYM1/SICK_SYM2 substituted for the researcher's NHIS T20 extract (RAW.T20_2008, unreachable Linux libname). Output confirms correct I20-I25 range filtering and FORM_CD 02/03 gating."
+}

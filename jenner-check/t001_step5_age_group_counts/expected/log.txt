@@ -1,0 +1,32 @@
+NOTE: Option OBS changed to 100.
+NOTE: Library A assigned path=./input.
+NOTE: DATA a.aom_w1
+
+NOTE: Processing inline DATALINES (15 lines)
+
+NOTE: Read 15 rows from DATALINES.
+NOTE: Wrote a.aom_w1 (15 rows, 5 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA A.AOM_W11
+
+
+NOTE: Read 15 rows from A.AOM_W1.
+NOTE: Wrote A.AOM_W11 (4 rows, 27 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SQL 
+
+NOTE: Table A.S1_W1_COUNT created.
+NOTE: PROC SQL statement used.
+NOTE: PROC SORT data=A.S1_W1_COUNT
+
+NOTE: 2 duplicate observations were deleted.
+NOTE: Read 4 rows from A.S1_W1_COUNT.
+NOTE: Wrote A.S1_W1_COUNT (2 rows, 23 columns).
+NOTE: PROC SORT statement used.
+NOTE: PROC PRINT data=a.s1_w1_count
+
+NOTE: PROC PRINT completed: 2 observations printed, 23 variables

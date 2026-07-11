@@ -1,0 +1,23 @@
+NOTE: Option OBS changed to 100.
+NOTE: Library RAW assigned path=./input.
+NOTE: Library A assigned path=./input.
+NOTE: DATA raw.t20_2008
+
+NOTE: Processing inline DATALINES (8 lines)
+
+NOTE: Read 8 rows from DATALINES.
+NOTE: Wrote raw.t20_2008 (8 rows, 12 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA A.TOTAL_IHD_08
+
+
+NOTE: Read 8 rows from RAW.T20_2008.
+NOTE: Wrote A.TOTAL_IHD_08 (6 rows, 7 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC PRINT data=a.total_ihd_08
+
+NOTE: PROC PRINT completed: 6 observations printed, 7 variables

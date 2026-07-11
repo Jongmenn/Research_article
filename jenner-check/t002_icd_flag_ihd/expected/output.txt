@@ -1,0 +1,10 @@
+                 IHD macro output: inpatient claims flagged for ischemic heart disease (ICD-10 I20-I25)                 
+
+  Obs  FORM_CD  SICK_SYM1  SICK_SYM2  INDI_DSCM_NO  K1  K2  ICD_RANK
+    1  02       I219       J189               2001   2   0         2
+    2  03       I250       I208               2002   2   1         3
+    3  03       I209       M545               2004   2   0         2
+    4  02       E119       I255               2005   0   1         1
+    5  02       K219       I210               2007   0   1         1
+    6  03       I215       I220               2008   2   1         3
+
