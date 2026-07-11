@@ -1,0 +1,7 @@
+{
+  "bundle": "t004_ba_rank_percentile",
+  "source_file": "NHIS_Biological_Health_age/SAS_healthage_250521.sas",
+  "source_blob_sha": "3913c83e2598d1da6e57ed7b7a95c8e46df9cd3d",
+  "source_commit": "744b43a0d5a9755f8308d1872bb77aa900fb2417",
+  "notes": "RANK macro (PROC RANK GROUPS=100 on CVD_SCORE -> PROC SORT -> PROC FREQ -> PROC MEANS across the biomarker/claims-cost panel, class=percentile rank, run separately for male and female cohorts) copied verbatim from SAS_healthage_250521.sas. Mock 8-row male / 6-row female cohort tables with CVD_SCORE plus the same biomarker panel (BMI, BP, lipids, liver enzymes, renal function) and claims-cost fields (TOTAL_FEE/PRI_FEE/INSUR_FEE) substituted for the researcher's NHIS health-checkup + claims cost extract (A.HA_M_*/A.HA_F_*, unreachable Linux libname). This is the percentile-stratification step feeding into the repo's biological-age calculation (BA_CAL_M/BA_CAL_F macros elsewhere in the same file)."
+}

@@ -1,0 +1,7 @@
+{
+  "bundle": "t003_bfc_eligibility_transform",
+  "source_file": "[JCEM]T2DM_Lean_patientT2DM_Lean_patient_Mortality_CVD/T2DM_Script_20240208.sas",
+  "source_blob_sha": "0937c0bfb2fb17f5bcad4d9e9f91134b1e1aeed8",
+  "source_commit": "744b43a0d5a9755f8308d1872bb77aa900fb2417",
+  "notes": "BFC macro (rename SEX_TYPE/GAIBJA_TYPE/RVSN_ADDR_CD/CALC_CTRB_VTILE_FD, derive AGE from STD_YYYY-BYEAR, derive SIDO from address-code substring, build PKEY, drop unused fields) copied verbatim from T2DM_Script_20240208.sas lines 27-37. Mock 5-row eligibility table substituted for the researcher's NHIS insurance-eligibility extract (RAW.BFC_2010, unreachable Linux libname). Output confirms correct AGE and PKEY derivation per row."
+}

@@ -1,0 +1,14 @@
+{
+  "_captured_at": "2026-07-11T10:58:00Z",
+  "_captured_run_id": "r_7018ef8e45c44c39ac1b9ca4c33be818",
+  "status": "ok",
+  "exit_code": 0,
+  "log_contains": [
+    "NOTE: Wrote aa.mother_claims (8 rows, 6 columns).",
+    "NOTE: Table MOTHER_CLAIMS created.",
+    "NOTE: Wrote MOTHER_CLAIMS (5 rows, 2 columns).",
+    "NOTE: PROC PRINT completed: 5 observations printed, 2 variables"
+  ],
+  "log_does_not_contain": ["ERROR:", "[JENNER-ERROR"],
+  "diagnostics": {"parse_warnings": [], "runtime_warnings": []}
+}

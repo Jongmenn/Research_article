@@ -1,0 +1,6 @@
+                                   STEP5 output: daily age/sex group counts, SIDO=11                                    
+
+  Obs        DATE  SIDO  AGE0  AGE1  AGE2  AGE3  AGE13  TOT  AGE0_M  AGE0_F  AGE1_M  AGE1_F  AGE2_M  AGE2_F  AGE3_M  AGE3_F  AGE13_M  AGE13_F  TOT_M  TOT_F  age415  age415_m  AGE415_F
+    1  2015-01-05  11       1     1     1     0      2    3       1       0       0       1       1       0       0       0        1        1      2      1       0         0         0
+    2  2015-01-08  11       0     0     1     0      1    1       0       0       0       0       1       0       0       0        1        0      1      0       0         0         0
+

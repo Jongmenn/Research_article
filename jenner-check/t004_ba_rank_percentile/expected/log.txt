@@ -1,0 +1,80 @@
+NOTE: Option OBS changed to 100.
+NOTE: Library A assigned path=./input.
+NOTE: DATA a.ha_m_final
+
+NOTE: Processing inline DATALINES (8 lines)
+
+NOTE: Read 8 rows from DATALINES.
+NOTE: Wrote a.ha_m_final (8 rows, 20 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA a.ha_f_final
+
+NOTE: Processing inline DATALINES (6 lines)
+
+NOTE: Read 6 rows from DATALINES.
+NOTE: Wrote a.ha_f_final (6 rows, 20 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC RANK data=A.HA_M_FINAL out=Some("A.HA_M_FINAL") groups=100
+
+
+NOTE: Read 8 rows from ././input/ha_m_final.avro.
+NOTE: Wrote ././input/ha_m_final.avro (8 rows, 21 columns).
+NOTE: PROC RANK elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SORT data=A.HA_M_FINAL
+
+NOTE: Read 8 rows from A.HA_M_FINAL.
+NOTE: Wrote A.HA_M_FINAL (8 rows, 21 columns).
+NOTE: PROC SORT statement used.
+NOTE: PROC FREQ
+NOTE: ODS plot written: freq_cvd_score_rank.spec.json
+NOTE: PROC FREQ statement used.
+NOTE: PROC MEANS
+NOTE: Output dataset A.SUMM_HA_M_FINAL has 72 observations and 22 variables.
+NOTE: PROC MEANS statement used.
+NOTE: PROC RANK data=A.HA_F_FINAL out=Some("A.HA_F_FINAL") groups=100
+
+
+NOTE: Read 6 rows from ././input/ha_f_final.avro.
+NOTE: Wrote ././input/ha_f_final.avro (6 rows, 21 columns).
+NOTE: PROC RANK elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SORT data=A.HA_F_FINAL
+
+NOTE: Read 6 rows from A.HA_F_FINAL.
+NOTE: Wrote A.HA_F_FINAL (6 rows, 21 columns).
+NOTE: PROC SORT statement used.
+NOTE: PROC FREQ
+NOTE: ODS plot written: freq_cvd_score_rank.spec.json
+NOTE: PROC FREQ statement used.
+NOTE: PROC MEANS
+NOTE: Output dataset A.SUMM_HA_F_FINAL has 56 observations and 22 variables.
+NOTE: PROC MEANS statement used.
+NOTE: DATA A.SUMM_HA_M_FINAL
+
+
+NOTE: Read 72 rows from A.SUMM_HA_M_FINAL.
+NOTE: Wrote A.SUMM_HA_M_FINAL (72 rows, 24 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA A.SUMM_HA_F_FINAL
+
+
+NOTE: Read 56 rows from A.SUMM_HA_F_FINAL.
+NOTE: Wrote A.SUMM_HA_F_FINAL (56 rows, 24 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC PRINT data=a.ha_m_final
+
+NOTE: PROC PRINT completed: 8 observations printed, 21 variables
+NOTE: PROC PRINT data=a.ha_f_final
+
+NOTE: PROC PRINT completed: 6 observations printed, 21 variables

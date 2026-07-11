@@ -1,0 +1,7 @@
+{
+  "bundle": "t001_step5_age_group_counts",
+  "source_file": "[EI]PM2.5_AOM/AOM_AR_191210.sas",
+  "source_blob_sha": "c6cfe8e77b284b273aa008f5502c72f2fce533a6",
+  "source_commit": "744b43a0d5a9755f8308d1872bb77aa900fb2417",
+  "notes": "STEP5 macro (age/sex-band dummy variables -> PROC SQL daily group counts -> PROC SORT nodupkey) copied verbatim from AOM_AR_191210.sas lines 13-56. Mock 15-row cohort with RVSN_ADDR_CD/AGE/SEX_TYPE/START_DATE substituted for the researcher's NHIS claims extract (A.AOM_W1, unreachable Linux libname). Called once for SIDO=11 as in the original repo's %STEP5(...,11) invocation."
+}

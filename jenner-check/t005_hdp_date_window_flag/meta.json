@@ -1,0 +1,7 @@
+{
+  "bundle": "t005_hdp_date_window_flag",
+  "source_file": "[Plosone]_Maternal_neonatal_outcome_K_COV_N/NHIS_COVID19_SAS_20220726.sas",
+  "source_blob_sha": "a09ecff6878369da53124821931abc20f632beca",
+  "source_commit": "744b43a0d5a9755f8308d1872bb77aa900fb2417",
+  "notes": "HDP macro (MDY() date reconstruction from a YYYYMMDD claim-start string, delivery-window conditional flagging split on pre/post-COVID exposure, per-mother SQL SUM aggregation) copied verbatim from NHIS_COVID19_SAS_20220726.sas. Mock 8-row linked maternal-claims table with MDCARE_STRT_DT/COVID19/DATE1/DATE2/COVID_DATE substituted for the researcher's linked mother-infant NHIS extract (AA.<table>, unreachable Linux/HANA source). Includes both a positive (D001-D004) and a negative (D005, visit far outside the delivery window) case so both branches of the conditional are exercised."
+}
